@@ -1,83 +1,341 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]--><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="Asciidoctor 1.5.6.1"><title>User Guide</title><link rel="stylesheet" href="stylesheets/gh-pages.css">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]--><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="Asciidoctor 1.5.6.1"><title>PlanMySem - User Guide</title><link rel="stylesheet" href="stylesheets/gh-pages.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="stylesheets/coderay-asciidoctor.css"></head><body class="article"><div id="seedu-header"><nav class="navbar navbar-lg navbar-light bg-lighter"><div class="container"><a class="navbar-brand" href="https://se-edu.github.io/"><img src="images/SeEduLogo.png" alt="SE-EDU"></a><ul class="navbar-nav"><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/addressbook-level1">AB-1</a></li><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/addressbook-level2">AB-2</a></li><li class="nav-item"><a class="nav-link active" href="index.html">AB-3</a></li><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/addressbook-level4">AB-4</a></li><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/collate">Collate</a></li><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/se-book">Book</a></li><li class="nav-item"><a class="nav-link" href="https://se-edu.github.io/learningresources">Resources</a></li></ul></div></nav></div><div id="site-header"><nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">AddressBook-Level3</a><ul class="navbar-nav"><li class="nav-item"><a class="nav-link active" href="UserGuide.html">User Guide</a></li><li class="nav-item"><a class="nav-link" href="DeveloperGuide.html">Developer Guide</a></li><li class="nav-item"><a class="nav-link" href="LearningOutcomes.html">LOs</a></li><li class="navitem"><a class="nav-link" href="https://github.com/se-edu/addressbook-level3"><span class="fa fa-github fa-lg" aria-hidden="true"></span>&nbsp;View on GitHub</a></li></ul></div></nav></div><div id="header"><h1>User Guide</h1></div><div id="content"><div id="preamble">
+<link rel="stylesheet" href="stylesheets/coderay-asciidoctor.css"></head><body class="article"><div id="site-header"><nav class="navbar navbar-light bg-light"><div class="container"><a class="navbar-brand" href="index.html">PlanMySem</a><ul class="navbar-nav"><li class="nav-item"><a class="nav-link active" href="UserGuide.html">User Guide</a></li><li class="nav-item"><a class="nav-link" href="DeveloperGuide.html">Developer Guide</a></li><li class="nav-item"><a class="nav-link" href="AboutUs.html">About Us</a></li><li class="nav-item"><a class="nav-link" href="ContactUs.html">Contact Us</a></li><li class="navitem"><a class="nav-link" href="https://github.com/CS2113-AY1819S2-T08-3/main"><span class="fa fa-github fa-lg" aria-hidden="true"></span>&nbsp;View on GitHub</a></li></ul></div></nav></div><div id="header"><h1>PlanMySem - User Guide</h1></div><div id="content"><div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This product is not meant for end-users and therefore there is no user-friendly installer.
-Please refer to the <a href="DeveloperGuide.html#setting-up">Setting up</a> section to learn how to set up the project.</p>
+<p>By: <code>Team T08-3</code>      Since: <code>Jan 2019</code>      Licence: <code>MIT</code></p>
+</div>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle"></div>
+<ul class="sectlevel1">
+<li><a href="#introduction">1. Introduction</a></li>
+<li><a href="#quick-start">2. Quick Start</a></li>
+<li><a href="#Features">3. Features</a>
+<ul class="sectlevel2">
+<li><a href="#viewing-help-code-help-code">3.1. Viewing help : <code>help</code></a></li>
+<li><a href="#adding-a-category-code-add-cat-code">3.2. Adding a Category : <code>add cat</code></a></li>
+<li><a href="#editing-a-category-code-edit-cat-code">3.3. Editing a Category : <code>edit cat</code></a></li>
+<li><a href="#deleting-a-category-code-del-cat-code">3.4. Deleting a Category : <code>del cat</code></a></li>
+<li><a href="#adding-an-activity-add-act">3.5. Adding an Activity : add act</a></li>
+<li><a href="#listing-all-activities-code-list-act-code">3.6. Listing all Activities : <code>list act</code></a></li>
+<li><a href="#editing-an-activity-code-edit-act-code">3.7. Editing an Activity : <code>edit act</code></a></li>
+<li><a href="#deleting-an-activity-code-del-act-code">3.8. Deleting an Activity : <code>del act</code></a></li>
+<li><a href="#adding-a-slot-code-add-slot-code">3.9. Adding a Slot : <code>add slot</code></a></li>
+<li><a href="#listing-slots-code-list-slot-code">3.10. Listing Slots: <code>list slot</code></a></li>
+<li><a href="#editing-a-slot-code-edit-slot-code">3.11. Editing a Slot: <code>edit slot</code></a></li>
+<li><a href="#delete-slots-code-del-slot-code">3.12. Delete slots: <code>del slot</code></a></li>
+<li><a href="#locating-categories-activities-tags-code-find-code">3.13. Locating Categories/Activities/tags: <code>find</code></a></li>
+<li><a href="#deleting-a-categories-activities-tags-shorthand-code-del-code">3.14. Deleting a Categories/Activities/tags (shorthand) : <code>del</code></a></li>
+<li><a href="#view-the-planner-code-view-code">3.15. View the Planner : <code>view</code></a></li>
+<li><a href="#listing-previous-inputted-commands-code-history-code">3.16. Listing previous inputted commands : <code>history</code></a></li>
+<li><a href="#undoing-previous-command-code-undo-code">3.17. Undoing previous command : <code>undo</code></a></li>
+<li><a href="#redoing-the-previously-undone-command-code-redo-code">3.18. Redoing the previously undone command : <code>redo</code></a></li>
+<li><a href="#wipe-all-data-wipe">3.19. Wipe all data : wipe</a></li>
+<li><a href="#exiting-the-program-code-exit-code">3.20. Exiting the program : <code>exit</code></a></li>
+<li><a href="#saving-the-data">3.21. Saving the data</a></li>
+<li><a href="#encrypting-data-files-code-coming-in-v2-0-code">3.22. Encrypting data files <code>[coming in v2.0]</code></a></li>
+<li><a href="#importing-ics-formated-files-code-coming-in-v2-0-code">3.23. Importing .ics formated files <code>[coming in v2.0]</code></a></li>
+<li><a href="#exporting-ics-formated-files-code-coming-in-v2-0-code">3.24. Exporting .ics formated files <code>[coming in v2.0]</code></a></li>
+</ul>
+</li>
+<li><a href="#faq">4. FAQ</a></li>
+<li><a href="#command-summary">5. Command Summary</a></li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction"><a class="link" href="#introduction">1. Introduction</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>PlanMySem</strong> is a CLI (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+More importantly, <strong>PlanMySem</strong> is optimized for those who prefer to work with a Command Line Interface (CLI) and/or are learning to work more efficiently with CLI tools.
+Additionally, unlike traditional calendar/scheduling applications, <strong>PlanMySem</strong> utilizes minimal resources on the user’s machine while still allowing the user to view their schedules swiftly and efficiently.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="starting-the-program"><a class="link" href="#starting-the-program">Starting the program</a></h2>
+<h2 id="quick-start"><a class="link" href="#quick-start">2. Quick Start</a></h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Find the project pane (usually located at the left side)</p>
+<p>Ensure you have Java version <code>9</code> or later installed in your Computer.</p>
 </li>
 <li>
-<p>Open up <code>src/seedu.addressbook</code> folder</p>
+<p>Download the latest <code>planmysem.jar</code> <a href="https://github.com/CS2113-AY1819S2-T08-3/main/releases">here</a>.</p>
 </li>
 <li>
-<p>Right click on <code>Main</code></p>
+<p>Copy the file to the folder you want to use as the home folder for your planner.</p>
 </li>
 <li>
-<p>Click <code>Run Main.main()</code></p>
-</li>
-<li>
-<p>The GUI should appear in a few seconds</p>
+<p>Double-click the file to start the app. The GUI should appear in a few seconds.</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/Ui.png" alt="Ui">
+<img src="images/Ui.png" alt="Ui" width="790">
 </div>
 </div>
+</li>
+<li>
+<p>Type the command in the command box and press <kbd>Enter</kbd> to execute it.<br>
+e.g. typing <strong><code>help</code></strong> and pressing <kbd>Enter</kbd> will open the help window.</p>
+</li>
+<li>
+<p>Some example commands you can try:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code>list</code></strong> : lists all contacts</p>
+</li>
+<li>
+<p><strong><code>add</code></strong><code>n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01</code> : adds a contact named <code>John Doe</code> to the Address Book.</p>
+</li>
+<li>
+<p><strong><code>delete</code></strong><code>3</code> : deletes the 3rd contact shown in the current list</p>
+</li>
+<li>
+<p><strong><code>exit</code></strong> : exits the app</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Refer to <a href="#Features">Section 3, &#8220;Features&#8221;</a> for details of each command.</p>
 </li>
 </ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="viewing-help-code-help-code"><a class="link" href="#viewing-help-code-help-code">Viewing help : <code>help</code></a></h2>
+<h2 id="Features"><a class="link" href="#Features">3. Features</a></h2>
 <div class="sectionbody">
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Command Format</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Words in UPPER_CASE are the parameters to be supplied by the user e.g. in <code>add act NAME</code>, <code>NAME</code> is a parameter which can be used as the name of the activity.</p>
+</li>
+<li>
+<p>Items in square brackets are optional e.g add act NAME <code>[c/NAME]</code> can be used as add act frisbee c/sports or as add act frisbee.</p>
+</li>
+<li>
+<p>Items with <code>…</code> after them can be used multiple times including zero times e.g. <code>[t/TAG]…</code> can be used as   (i.e. 0 times), <code>t/lab</code>, <code>t/important</code>, <code>t/tough</code> etc.</p>
+</li>
+<li>
+<p>Parameters can be in any order e.g. if the command specifies <code>c/NAME</code>, <code>t/TAG</code>, <code>t/TAG</code>, <code>c/NAME</code> is also acceptable.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>Option Format</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>n/</code>: Name specific to the object at hand.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. Add <em>Category</em>: <code>add cat n/NAME [n/MORE_NAMES]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>n/</code> here refers to the <em>category</em> name.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>a/</code>: <em>Activity’s</em> name.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. Add <em>Slot</em>: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>a/</code> here refers to the <em>activity</em> in which to add the <em>slot</em> to.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>c/</code>: <em>Category</em> name</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. <code>List Slots: list slot [c/CATEGORY_NAME]&#8230;&#8203; [a/ACTIVITY_NAME]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>c/</code> here refers to the <em>category</em> in which the <em>slots</em> are listed from.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>d/</code>: Day.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Format: <code>Monday | Tuesday | Wednesday | Thursday | Friday</code></p>
+</li>
+<li>
+<p>e.g. Add <em>slot</em>: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>d/</code> here refers to the day in which to add the <em>slot</em> to.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>t/</code>: Time.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Format: 24-Hour in the form of “hhmm-hhmm” or 12-Hour format in the form of <code>HOUR+AM|PM-Hour+AM|PM</code></p>
+</li>
+<li>
+<p>e.g. Add <em>slot</em>: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>t/</code> here refers to the time in which to add the <em>slot</em> to.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>tag/</code>: Tag.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. Add <em>slot</em>: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>tag/</code> here refers the <em>tags</em> to attach to the <em>slot</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>r/</code>: recurrence</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Format: <code>norecess | noreading | nonormal | recess | reading | normal</code></p>
+</li>
+<li>
+<p>e.g. Add <em>slot</em>: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
+</li>
+<li>
+<p>The <code>r/</code> here refers to the recurrence of the <em>slot</em>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>nn/</code>: New name of the object at hand.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. Edit <em>category</em>: <code>edit cat n/NAME nn/NEW_NAME</code></p>
+</li>
+<li>
+<p>The <code>nn/</code> here refers to the new name for the <em>category</em> specified.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>nc/</code>: New <em>category</em> name.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>e.g. Edit <em>Activity</em>: <code>edit act n/NAME [nn/NEW_NAME] [nc/NEW_CATEGORY]</code></p>
+</li>
+<li>
+<p>The <code>nc/</code> here refers to the new <em>category</em> name of which the <em>activity</em> should belong to.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="viewing-help-code-help-code"><a class="link" href="#viewing-help-code-help-code">3.1. Viewing help : <code>help</code></a></h3>
 <div class="paragraph">
 <p>Format: <code>help</code></p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
+</div>
+<div class="sect2">
+<h3 id="adding-a-category-code-add-cat-code"><a class="link" href="#adding-a-category-code-add-cat-code">3.2. Adding a Category : <code>add cat</code></a></h3>
 <div class="paragraph">
-<p>Help is also shown if you enter an incorrect command e.g. <code>abcd</code></p>
+<p>Add a <em>category</em> to the planner.<br>
+Format: <code>add cat n/NAME [n/MORE_NAMES]&#8230;&#8203;</code></p>
 </div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="adding-a-person-code-add-code"><a class="link" href="#adding-a-person-code-add-code">Adding a person: <code>add</code></a></h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Adds a person to the address book.<br>
-Format: <code>add NAME [p]p/PHONE_NUMBER [p]e/EMAIL [p]a/ADDRESS [t/TAG]&#8230;&#8203;</code></p>
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>add cat n/Sports</code><br>
+Add a <em>category</em> called "Sports".</p>
+</li>
+<li>
+<p><code>add cat n/Sports n/Interest Groups</code><br>
+Add two <em>categories</em> called "Sports" and "Interest Groups".</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="editing-a-category-code-edit-cat-code"><a class="link" href="#editing-a-category-code-edit-cat-code">3.3. Editing a Category : <code>edit cat</code></a></h3>
+<div class="paragraph">
+<p>Edit a Category.<br>
+Format: <code>edit cat n/NAME nn/NEW_NAME</code></p>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>edit cat n/Sports nn/Frisbee</code>
+Rename the <em>category</em> "Sports" to "Frisbee".</p>
+</li>
+<li>
+<p><code>edit cat n/Interest Groups nn/CCA</code>
+Rename the <em>category</em> "Interest Groups" to "CCA".</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-a-category-code-del-cat-code"><a class="link" href="#deleting-a-category-code-del-cat-code">3.4. Deleting a Category : <code>del cat</code></a></h3>
+<div class="paragraph">
+<p>Delete a category<br>
+Format: <code>del cat n/NAME [n/MORE_NAMES]&#8230;&#8203;</code></p>
 </div>
 <div class="sidebarblock">
 <div class="content">
-<div class="paragraph">
-<p>Words in <code>UPPER_CASE</code> are the parameters, items in <code>SQUARE_BRACKETS</code> are optional,
-items with <code>&#8230;&#8203;</code> after them can have multiple instances. Order of parameters are fixed.</p>
-</div>
-<div class="paragraph">
-<p>Put a <code>p</code> before the phone / email / address prefixes to mark it as <code>private</code>. <code>private</code> details can only
-be seen using the <code>viewall</code> command.</p>
-</div>
-<div class="paragraph">
-<p>Persons can have any number of tags (including 0)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Deleting a <em>category</em> will delete all associated <em>activities</em> as well as <em>slots</em>.</p>
+</li>
+<li>
+<p>When multiple <em>categories</em> are selected, a prompt will appear to confirm the action.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -87,30 +345,21 @@ be seen using the <code>viewall</code> command.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>add John Doe p/98765432 e/johnd@gmail.com a/John street, block 123, #01-01</code></p>
+<p><code>del cat n/Sports n/Frisbee</code><br>
+Delete both the <em>categories</em> 'Sports' and 'Frisbee' and all <em>activities</em> and <em>slots</em> associated with them.</p>
 </li>
 <li>
-<p><code>add Betsy Crowe pp/1234567 e/betsycrowe@gmail.com pa/Newgate Prison t/criminal t/friend</code></p>
+<p><code>del cat n/Interest Groups</code><br>
+Delete the <em>category</em> 'Sports' and all <em>activities</em> and <em>slots</em> associated with it.</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="listing-all-persons-code-list-code"><a class="link" href="#listing-all-persons-code-list-code">Listing all persons : <code>list</code></a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="adding-an-activity-add-act"><a class="link" href="#adding-an-activity-add-act">3.5. Adding an Activity : add act</a></h3>
 <div class="paragraph">
-<p>Shows a list of all persons in the address book.<br>
-Format: <code>list</code></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="finding-all-persons-containing-any-keyword-in-their-name-code-find-code"><a class="link" href="#finding-all-persons-containing-any-keyword-in-their-name-code-find-code">Finding all persons containing any keyword in their name: <code>find</code></a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Finds persons whose names contain any of the given keywords.<br>
-Format: <code>find KEYWORD [MORE_KEYWORDS]</code></p>
+<p>Add an <em>activity</em> to the planner.<br>
+Format: <code>add act n/NAME c/CATEGORY</code></p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -120,8 +369,7 @@ Format: <code>find KEYWORD [MORE_KEYWORDS]</code></p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The search is case sensitive, the order of the keywords does not matter, only the name is searched,
-and persons matching at least one keyword will be returned (i.e. <code>OR</code> search).</p>
+<p>An <em>activity</em> must belong to a <em>category</em>.</p>
 </div>
 </td>
 </tr>
@@ -133,31 +381,52 @@ and persons matching at least one keyword will be returned (i.e. <code>OR</code>
 <div class="ulist">
 <ul>
 <li>
-<p><code>find John</code><br>
-Returns <code>John Doe</code> but not <code>john</code>.</p>
+<p><code>add act n/Frisbee c/Sports</code><br>
+Add an <em>activity</em> named "Frisbee" to the <em>category</em> "Sports".</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="listing-all-activities-code-list-act-code"><a class="link" href="#listing-all-activities-code-list-act-code">3.6. Listing all Activities : <code>list act</code></a></h3>
+<div class="paragraph">
+<p>List all <em>activities</em> in the planner.<br>
+Format: <code>list act</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="editing-an-activity-code-edit-act-code"><a class="link" href="#editing-an-activity-code-edit-act-code">3.7. Editing an Activity : <code>edit act</code></a></h3>
+<div class="paragraph">
+<p>Edit an Activity.<br>
+Format: <code>edit act n/NAME [nn/NEW_NAME] [nc/NEW_CATEGORY]</code></p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Editing an <em>activity</em> allows the renaming of it&#8217;s name and or changing the <em>category</em> it belongs to; hence, either and or <code>nn/</code> and <code>nc/</code> can be specified in one command.</p>
 </li>
 <li>
-<p><code>find Betsy Tim John</code><br>
-Returns Any person having names <code>Betsy</code>, <code>Tim</code>, or <code>John</code>.</p>
+<p>Minimum of one option have to be specified.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="deleting-a-person-code-delete-code"><a class="link" href="#deleting-a-person-code-delete-code">Deleting a person : <code>delete</code></a></h2>
-<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Deletes the specified person from the address book. Irreversible.<br>
-Format: <code>delete INDEX</code></p>
+<p>When editing an <em>activity</em> such that a new <em>category</em> is replacing the current <em>category</em>, the new <em>category</em> have to been already created.</p>
 </div>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p>Deletes the person at the specified <code>INDEX</code>.
-The index refers to the index number shown in the most recent listing.</p>
-</div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Examples:</p>
@@ -165,33 +434,17 @@ The index refers to the index number shown in the most recent listing.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>list</code><br>
-<code>delete 2</code><br>
-Deletes the 2nd person in the address book.</p>
-</li>
-<li>
-<p><code>find Betsy</code><br>
-<code>delete 1</code><br>
-Deletes the 1st person in the results of the <code>find</code> command.</p>
+<p><code>edit act n/Frisbee nn/Barefoots nc/Sports</code><br>
+The existing <em>activity</em> <code>Frisbee</code> is renamed to <code>Barefoots</code> and is moved from some <em>category</em> to the <em>category</em> <code>Sports</code>.</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="view-non-private-details-of-a-person-code-view-code"><a class="link" href="#view-non-private-details-of-a-person-code-view-code">View non-private details of a person : <code>view</code></a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="deleting-an-activity-code-del-act-code"><a class="link" href="#deleting-an-activity-code-del-act-code">3.8. Deleting an Activity : <code>del act</code></a></h3>
 <div class="paragraph">
-<p>Displays the non-private details of the specified person.<br>
-Format: <code>view INDEX</code></p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p>Views the person at the specified <code>INDEX</code>.
-The index refers to the index number shown in the most recent listing.</p>
-</div>
-</div>
+<p>Delete an <em>activity</em> from the planner.<br>
+Format: <code>del act n/NAME [n/MORE_NAMES]&#8230;&#8203;</code></p>
 </div>
 <div class="paragraph">
 <p>Examples:</p>
@@ -199,33 +452,21 @@ The index refers to the index number shown in the most recent listing.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>list</code><br>
-<code>view 2</code><br>
-Views the 2nd person in the address book.</p>
+<p><code>del act n/Frisbee</code><br>
+Delete the <em>activity</em> "Frisbee".</p>
 </li>
 <li>
-<p><code>find Betsy</code><br>
-<code>view 1</code><br>
-Views the 1st person in the results of the <code>find</code> command.</p>
+<p><code>del act n/Frisbee n/Basketball</code><br>
+Delete the <em>activities</em> "Frisbee" and "Basketball".</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="view-all-details-of-a-person-code-viewall-code"><a class="link" href="#view-all-details-of-a-person-code-viewall-code">View all details of a person : <code>viewall</code></a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="adding-a-slot-code-add-slot-code"><a class="link" href="#adding-a-slot-code-add-slot-code">3.9. Adding a Slot : <code>add slot</code></a></h3>
 <div class="paragraph">
-<p>Displays all details (including private details) of the specified person.<br>
-Format: <code>viewall INDEX</code></p>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p>Views all details of the person at the specified <code>INDEX</code>.
-The index refers to the index number shown in the most recent listing.</p>
-</div>
-</div>
+<p>Add a <em>slot</em> to the planner.<br>
+Format: <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code></p>
 </div>
 <div class="paragraph">
 <p>Examples:</p>
@@ -233,45 +474,396 @@ The index refers to the index number shown in the most recent listing.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code>list</code><br>
-<code>viewall 2</code><br>
-Views all details of the 2nd person in the address book.</p>
+<p><code>add slot a/Sport d/monday t/0800-0900 tag/Frisbee tag/Tembusu College</code><br>
+Add a <em>slot</em> to the <em>activity</em> "Sport" on monday, from 0800hrs to 0900hrs with the tags "Frisbee" and "Tembusu College".</p>
 </li>
 <li>
-<p><code>find Betsy</code><br>
-<code>viewall 1</code><br>
-Views all details of the 1st person in the results of the <code>find</code> command.</p>
+<p><code>add slot a/Interest Group d/monday t/0800-0900 r/recess r/reading tag/Tembusu College tag/Barefoots</code><br>
+Do the same but additionally, recurse the slot on recess and reading week.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The <code>a/ACTIVITY_NAME</code> option is mandatory as a <em>slot</em> must belong to an <em>activity</em>.<br></p>
+</li>
+<li>
+<p>The default for recurrence is no recess week and no reading week.
+If the recurrence options are not defined, then there the <em>slot</em> will recurse every week except recess week and reading week.</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="listing-slots-code-list-slot-code"><a class="link" href="#listing-slots-code-list-slot-code">3.10. Listing Slots: <code>list slot</code></a></h3>
+<div class="paragraph">
+<p>List all <em>slots</em> in the planner belonging to a <em>category</em>/<em>activity</em>.<br>
+Format: <code>list slot [c/CATEGORY_NAME]&#8230;&#8203; [a/ACTIVITY_NAME]&#8230;&#8203;</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If no <em>categories</em> or <em>activities</em> are specified, then all <em>slots</em> will be listed.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>list slot</code><br>
+List all <em>slots</em> in the planner.</p>
+</li>
+<li>
+<p><code>list slot c/Modules</code><br>
+List all slots in the <em>category</em> "Modules".</p>
+</li>
+<li>
+<p><code>list slot c/Sport c/Interest Group</code><br>
+List all slots in either the <em>category</em> "Sport" or the <em>category</em> "Interest Group".</p>
 </li>
 </ul>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="clearing-all-entries-code-clear-code"><a class="link" href="#clearing-all-entries-code-clear-code">Clearing all entries : <code>clear</code></a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="editing-a-slot-code-edit-slot-code"><a class="link" href="#editing-a-slot-code-edit-slot-code">3.11. Editing a Slot: <code>edit slot</code></a></h3>
 <div class="paragraph">
-<p>Clears all entries from the address book.<br>
-Format: <code>clear</code></p>
+<p>Edit a <em>slot</em>.<br>
+Format: <code>edit slot n/ACTIVITY_NAME d/DAY t/TIME [nd/NEW_DAY] [nt/NEW_TIME] [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal]</code></p>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>edit slot n/Sport d/monday t/0800-0900 nd/tuesday nt/0900-1000</code><br>
+Select the <em>slot</em> on 0800-0900hrs Monday and change it&#8217;s day from Monday to Tuesday and it&#8217;s time from "0800-0900" to "0900-1000".</p>
+</li>
+<li>
+<p><code>edit slot n/Sport d/monday t/0800-0900 r/recess r/reading</code><br>
+Select the <em>slot</em> on 0800-0900hrs Monday and set it to recurse on recess and reading week.</p>
+</li>
+<li>
+<p><code>edit slot n/Sport d/monday t/0800-0900 nd/tuesday nt/0900-1000 r/recess r/reading</code><br>
+Select the <em>slot</em> on 0800-0900hrs Monday and change it&#8217;s day from Monday to Tuesday, it&#8217;s time from "0800-0900" to "0900-1000" and set it to recurse on recess and reading week.</p>
+</li>
+</ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="delete-slots-code-del-slot-code"><a class="link" href="#delete-slots-code-del-slot-code">3.12. Delete slots: <code>del slot</code></a></h3>
+<div class="paragraph">
+<p>Deleting <em>slots</em>.<br>
+Format: <code>del slot a/ACTIVITY_NAME d/DAY t/TIME</code></p>
 </div>
-<div class="sect1">
-<h2 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">Exiting the program : <code>exit</code></a></h2>
-<div class="sectionbody">
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="locating-categories-activities-tags-code-find-code"><a class="link" href="#locating-categories-activities-tags-code-find-code">3.13. Locating Categories/Activities/tags: <code>find</code></a></h3>
+<div class="paragraph">
+<p>Find all <em>categories</em>/<em>activities</em>/<em>tag</em> whose name contains any of the given keywords.<br>
+Format: <code>find k/KEYWORD [k/MORE_KEYWORDS]&#8230;&#8203; [c/CATEGORY_NAME] [a/ACTIVITY_NAME] [tag/TAG_NAME]</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If the option to find by <em>category</em> or <em>activity</em> or <em>tag</em> is given, then the result will filter by those only.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deleting-a-categories-activities-tags-shorthand-code-del-code"><a class="link" href="#deleting-a-categories-activities-tags-shorthand-code-del-code">3.14. Deleting a Categories/Activities/tags (shorthand) : <code>del</code></a></h3>
+<div class="paragraph">
+<p>Delete a <em>category</em>/<em>activity</em>/<em>slot</em>/<em>tag</em>.<br>
+Format: <code>del [c/CATEGORY]&#8230;&#8203; [a/ACTIVITY]&#8230;&#8203; [tag/TAG]&#8230;&#8203;</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Deleting a <em>category</em> or <em>activity</em> will delete all <em>slots</em> under them as well. Deleting a <em>tag</em> will not delete the <em>slots</em> associated with them.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="view-the-planner-code-view-code"><a class="link" href="#view-the-planner-code-view-code">3.15. View the Planner : <code>view</code></a></h3>
+<div class="paragraph">
+<p>View the planner according to day/week/month. <br>
+Format: <code>view day DATE | view week WEEK | view month MONTH | view all</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If no date is given, the current date is assumed.</p>
+</li>
+<li>
+<p>If the <code>all</code> option is specified, the planner will not be displayed, instead all the details in the planner will be displayed.====</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="listing-previous-inputted-commands-code-history-code"><a class="link" href="#listing-previous-inputted-commands-code-history-code">3.16. Listing previous inputted commands : <code>history</code></a></h3>
+<div class="paragraph">
+<p>View the history of commands previously inputted.<br>
+Format: history</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="undoing-previous-command-code-undo-code"><a class="link" href="#undoing-previous-command-code-undo-code">3.17. Undoing previous command : <code>undo</code></a></h3>
+<div class="paragraph">
+<p>Restories the planner to the state before the previous command was executed.<br>
+Format: <code>undo</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Some commands are undoable. e.g. <code>wipe PlanMySem</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="redoing-the-previously-undone-command-code-redo-code"><a class="link" href="#redoing-the-previously-undone-command-code-redo-code">3.18. Redoing the previously undone command : <code>redo</code></a></h3>
+<div class="paragraph">
+<p>Reverses the most recent <code>undo</code> command.<br>
+Format: <code>redo</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="wipe-all-data-wipe"><a class="link" href="#wipe-all-data-wipe">3.19. Wipe all data : wipe</a></h3>
+<div class="paragraph">
+<p>Wipe all data stored on the planner.<br>
+Format: <code>wipe PlanMySem</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>This can be used to restart the planner.</p>
+</li>
+<li>
+<p>The user will be prompted for a confirmation.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="exiting-the-program-code-exit-code"><a class="link" href="#exiting-the-program-code-exit-code">3.20. Exiting the program : <code>exit</code></a></h3>
 <div class="paragraph">
 <p>Exits the program.<br>
 Format: <code>exit</code></p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="saving-the-data"><a class="link" href="#saving-the-data">3.21. Saving the data</a></h3>
+<div class="paragraph">
+<p>Planner data are saved in the hard disk automatically after any command that changes the data is executed. + There is no need to save manually.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="encrypting-data-files-code-coming-in-v2-0-code"><a class="link" href="#encrypting-data-files-code-coming-in-v2-0-code">3.22. Encrypting data files <code>[coming in v2.0]</code></a></h3>
+<div class="paragraph">
+<p><em>{explain how the user can enable/disable data encryption}</em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="importing-ics-formated-files-code-coming-in-v2-0-code"><a class="link" href="#importing-ics-formated-files-code-coming-in-v2-0-code">3.23. Importing .ics formated files <code>[coming in v2.0]</code></a></h3>
+<div class="paragraph">
+<p><em>{explain how the user can enable/disable data encryption}</em></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="exporting-ics-formated-files-code-coming-in-v2-0-code"><a class="link" href="#exporting-ics-formated-files-code-coming-in-v2-0-code">3.24. Exporting .ics formated files <code>[coming in v2.0]</code></a></h3>
+<div class="paragraph">
+<p><em>{explain how the user can enable/disable data encryption}</em></p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="saving-the-data"><a class="link" href="#saving-the-data">Saving the data</a></h2>
+<h2 id="faq"><a class="link" href="#faq">4. FAQ</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Address book data are saved in the hard disk automatically after any command that changes the data.</p>
-</div>
-<div class="paragraph">
-<p>There is no need to save manually. Address book data are saved in a file called <code>addressbook.txt</code> in the project root folder.</p>
+<p><strong>Q</strong>: How do I transfer my data to another Computer?<br>
+<strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous PlanMySem folder.</p>
 </div>
 </div>
-</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2018-09-02 09:46:10 UTC</div></div></div></body></html>
+</div>
+<div class="sect1">
+<h2 id="command-summary"><a class="link" href="#command-summary">5. Command Summary</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>View help</strong> <code>help</code><br></p>
+</li>
+<li>
+<p><strong>Add category</strong> : <code>add cat n/NAME [n/MORE_NAMES]&#8230;&#8203;</code><br>
+e.g. <code>add cat n/Sports n/Study Groups n/Interest Groups</code><br></p>
+</li>
+<li>
+<p><strong>List category</strong> : <code>list cat</code></p>
+</li>
+<li>
+<p><strong>Edit category</strong> : <code>edit cat n/NAME nn/NEW_NAME</code><br>
+e.g. <code>edit n/Sports nn/Frisbee</code></p>
+</li>
+<li>
+<p><strong>Delete category</strong> : <code>del cat n/NAME [n/MORE_NAMES]&#8230;&#8203;</code><br>
+e.g. <code>del cat n/Sports n/Interest Groups</code></p>
+</li>
+<li>
+<p><strong>Add activity</strong> : <code>add act n/NAME c/CATEGORY</code>
+e.g. <code>add act n/CS2101 c/modules</code></p>
+</li>
+<li>
+<p><strong>List activities</strong> : <code>list act</code></p>
+</li>
+<li>
+<p><strong>Edit activity</strong> : <code>edit act n/NAME [nn/NEW_NAME] [nc/NEW_CATEGORY]</code><br>
+e.g.<code>edit act n/CS2103 nn/CS2113T nc/hard module</code></p>
+</li>
+<li>
+<p><strong>Delete activity</strong> : <code>del act n/NAME [n/MORE_NAMES]&#8230;&#8203;</code><br>
+e.g.<code>del act n/CS2101 n/CS2100</code></p>
+</li>
+<li>
+<p><strong>Add slot</strong> : <code>add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]&#8230;&#8203;</code><br>
+e.g.<code>add slot a/CS2101 d/monday t/0800-0900 r/norecess r/noreading r/normal tag/hard module</code></p>
+</li>
+<li>
+<p><strong>List slots</strong> : <code>list slot [c/CATEGORY_NAME]&#8230;&#8203; [a/ACTIVITY_NAME]&#8230;&#8203;</code><br>
+e.g.<code>list slot c/modules c/sports a/running group</code></p>
+</li>
+<li>
+<p><strong>Edit slot</strong> : <code>edit slot a/ACTIVITY_NAME d/DAY t/TIME [a/NEW_ACTIVITY_NAME] [nd/NEW_DAY] [nt/NEW_TIME] [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal]</code><br>
+e.g.<code>edit slot n/CS2103T d/monday t/0800-0900 nn/CS2113T nd/tuesday r/noreading</code></p>
+</li>
+<li>
+<p><strong>Delete slot</strong> : <code>del slot a/ACTIVITY_NAME d/DAY t/TIME</code><br>
+e.g.<code>del slot a/CS2113T d/monday t/0800-0900</code></p>
+</li>
+<li>
+<p><strong>Find categories/activities/tag</strong> : <code>find k/KEYWORD [k/MORE_KEYWORDS]&#8230;&#8203; [c/CATEGORY_NAME]&#8230;&#8203; [a/ACTIVITY_NAME]&#8230;&#8203; [tag/TAG_NAME]&#8230;&#8203;</code><br>
+e.g.<code>find frisbee c/sports</code></p>
+</li>
+<li>
+<p><strong>Delete category/activity/tag</strong> : <code>del [c/CATEGORY]&#8230;&#8203; [a/ACTIVITY]&#8230;&#8203; [tag/TAG]&#8230;&#8203;</code><br>
+e.g.<code>del c/CS2113T a/frisbee t/hard module</code></p>
+</li>
+<li>
+<p><strong>View planner</strong> : <code>view day [DATE] | view week [WEEK] | view month [MONTH]</code><br>
+e.g.<code>view day 01/04/2019</code></p>
+</li>
+<li>
+<p><strong>View all details</strong> : <code>view all</code><br>
+e.g.<code>view day 01/04/2019</code></p>
+</li>
+<li>
+<p><strong>View history</strong> : <code>history</code></p>
+</li>
+<li>
+<p><strong>Undo previous command</strong> : <code>undo</code></p>
+</li>
+<li>
+<p><strong>Redo previously undone co</strong> : <code>redo</code></p>
+</li>
+<li>
+<p><strong>Wipe all data</strong> : <code>wipe PlanMySem</code></p>
+</li>
+<li>
+<p><strong>Exit the program</strong> : <code>exit</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div></div><div id="footer"><div class="container"><div id="footer-text">Last updated 2019-02-17 22:27:53 UTC</div></div></div></body></html>
