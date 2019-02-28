@@ -85,7 +85,8 @@ Format: `help`
 === Adding Slots : `add`
 
 Add a _slot_ to the planner. +
-Format: `add slot d/DATE t/TIME d/DURATION [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]...`
+Format: `add NAME st/START_TIME et/END_TIME|DURATION [date/DATE|DAY_OF_WEEK] +
+[l/LOCATION] [d/DESCRIPTION] [r/recess|norecess] [r/reading|noreading] [r/normal|nonormal] [t/TAG]...`
 
 Examples:
 
@@ -183,12 +184,12 @@ all the details in the planner.
 
 === Listing previous inputted commands : `history`
 
-View the history of commands previously inputted. +
+Lists all the commands that you have entered in reverse chronological order. +
 Format: history
 
 === Undoing previous command : `undo`
 
-Restories the planner to the state before the previous command was executed. +
+Restores the planner to the state before the previous command was executed. +
 Format: `undo`
 
 [NOTE]
