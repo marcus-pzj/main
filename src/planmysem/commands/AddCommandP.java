@@ -105,7 +105,5 @@ public class AddCommandP extends CommandP {
         } catch (Semester.DayNotFoundException dnfe) {
             return new CommandResultP(MESSAGE_FAIL_OUT_OF_BOUNDS);
         }
-
     }
-
 }
