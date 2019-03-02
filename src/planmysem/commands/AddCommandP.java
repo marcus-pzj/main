@@ -31,6 +31,7 @@ public class AddCommandP extends CommandP {
 
     public static final String MESSAGE_SUCCESS = "New slot(s) added: %1$s";
     public static final String MESSAGE_SUCCESS_NO_CHANGE = "No slots were added.";
+  
     public static final String MESSAGE_FAIL_OUT_OF_BOUNDS = "Date specified is out of bounds.";
 
     private final Pair<Slot, Recurrence> toAdd;
@@ -103,7 +104,9 @@ public class AddCommandP extends CommandP {
                 return new CommandResultP(String.format(MESSAGE_SUCCESS, toAdd));
             }
         } catch (Semester.DayNotFoundException dnfe) {
+
             return new CommandResultP(MESSAGE_FAIL_OUT_OF_BOUNDS);
+
         }
 
     }
