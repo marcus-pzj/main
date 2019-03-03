@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import planmysem.data.slot.ReadOnlySlot;
+import planmysem.data.semester.Day;
+import planmysem.data.slot.Slot;
+
 
 /**
  * Finds and lists all persons in address book whose name contains any of the argument keywords.
@@ -42,14 +44,18 @@ public class ListCommandP extends CommandP {
     }
 
     /**
-     * Retrieve all persons in the address book whose names contain some of the specified keywords.
+     * Retrieve all slot in the semesters of the planner whose slots contain some of the specified keywords.
      *
      * @param keywords for searching
      * @return list of persons found
      */
-    private List<ReadOnlySlot> getSlotsWithTag(Set<String> keywords) {
-        List<ReadOnlySlot> test = new ArrayList<>();
-        // retrieve list of Slots here
+    private List<Slot> getSlotsWithTag(Set<String> keywords) {
+        List<Slot> test = new ArrayList<>();
+        for (Day days : planner.getSemester().getDays().values()) {
+            for (Slot slots : days.getSlots()) {
+                test.add(slots);
+            }
+        }
         return test;
     }
 }
