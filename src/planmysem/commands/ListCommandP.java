@@ -11,7 +11,7 @@ import planmysem.data.slot.Slot;
 
 
 /**
- * Finds and lists all persons in address book whose name contains any of the argument keywords.
+ * Finds and lists all slots in planner whose name contains any of the argument keywords.
  * Keyword matching is case sensitive.
  */
 public class ListCommandP extends CommandP {
@@ -53,7 +53,11 @@ public class ListCommandP extends CommandP {
         List<Slot> test = new ArrayList<>();
         for (Day days : planner.getSemester().getDays().values()) {
             for (Slot slots : days.getSlots()) {
-                test.add(slots);
+                for (String keyword : keywords) {
+                    if (slots.getName().value.equalsIgnoreCase(keyword)) {
+                        test.add(slots);
+                    }
+                }
             }
         }
         return test;
