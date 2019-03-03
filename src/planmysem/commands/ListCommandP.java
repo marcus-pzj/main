@@ -16,7 +16,7 @@ public class ListCommandP extends CommandP {
 
     public static final String COMMAND_WORD = "list";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ":\n" + "Displays a list of all slots whose tags contain any of "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ":\n" + "Lists all slots whose tags contain any of "
             + "the specified keywords (case-sensitive).\n\t"
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n\t"
             + "Example: " + COMMAND_WORD + " CS1010 tutorial lab";
