@@ -833,27 +833,23 @@ Priorities: High (must have) - `* * \*`, Medium (nice to have) - `* \*`, Low (un
 |Priority |As a ... |I want to ... |So that I can...
 |`* * *` |new user |see usage instructions |refer to instructions if I do not know how to use the app
 |`* * *` |new user |initialize the calendar by year and semester |align the planner with the school's academic calendar
-|`* * *` |user |add a module |store all my modules in the calendar*
-|`* * *` |user |delete a module |remove all modules from my calendar that have been cancelled*
-|`* * *` |user |edit a module |edit modules from my calendar that have been postponed/ brought forward/ changed*
-|`* * *` |user |list all modules |view all modules that I am currently enrolled in*
-|`* * *` |user |recurse a module |easily create all the relevant time slots for a module to recur every week*
-|`* * *` |user |add a category |sort the different types of activities
-|`* * *` |user |delete a category |remove categories that I do not use/ do not need
-|`* * *` |user |edit a category |rename it to something more comprehensible
-|`* * *` |user |list all categories |view all the existing categories
-|`* * *` |user |view all activities on a certain day |conveniently view my planner for the day
-|`* * *` |user |view all activities on a certain week |conveniently view my planner for the week
-|`* * *` |user |view all activities on a certain month |conveniently view my planner for the month
-|`* * *` |user |add details to an activity |record information related to the activity
-|`* *` |user |search by activity |find the details of a specific activity I am looking for
-|`* *` |user |filter by category |see what activities are there for a certain category
-|`* *` |user |add tags on time slots |categorise slots within an activity
+|`* * *` |user |add a slot |store all my slots in the calendar*
+|`* * *` |user |delete a slot |remove all slots from my calendar that have been cancelled*
+|`* * *` |user |edit a slot |edit slots from my calendar that have been postponed/ brought forward/ changed*
+|`* * *` |user |list all slots |view all slots on the planner which I have activities on*
+|`* * *` |user |recurse a slot |easily create all the relevant time slots for a module to recur every week*
+|`* * *` |user |view all slots on a certain day |conveniently view my planner for the day
+|`* * *` |user |view all slots on a certain week |conveniently view my planner for the week
+|`* * *` |user |view all slots on a certain month |conveniently view my planner for the month
+|`* * *` |user |add details to a slot |record information related to the slot 
+|`* *` |user |view the planner in a graphic calendar format|easily view my schedule for the day/week/month/semester
+|`* *` |user |view a slot |view the details of a specific activity I am looking for
 |`* *` |user |remove tags on a time slot |remove unused/ unnecessary tags from an activity*
 |`* *` |user |edit tags |rename tags
 |`* *` |user |list all tags |view all existing tags
-|`* *` |user |search by tag |search all activities by a keyword
 |`* *` |user |view color coded categories |easily view the different types of categories
+|`* *` |user |encrypt my planner data |ensure the privacy of my planner
+|`* *` |user |decrypt an encrypted planner data|securely transfer the planner data to be operated on another device
 |`*` |user |import semester timetable (.ics files) |transfer my existing activities into the new timetable
 |`*` |user |export semester timetable (.ics files) |view my timetable on another platform
 |`*` |user |receive notifications of upcoming activities |be reminded of important upcoming activities
@@ -861,7 +857,7 @@ Priorities: High (must have) - `* * \*`, Medium (nice to have) - `* \*`, Low (un
 |`*` |user |favourite an activity |prioritise important activities
 |`*` |user |view public holidays |be aware of upcoming public holidays
 |`*` |user |compare my timetable with someone else's |find a common time slot for a meeting
-|`*` |user |generate insightful reports |view how much time I spent attending training / tutorials
+|`*` |user |generate summary reports |view how much time I spent attending training / tutorials
 |=======================================================================
 
 [appendix]
