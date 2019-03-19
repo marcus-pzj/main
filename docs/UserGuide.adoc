@@ -18,19 +18,21 @@ By: `Team T08-3`      Since: `Jan 2019`      Licence: `MIT`
 
 == Introduction
 
-PlanMySem is a CLI (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
-PlanMySem automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
+Thank you for using _PlanMySem_!
+
+_PlanMySem_ is a CLI (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+_PlanMySem_ automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
 Special weeks such as recess week and reading week are taken into account within our unique recursion system.
 Items can then be efficiently managed via the intuitive tagging system.
 
-PlanMySem is optimized for those who prefer to work with a Command Line Interface (CLI) and/or are learning to work more efficiently with CLI tools. Additionally, unlike traditional calendar/scheduling applications, PlanMySem utilizes minimal resources on the user’s machine while still allowing the user to view their schedules swiftly and efficiently.
+_PlanMySem_ is optimized for those who prefer to work with a Command Line Interface (CLI) and/or are learning to work more efficiently with CLI tools. Additionally, unlike traditional calendar/scheduling applications, _PlanMySem_ utilizes minimal resources on the user’s machine while still allowing the user to view their schedules swiftly and efficiently.
 
 == Quick Start
 
 .  Ensure you have Java version `9` or later installed in your Computer.
 .  Download the latest `planmysem.jar` link:{repoURL}/releases[here].
 .  Copy the file to the folder you want to use as the home folder for your planner.
-.  Double-click the file to start the app. The GUI should appear in a few seconds.
+.  Double-click the file to start the app. You should see the GUI appear in a few seconds.
 +
 image::Ui.png[width="790"]
 +
@@ -38,10 +40,12 @@ image::Ui.png[width="790"]
 e.g. typing *`help`* and pressing kbd:[Enter] will open the help window.
 .  Some example commands you can try:
 
-* *`list`* : lists all contacts
-* **`add`**`n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : adds a contact named `John Doe` to the Address Book.
-* **`delete`**`3` : deletes the 3rd contact shown in the current list
-* *`exit`* : exits the app
+
+* **`add`**`n/CS2113T d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial` : +
+Add a slot, named "CS2113T" on the coming monday, from 0800hrs to 0900hrs with the tags "CS2113T" and "Tutorial".
+* *`list`*`n/CS2113T` : list all slots named "CS2113T"
+* **`delete`**`3` : delete the 3rd slot shown in the current list
+* *`exit`* : exit the app
 
 .  Refer to <<Features>> for details of each command.
 
@@ -58,9 +62,9 @@ This section displays the current implemented features as well as features that 
 * Items with `…` after them can be used multiple times including zero times e.g. `[t/TAG]…` can be used as   (i.e. 0 times), `t/lab`, `t/lecture`, `t/tutorial` etc.
 * Parameters can be in any order e.g. if the command specifies `st/START_TIME et/END_TIME d/DATE`, then both `et/09:00 st/08:00 d/2-13-2019` and `et/09:00 d/2-13-2019 st/08:00` is also acceptable.
 
-*Paramters*
+*Parameters*
 
-Parameters in PlanMySem were designed to be, short and easy to memorise. Once familarised with, they should be intuitive to use.
+Parameters in _PlanMySem_ were designed to be, short and easy to memorise. Once familarised with, they should be intuitive to use.
 Below is the list of parameters for users such as yourself to jump right into grasping the system.
 
 [horizontal]
@@ -110,8 +114,10 @@ Format: `add n/NAME d/DATE_OR_DAY_OF_WEEK st/START_TIME et/END_TIME_OR_DURATION 
 Examples:
 * `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial` +
 Add a _slot_, named "CS2113T Tutorial" on the coming monday, from 0800hrs to 0900hrs with the tags "CS2113T" and "Tutorial".
+
 * `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/recess r/reading` +
 Do the same but additionally, recurse the slot on recess and reading week.
+
 * `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal` +
 Do the same but recurse the slot on "normal", instructional, weeks.
 
@@ -220,10 +226,10 @@ View planner for the month of March.
 View all the details in the planner.
 
 
-=== Listing previous inputted commands : `history`
+=== Listing previous input commands : `history`
 
 Lists all the commands that you have entered in reverse chronological order. +
-Format: history
+Format: `history`
 
 === Undoing previous command : `undo`
 
@@ -232,7 +238,7 @@ Format: `undo`
 
 [NOTE]
 ====
-Some commands are undoable. e.g. `wipe PlanMySem`.
+Some commands are undoable. e.g. `clear`.
 ====
 
 === Redoing the previously undone command : `redo`
@@ -257,9 +263,9 @@ Planner data is saved in the hard disk automatically after any command that chan
 
 === Encrypting/decrypting data files
 
-Planner data is automatically encrypted before saving. There is no need to encrypt the data manually.
+Planner data is automatically encrypted before saving. You do not need to encrypt the data manually.
 
-Planner data is automatically decrypted before loading. There is no need to decrypt the data manually.
+Planner data is automatically decrypted before loading. You do not need to decrypt the data manually.
 
 // tag::importICS[]
 === Importing .ics formated files `[coming in v2.0]`
@@ -268,52 +274,51 @@ Planner data is automatically decrypted before loading. There is no need to decr
 _{explain how the user can import .ics formatted files}_
 // end::importICS[]
 
-=== Exporting .ics formated files: `export`
+=== Exporting .ics formatted files: `export`
 
-Exports planner as a .ics file.
-Format: `export`
+You can export the planner as an .ics file.
 
 [NOTE]
 ====
 The exported file is named "PlanMySem.ics" and is saved in the main directory.
+Double-clicking the .ics file will import the planner data into your personal calendar app. +
 ====
 
+[NOTE]
+====
+A file with the ICS file extension is an iCalendar file.
+These are plain text files that include calendar event details like a description, beginning and ending times, location, etc.
+====
 
 == FAQ
 
 *Q*: How do I transfer my data to another Computer? +
-*A*: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous PlanMySem folder.
+*A*: In order to transfer your data to another Computer, you should: +
+1. Install the app on the other computer +
+2. Copy _PlanMySem.txt_ from your old _PlanMySem_ folder and paste it into the new _PlanMySem_ folder. +
+
+This will overwrite the empty data file it creates with the file that contains the data of your previous _PlanMySem_ folder.
 
 
 == Command Summary
 
 * *View help* `help` +
-* *Add category* : `add cat n/NAME [n/MORE_NAMES]...` +
-e.g. `add cat n/Sports n/Study Groups n/Interest Groups` +
-* *List category* : `list cat`
-* *Edit category* : `edit cat n/NAME nn/NEW_NAME` +
-e.g. `edit n/Sports nn/Frisbee`
-* *Delete category* : `del cat n/NAME [n/MORE_NAMES]...` +
-e.g. `del cat n/Sports n/Interest Groups`
-* *Add activity* : `add act n/NAME c/CATEGORY`
-e.g. `add act n/CS2101 c/modules`
-* *List activities* : `list act`
-* *Edit activity* : `edit act n/NAME [nn/NEW_NAME] [nc/NEW_CATEGORY]` +
-e.g.`edit act n/CS2103 nn/CS2113T nc/hard module`
-* *Delete activity* : `del act n/NAME [n/MORE_NAMES]...` +
-e.g.`del act n/CS2101 n/CS2100`
-* *Add slot* : `add slot a/ACTIVITY_NAME d/DAY t/TIME [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal] [tag/TAG]...` +
-e.g.`add slot a/CS2101 d/monday t/0800-0900 r/norecess r/noreading r/normal tag/hard module`
-* *List slots* : `list slot [c/CATEGORY_NAME]... [a/ACTIVITY_NAME]...` +
-e.g.`list slot c/modules c/sports a/running group`
-* *Edit slot* : `edit slot a/ACTIVITY_NAME d/DAY t/TIME [a/NEW_ACTIVITY_NAME] [nd/NEW_DAY] [nt/NEW_TIME] [r/norecess] [r/noreading] [r/nonormal] [r/recess] [r/reading] [r/normal]` +
-e.g.`edit slot n/CS2103T d/monday t/0800-0900 nn/CS2113T nd/tuesday r/noreading`
-* *Delete slot* : `del slot a/ACTIVITY_NAME d/DAY t/TIME` +
-e.g.`del slot a/CS2113T d/monday t/0800-0900`
-* *Find categories/activities/tag* : `find k/KEYWORD [k/MORE_KEYWORDS]... [c/CATEGORY_NAME]... [a/ACTIVITY_NAME]... [tag/TAG_NAME]...` +
-e.g.`find frisbee c/sports`
-* *Delete category/activity/tag* : `del [c/CATEGORY]... [a/ACTIVITY]... [tag/TAG]...` +
-e.g.`del c/CS2113T a/frisbee t/hard module`
+* *Add Slot* : `add n/NAME d/DATE_OR_DAY_OF_WEEK st/START_TIME et/END_TIME_OR_DURATION [l/LOCATION] [des/DESCRIPTION] [r/normal] [r/recess] [r/reading] [r/exam] [r/past] [t/TAG]…​` +
+e.g. `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial` +
+* *List Slot(s)* : `list n/NAME` +
+eg. `list n/CS2113T`
+* *Edit Slot* : +
+1. Via tags: `edit t/TAG... [nn/NEW_NAME] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [nd/NEW_DESCRIPTION] [nt/NEW_TAG]...` +
+e.g. `edit t/CS2113T t/Tutorial nl/COM2 04-01`
+2. Via `list` command: `edit INDEX [nn/NEW_NAME] [nd/NEW_DATE] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [nd/NEW_DESCRIPTION] [nt/NEW_TAG]...` +
+e.g. `edit 1 des/Topic: Sequence Diagram`
+* *Delete Slot* : +
+1. Via tags: `delete t/TAG…​` +
+eg. `delete t/CS2113T t/Tutorial`
+2. Via `list` command: `delete INDEX` +
+eg. `list delete 2`
+* *Find Slots* : `find [KEYWORD]…​` +
+e.g. `find CS`
 * *View planner* : `view day [DATE] | view week [WEEK] | view month [MONTH]` +
 e.g.`view day 01/04/2019`
 * *View all details* : `view all` +
@@ -321,5 +326,6 @@ e.g.`view all`
 * *View history* : `history`
 * *Undo previous command* : `undo`
 * *Redo previously undone co* : `redo`
-* *Wipe all data* : `wipe PlanMySem`
+* *Clear all data* : `clear`
 * *Exit the program* : `exit`
+* *Export .ics  files* : `export`
