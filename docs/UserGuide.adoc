@@ -325,7 +325,7 @@ e.g.`view day 01/04/2019`
 e.g.`view all`
 * *View history* : `history`
 * *Undo previous command* : `undo`
-* *Redo previously undone co* : `redo`
+* *Redo previously undone command* : `redo`
 * *Clear all data* : `clear`
 * *Exit the program* : `exit`
 * *Export .ics  files* : `export`
