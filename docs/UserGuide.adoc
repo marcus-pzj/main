@@ -18,9 +18,9 @@ By: `Team T08-3`      Since: `Jan 2019`      Licence: `MIT`
 
 == Introduction
 
-Thank you for using _PlanMySem_!
+Welcome to _PlanMySem_!
 
-_PlanMySem_ is a CLI (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+_PlanMySem_ is a text-based (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
 _PlanMySem_ automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
 Special weeks such as recess week and reading week are taken into account within our unique recursion system.
 Items can then be efficiently managed via the intuitive tagging system.
@@ -238,7 +238,7 @@ Format: `undo`
 
 [NOTE]
 ====
-Some commands are undoable. e.g. `clear`.
+The `clear` command cannot be undone.
 ====
 
 === Redoing the previously undone command : `redo`
@@ -250,6 +250,11 @@ Format: `redo`
 
 Clear all data stored on the planner. +
 Format: `clear`
+
+[WARNING]
+====
+The `clear` command cannot be undone! Your data will be permanently removed once `clear` is executed.
+====
 
 === Exiting the program : `exit`
 
