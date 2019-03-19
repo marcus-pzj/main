@@ -30,12 +30,11 @@ public class FindCommand extends Command {
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n\t"
             + "Example: " + COMMAND_WORD + "CS";
 
-    private final Set<String> keywords;
+    private final String keyword;
 
-    public FindCommand(Set<String> keywords) {
-        this.keywords = keywords;
+    public FindCommand(String keyword) {
+        this.keyword = keyword;
     }
-
     @Override
     public CommandResult execute() {
         final List<Pair<LocalDate, ? extends ReadOnlySlot>> relevantSlots = new ArrayList<>();
@@ -44,13 +43,11 @@ public class FindCommand extends Command {
 
         for (Map.Entry<LocalDate, Day> entry : planner.getSemester().getDays().entrySet()) {
             for (Slot slots : entry.getValue().getSlots()) {
-                for (String keyword : keywords) {
-                    if (Pattern.matches(".*" + keyword + ".*", slots.getName().value)
-                        && !matchedSlots.contains(slots)) {
-                        matchedSlots.add(slots);
-                        date = entry.getKey();
-                        relevantSlots.add(new Pair<>(date, slots));
-                    }
+                if (Pattern.matches(".*" + keyword + ".*", slots.getName().value)) {
+                    matchedSlots.add(slots);
+                    date = entry.getKey();
+                    relevantSlots.add(new Pair<>(date, slots));
+
                 }
             }
         }
