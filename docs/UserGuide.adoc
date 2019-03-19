@@ -64,8 +64,8 @@ This section displays the current implemented features as well as features that 
 
 *Parameters*
 
-Parameters in _PlanMySem_ were designed to be, short and easy to memorise. Once familarised with, they should be intuitive to use.
-Below is the list of parameters for users such as yourself to jump right into grasping the system.
+Parameters in _PlanMySem_ are designed to be, short and easy to memorise. Once you are familarised with them, they should be intuitive to use.
+The list of parameters below is useful for your reference as you jump right into grasping the system.
 
 [horizontal]
 *Parameter*:: *Description*
