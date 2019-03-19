@@ -7,7 +7,6 @@ import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
