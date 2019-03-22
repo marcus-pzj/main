@@ -2,10 +2,7 @@ package planmysem.logic;
 
 
 import static junit.framework.TestCase.assertEquals;
-import static planmysem.common.Messages.MESSAGE_INVALID_DATE;
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
-import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
+import static planmysem.common.Messages.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,6 +24,8 @@ import planmysem.commands.AddCommand;
 import planmysem.commands.ClearCommand;
 import planmysem.commands.CommandResult;
 import planmysem.commands.DeleteCommand;
+import planmysem.commands.FindCommand;
+import planmysem.commands.ListCommand;
 import planmysem.commands.EditCommand;
 import planmysem.commands.ExitCommand;
 import planmysem.commands.HelpCommand;
@@ -204,6 +203,26 @@ public class LogicTest {
                 "del wrong", expectedMessage);
         assertCommandBehavior(
                 "d wrong", expectedMessage);
+    }
+
+    @Test
+    public void execute_find_invalidArgsFormat() throws Exception {
+        String expectedMessageSingle = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE);
+        String expectedMessageMultipleParams = String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, FindCommand.MESSAGE_USAGE);
+        assertCommandBehavior(
+                "find wrong args wrong args", expectedMessageSingle);
+        assertCommandBehavior(
+                "find n/CS2113T t/Tutorial", expectedMessageMultipleParams);
+    }
+
+    @Test
+    public void execute_list_invalidArgsFormat() throws Exception {
+        String expectedMessageSingle = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE);
+        String expectedMessageMultipleParams = String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, ListCommand.MESSAGE_USAGE);
+        assertCommandBehavior(
+                "list wrong args wrong args", expectedMessageSingle);
+        assertCommandBehavior(
+                "list n/CS2113T t/Tutorial", expectedMessageMultipleParams);
     }
 
     /**
