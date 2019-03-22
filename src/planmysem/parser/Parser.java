@@ -328,6 +328,7 @@ public class Parser {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         } else if (name != null && tag != null) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, FindCommand.MESSAGE_USAGE));
+
         }
         return new FindCommand(name, tag);
     }
