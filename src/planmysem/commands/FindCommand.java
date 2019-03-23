@@ -32,7 +32,7 @@ public class FindCommand extends Command {
     private final String keyword;
     private final boolean isFindByName;
 
-    public FindCommand(String name, String tag ) {
+    public FindCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
         this.isFindByName = (name != null);
     }
