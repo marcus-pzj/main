@@ -123,13 +123,13 @@ public class StorageFile {
             }
             return loaded.toModelType();
 
-            /* Note: Here, we are using an exception to create the file if it is missing. However, we should minimize
-             * using exceptions to facilitate normal paths of execution. If we consider the missing file as a 'normal'
-             * situation (i.e. not truly exceptional) we should not use an exception to handle it.
+            /* Note: Here, we are using an exception to create the file if it is missing or empty. However, we should
+             * minimize using exceptions to facilitate normal paths of execution. If we consider the missing file as a
+             * 'normal' situation (i.e. not truly exceptional) we should not use an exception to handle it.
              */
 
-            // create empty file if not found
-        } catch (FileNotFoundException ex) {
+            // create empty file if not found or is empty
+        } catch (FileNotFoundException | NullPointerException ex) {
             final Planner empty = new Planner();
             save(empty);
             return empty;

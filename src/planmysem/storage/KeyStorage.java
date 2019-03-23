@@ -1,12 +1,12 @@
 package planmysem.storage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 
+import java.security.KeyStore;
+
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
@@ -14,27 +14,40 @@ import javax.crypto.SecretKey;
  */
 public class KeyStorage {
 
-    private char[] pwdArray = "password".toCharArray();
-
-    KeyStorage(String password) {
-        this.pwdArray = password.toCharArray();
-    }
-
     /**
-     * Saves the secret key.
+     * Loads the secret key from the key store.
      */
-    private void save(SecretKey key) throws KeyStoreException, IOException, NoSuchAlgorithmException,
-            CertificateException {
+    public static SecretKey load () throws Exception {
+
+        char[] password = "password".toCharArray();
         //Initialize keystore.
-        KeyStore ks = KeyStore.getInstance("JKS");
+        KeyStore ks = KeyStore.getInstance("JCEKS");
+        SecretKey secretKey;
+        try {
+            ks.load(new FileInputStream("KeyStorage.jceks"), password);
+            secretKey = (SecretKey) ks.getKey("secret-key", password);
 
-        //Save key.
-        KeyStore.SecretKeyEntry secret = new KeyStore.SecretKeyEntry(key);
-        KeyStore.ProtectionParameter password = new KeyStore.PasswordProtection(pwdArray);
-        ks.setEntry("db-encryption-secret", secret, password);
+        } catch (FileNotFoundException ex) {
 
-        try (FileOutputStream fos = new FileOutputStream("newKeyStoreFileName.jks")) {
-            ks.store(fos, pwdArray);
+            //Generates key.
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+            keyGen.init(256);
+            secretKey = keyGen.generateKey();
+
+            //Save key.
+            KeyStore.SecretKeyEntry secret = new KeyStore.SecretKeyEntry(secretKey);
+            KeyStore.ProtectionParameter passwordParam = new KeyStore.PasswordProtection(password);
+            ks.load(null, null);
+            ks.setEntry("secret-key", secret, passwordParam);
+
+            FileOutputStream fos = new FileOutputStream("KeyStorage.jceks");
+            ks.store(fos, password);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
+        return secretKey;
     }
+
 }

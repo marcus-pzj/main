@@ -29,7 +29,9 @@ public class AdaptedSemester {
                 LocalDateTime endDateTime = startDateTime.plusMinutes(slots.getDuration());
                 this.icsCalendar = this.icsCalendar.concat("DTEND:" + dateFormat.format(endDateTime) + "\r\n");
                 this.icsCalendar = this.icsCalendar.concat("SUMMARY:" + slots.getName() + "\r\n");
-                this.icsCalendar = this.icsCalendar.concat("LOCATION:" + slots.getLocation() + "\r\n");
+                if (slots.getLocation().toString() != null) {
+                    this.icsCalendar = this.icsCalendar.concat("LOCATION:" + slots.getLocation() + "\r\n");
+                }
                 this.icsCalendar = this.icsCalendar.concat("DESCRIPTION:" + slots.getDescription() + "\r\n");
                 this.icsCalendar = this.icsCalendar.concat("END:VEVENT\r\n");
             }
