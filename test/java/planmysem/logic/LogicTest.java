@@ -31,6 +31,8 @@ import planmysem.commands.AddCommand;
 import planmysem.commands.ClearCommand;
 import planmysem.commands.CommandResult;
 import planmysem.commands.DeleteCommand;
+import planmysem.commands.FindCommand;
+import planmysem.commands.ListCommand;
 import planmysem.commands.EditCommand;
 import planmysem.commands.ExitCommand;
 import planmysem.commands.FindCommand;

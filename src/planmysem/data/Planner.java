@@ -2,6 +2,7 @@ package planmysem.data;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
@@ -292,6 +293,14 @@ public class Planner {
     //    public void addDay(LocalDate date, Day day) throws Semester.DuplicateDayException {
     //        semester.addDay(date, day);
     //    }
+
+    /**
+     * Get set of slots which contain all specified tags.
+     */
+    public Map<LocalDateTime, ReadOnlySlot> getSlots(Set<Tag> tags) {
+        return semester.getSlots(tags);
+    }
+
 
     /**
      * Adds a slot to the Planner.
