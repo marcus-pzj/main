@@ -1,7 +1,7 @@
 package planmysem.ui;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import planmysem.commands.CommandResult;
 import planmysem.commands.ExitCommand;
 import planmysem.common.Messages;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
 import planmysem.logic.Logic;
 
@@ -84,7 +85,7 @@ public class MainWindow {
      */
     public void displayResult(CommandResult result) {
         clearOutputConsole();
-        final Optional<List<Pair<LocalDate, ? extends ReadOnlySlot>>> resultDays = result.getRelevantSlots();
+        final Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> resultDays = result.getRelevantSlots();
         if (resultDays.isPresent()) {
             display(resultDays.get());
         }
@@ -103,7 +104,7 @@ public class MainWindow {
      * Displays the list of slots in the output display area, formatted as an indexed list.
      * Private contact details are hidden.
      */
-    private void display(List<Pair<LocalDate, ? extends ReadOnlySlot>> slots) {
+    private void display(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
         // TODO: rename function call when AddressBook is fully removed from project
         display(new Formatter().formatSlots(slots));
     }

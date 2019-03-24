@@ -3,11 +3,12 @@ package planmysem.commands;
 import static planmysem.ui.Gui.DISPLAYED_INDEX_OFFSET;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
 import planmysem.data.Planner;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
 
 /**
@@ -15,7 +16,7 @@ import planmysem.data.slot.ReadOnlySlot;
  */
 public abstract class Command {
     protected Planner planner;
-    protected List<Pair<LocalDate, ? extends ReadOnlySlot>> relevantSlots;
+    protected Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> relevantSlots;
     private int targetIndex = -1;
 
     /**
@@ -46,14 +47,15 @@ public abstract class Command {
      * @param slots used to generate summary
      * @return summary message for persons displayed
      */
-    public static String getMessageForSlotsListShownSummary(List<Pair<LocalDate, ? extends ReadOnlySlot>> slots) {
+    public static String getMessageForSlotsListShownSummary(Map<LocalDate,
+            Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
         return String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, slots.size());
     }
 
     /**
      * Supplies the data the command will operate on.
      */
-    public void setData(Planner planner, List<Pair<LocalDate, ? extends ReadOnlySlot>> slots) {
+    public void setData(Planner planner, Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
         this.planner = planner;
         this.relevantSlots = slots;
     }
@@ -62,9 +64,9 @@ public abstract class Command {
         return targetIndex;
     }
 
-    public void setTargetIndex(int targetIndex) {
-        this.targetIndex = targetIndex;
-    }
+    //    public void setTargetIndex(int targetIndex) {
+    //        this.targetIndex = targetIndex;
+    //    }
 
 
     /**
@@ -72,15 +74,23 @@ public abstract class Command {
      *
      * @throws IndexOutOfBoundsException if the target index is out of bounds of the last viewed listing
      */
-    protected List<Pair<LocalDate, ? extends ReadOnlySlot>> getTargetSlots() throws IndexOutOfBoundsException {
-        return relevantSlots;
-    }
+    //    protected Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getTargetSlots() throws IndexOutOfBoundsException {
+    //        return relevantSlots;
+    //    }
 
-    protected Pair<LocalDate, ? extends ReadOnlySlot> getTargetSlot(int index) throws IndexOutOfBoundsException {
-        return relevantSlots.get(index);
-    }
+    protected Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getTargetSlot() throws IndexOutOfBoundsException {
+        if (relevantSlots == null || relevantSlots.size() < targetIndex) {
+            throw new IndexOutOfBoundsException();
+        }
 
-    protected Pair<LocalDate, ? extends ReadOnlySlot> getTargetSlot() throws IndexOutOfBoundsException {
-        return relevantSlots.get(targetIndex - DISPLAYED_INDEX_OFFSET);
+        int count = 0;
+        for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : relevantSlots.entrySet()) {
+            if (count == targetIndex - DISPLAYED_INDEX_OFFSET) {
+                return new Pair(entry.getKey(), entry.getValue());
+            }
+            count++;
+        }
+
+        throw new IndexOutOfBoundsException();
     }
 }

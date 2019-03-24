@@ -19,7 +19,7 @@ public interface ReadOnlySlot {
 
     /**
      * The returned {@code Set} is a deep copy of the internal {@code Set},
-     * changes on the returned list will not affect the person's internal tags.
+     * changes on the returned list will not affect the slot's internal tags.
      */
     Set<Tag> getTags();
 
@@ -39,7 +39,7 @@ public interface ReadOnlySlot {
     }
 
     /**
-     * Formats the slot as text, showing all contact details.
+     * Formats the slot as text, showing all slot details.
      */
     default String getAsTextShowAll() {
         final StringBuilder sb = new StringBuilder();

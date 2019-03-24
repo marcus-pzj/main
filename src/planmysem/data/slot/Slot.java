@@ -10,7 +10,7 @@ import planmysem.data.exception.IllegalValueException;
 import planmysem.data.tag.Tag;
 
 /**
- * Represents a Person in the address book.
+ * Represents a slot in the planner.
  * Guarantees: details are present and not null, field values are validated.
  */
 public class Slot implements ReadOnlySlot {

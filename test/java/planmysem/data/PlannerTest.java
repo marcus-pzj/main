@@ -62,7 +62,7 @@ public class PlannerTest {
     /**
      * A utility class to generate test data.
      */
-    class TestDataHelper {
+    public class TestDataHelper {
 
         /**
          * Generates a Semester from the given date

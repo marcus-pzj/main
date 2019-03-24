@@ -1,14 +1,17 @@
 package planmysem.commands;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javafx.util.Pair;
+import planmysem.common.Messages;
 import planmysem.data.semester.Day;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
 import planmysem.data.slot.Slot;
+import planmysem.data.tag.Tag;
 
 /**
  * Displays a list of all slots in the planner whose name matches the argument keyword.
@@ -22,64 +25,49 @@ public class ListCommand extends Command {
     public static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots whose name "
-            + "directly matches the specified keyword (not case-sensitive)."
+            + "directly matches the specified keyword (case-sensitive)."
             //+ "\n\tOptional Parameters: [past] [next] [all]"
             //+ "\n\tDefault: list all"
             + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
 
-    private final String name;
+    private final String keyword;
+    private final boolean isListByName;
 
-    public ListCommand(String name) {
-        this.name = name;
+    public ListCommand(String name, String tag) {
+        this.keyword = (name == null) ? tag.trim() : name.trim();
+        this.isListByName = (name != null);
     }
     @Override
     public CommandResult execute() {
-        final List<Pair<LocalDate, ? extends ReadOnlySlot>> relevantSlots = new ArrayList<>();
-        List<Slot> matchedSlots = new ArrayList<>();
-        LocalDate date;
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
-        for (Map.Entry<LocalDate, Day> entry : planner.getSemester().getDays().entrySet()) {
-            for (Slot slots : entry.getValue().getSlots()) {
-                if (slots.getName().value.equalsIgnoreCase(name)) {
-                    matchedSlots.add(slots);
-                    date = entry.getKey();
-                    relevantSlots.add(new Pair<>(date, slots));
+        for (Map.Entry<LocalDate, Day> entry : planner.getAllDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                if (isListByName) {
+                    if (slot.getName().value.equalsIgnoreCase(keyword)) {
+                        selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                    }
+                } else {
+                    Set<Tag> tagSet = slot.getTags();
+                    for (Tag tag : tagSet) {
+                        //                        if (slot.getTags().contains(keyword))
+                        if (tag.value.equalsIgnoreCase(keyword)) {
+                            selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                        }
+                    }
                 }
             }
         }
 
-        if (matchedSlots.isEmpty()) {
+        if (selectedSlots.isEmpty()) {
             return new CommandResult(MESSAGE_SUCCESS_NONE);
         }
         setData(this.planner, relevantSlots);
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, matchedSlots.size(),
-                craftSuccessMessage(relevantSlots)));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                Messages.craftListMessage(selectedSlots)));
     }
 
-    /**
-     * Craft success message.
-     */
-    private String craftSuccessMessage(List<Pair<LocalDate, ? extends ReadOnlySlot>> result) {
-        int count = 1;
-        StringBuilder sb = new StringBuilder();
-
-        for (Pair<LocalDate, ? extends ReadOnlySlot> pair : result) {
-            sb.append("\n");
-            sb.append(count + ".\t");
-            sb.append("Name: ");
-            sb.append(pair.getValue().getName().toString());
-            sb.append(",\n\t");
-            sb.append("Date: ");
-            sb.append(pair.getKey().toString());
-            sb.append(",\n\t");
-            sb.append("Start Time: ");
-            sb.append(pair.getValue().getStartTime());
-            sb.append("\n");
-            count++;
-        }
-        return sb.toString();
-    }
 }
 
 

@@ -1,12 +1,14 @@
 package planmysem.data.semester;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 import planmysem.data.exception.DuplicateDataException;
 import planmysem.data.exception.IllegalValueException;
@@ -93,6 +95,23 @@ public class Semester implements ReadOnlySemester {
     }
 
     /**
+     * Get set of slots which contain all specified tags.
+     */
+    public Map<LocalDateTime, ReadOnlySlot> getSlots(Set<Tag> tags) {
+        Map<LocalDateTime, ReadOnlySlot> selectedSlots = new TreeMap<>();
+
+        for (Map.Entry<LocalDate, Day> day : days.entrySet()) {
+            for (Slot slot : day.getValue().getSlots()) {
+                if (slot.getTags().containsAll(tags)) {
+                    selectedSlots.put(LocalDateTime.of(day.getKey(), slot.getStartTime()), slot);
+                }
+            }
+        }
+
+        return selectedSlots;
+    }
+
+    /**
      * Adds a Slot to the Semester.
      *
      * @throws DateNotFoundException if a date is not found in the semester.
@@ -120,10 +139,7 @@ public class Semester implements ReadOnlySemester {
      */
     public void editSlot(LocalDate targetDate, ReadOnlySlot targetSlot, LocalDate date, LocalTime startTime,
                          int duration, String name, String location, String description, Set<Tag> tags)
-            throws DateNotFoundException, IllegalValueException {
-        if (targetDate == null || (targetDate.isBefore(startDate) || targetDate.isAfter(endDate))) {
-            throw new DateNotFoundException();
-        }
+            throws IllegalValueException {
 
         Slot editingSlot = days.get(targetDate).getSlots().stream()
             .filter(s -> s.equals(targetSlot)).findAny().orElse(null);

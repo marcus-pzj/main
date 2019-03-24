@@ -124,6 +124,41 @@ public class Recurrence {
         return result;
     }
 
+    /**
+     * Get set of dates where it is a specific DayOfWeek and is after a start date.
+     */
+    private Set<LocalDate> getDates(Set<LocalDate> dates) {
+        final Set<LocalDate> result = new HashSet<>();
+        for (LocalDate d : dates) {
+            if (d.getDayOfWeek() == day) {
+                result.add(d);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Get set of dates where it is a specific DayOfWeek and is after a start date.
+     */
+    private Set<LocalDate> getDates(Set<LocalDate> dates, LocalDate dateStart) {
+        final Set<LocalDate> result = new HashSet<>();
+        for (LocalDate d : dates) {
+            if (d.getDayOfWeek() == day && (d.isAfter(dateStart) || d.isEqual(dateStart))) {
+                result.add(d);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Get date.
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
@@ -154,33 +189,5 @@ public class Recurrence {
             hashCode += 16; // 1 0000
         }
         return hashCode + day.hashCode() + date.hashCode();
-    }
-
-    /**
-     * Get set of dates where it is a specific DayOfWeek and is after a start date.
-     */
-    private Set<LocalDate> getDates(Set<LocalDate> dates) {
-        final Set<LocalDate> result = new HashSet<>();
-        for (LocalDate d : dates) {
-            if (d.getDayOfWeek() == day) {
-                result.add(d);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Get set of dates where it is a specific DayOfWeek and is after a start date.
-     */
-    private Set<LocalDate> getDates(Set<LocalDate> dates, LocalDate dateStart) {
-        final Set<LocalDate> result = new HashSet<>();
-        for (LocalDate d : dates) {
-            if (d.getDayOfWeek() == day && (d.isAfter(dateStart) || d.isEqual(dateStart))) {
-                result.add(d);
-            }
-        }
-
-        return result;
     }
 }

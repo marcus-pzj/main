@@ -1,10 +1,11 @@
 package planmysem.commands;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javafx.util.Pair;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
 
 /**
@@ -20,14 +21,14 @@ public class CommandResult {
     /**
      * The list of Slots that was produced by the command
      */
-    private final List<Pair<LocalDate, ? extends ReadOnlySlot>> slots;
+    private final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots;
 
     public CommandResult(String feedbackToUser) {
         this.feedbackToUser = feedbackToUser;
         slots = null;
     }
 
-    public CommandResult(String feedbackToUser, List<Pair<LocalDate, ? extends ReadOnlySlot>> slots) {
+    public CommandResult(String feedbackToUser, Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
         this.feedbackToUser = feedbackToUser;
         this.slots = slots;
     }
@@ -35,7 +36,7 @@ public class CommandResult {
     /**
      * Returns list of Slots relevant to the command command result, if any.
      */
-    public Optional<List<Pair<LocalDate, ? extends ReadOnlySlot>>> getRelevantSlots() {
+    public Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getRelevantSlots() {
         return Optional.ofNullable(slots);
     }
 

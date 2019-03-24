@@ -3,7 +3,11 @@ package planmysem.common;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static planmysem.common.Utils.getDuration;
+import static planmysem.common.Utils.getEndTime;
+import static planmysem.common.Utils.getNearestDayOfWeek;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -201,6 +205,30 @@ public class UtilsTest {
         }
 
         assertEquals(tags, null);
+    }
+
+    @Test
+    public void parse_get_duration_successful() {
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusMinutes(60);
+
+        assertEquals(getDuration(startTime, endTime), 60);
+    }
+
+    @Test
+    public void parse_get_end_time_successful() {
+        LocalTime startTime = LocalTime.now();
+        LocalTime endTime = startTime.plusMinutes(60);
+
+        assertEquals(getEndTime(startTime, 60), endTime);
+    }
+
+    @Test
+    public void parse_get_nearest_day_of_week_successful() {
+        LocalDate date = LocalDate.of(2019, 1, 1);
+        LocalDate nearestMonday = LocalDate.of(2019, 1, 7);
+
+        assertEquals(getNearestDayOfWeek(date, 1), nearestMonday);
     }
 
     private void assertAreUnique(Object... objects) {

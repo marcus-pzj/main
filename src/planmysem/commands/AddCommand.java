@@ -31,7 +31,6 @@ public class AddCommand extends Command {
             + " n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T "
             + "t/Tutorial r/normal";
 
-    public static final String MESSAGE_SUCCESS_NO_CHANGE = "No slots were added.";
     public static final String MESSAGE_SUCCESS = "%1$s Slots added.\n\n%2$s";
     public static final String MESSAGE_FAIL_OUT_OF_BOUNDS = "Date specified is out of bounds.";
 
@@ -75,12 +74,8 @@ public class AddCommand extends Command {
             }
         }
 
-        if (dates.size() == 0) {
-            return new CommandResult(MESSAGE_SUCCESS_NO_CHANGE);
-        } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS, dates.size(),
-                    craftSuccessMessage(days, slot)));
-        }
+        return new CommandResult(String.format(MESSAGE_SUCCESS, dates.size(),
+                craftSuccessMessage(days, slot)));
     }
 
     /**

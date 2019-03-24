@@ -2,21 +2,25 @@ package planmysem.logic;
 
 
 import static junit.framework.TestCase.assertEquals;
-import static planmysem.common.Messages.MESSAGE_INVALID_DATE;
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
+import static planmysem.common.Messages.MESSAGE_INVALID_DATE;
+import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
+import static planmysem.common.Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX;
 import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.TreeMap;
 
 import javafx.util.Pair;
 import org.junit.Before;
@@ -29,9 +33,15 @@ import planmysem.commands.CommandResult;
 import planmysem.commands.DeleteCommand;
 import planmysem.commands.EditCommand;
 import planmysem.commands.ExitCommand;
+import planmysem.commands.FindCommand;
 import planmysem.commands.HelpCommand;
+import planmysem.commands.ListCommand;
+import planmysem.common.Messages;
+import planmysem.common.Utils;
 import planmysem.data.Planner;
+import planmysem.data.recurrence.Recurrence;
 import planmysem.data.semester.Day;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.Description;
 import planmysem.data.slot.Location;
 import planmysem.data.slot.Name;
@@ -55,9 +65,16 @@ public class LogicTest {
     @Before
     public void setup() throws Exception {
         storageFile = new StorageFile(temporaryFolder.newFile("testSaveFile.txt").getPath());
-        planner = new Planner();
+        planner = createPlanner();
         storageFile.save(planner);
         logic = new Logic(storageFile, planner);
+        Instant.now(Clock.fixed(
+                Instant.parse("2019-02-02T10:00:00Z"),
+                ZoneOffset.UTC));
+    }
+
+    private Planner createPlanner() {
+        return new Planner(Planner.generateSemester(LocalDate.of(2019, 1, 14)));
     }
 
     @Test
@@ -65,7 +82,7 @@ public class LogicTest {
         //Constructor is called in the setup() method which executes before every test, no need to call it here again.
 
         //Confirm the last shown list is empty
-        assertEquals(Collections.emptyList(), logic.getLastShownSlots());
+        assertEquals(null, logic.getLastShownSlots());
     }
 
     @Test
@@ -93,12 +110,17 @@ public class LogicTest {
 
     @Test
     public void execute_clear() throws Exception {
+        Planner expectedPlanner = createPlanner();
         TestDataHelper helper = new TestDataHelper();
-        planner.addSlot(LocalDate.now(), helper.generateSlot(1));
-        planner.addSlot(LocalDate.now(), helper.generateSlot(2));
-        planner.addSlot(LocalDate.now(), helper.generateSlot(3));
+        planner.addSlot(LocalDate.of(2019, 2, 1), helper.generateSlot(1));
+        planner.addSlot(LocalDate.of(2019, 2, 1), helper.generateSlot(2));
+        planner.addSlot(LocalDate.of(2019, 2, 1), helper.generateSlot(3));
 
-        assertCommandBehavior("clear", ClearCommand.MESSAGE_SUCCESS, new Planner(), false, Collections.emptyList());
+        assertCommandBehavior("clear",
+                ClearCommand.MESSAGE_SUCCESS,
+                expectedPlanner,
+                false,
+                null);
     }
 
     /**
@@ -131,27 +153,122 @@ public class LogicTest {
     }
 
     @Test
-    public void execute_add_successful() throws Exception {
-        // setup expectations
+    public void execute_add_by_date_successful() throws Exception {
+        // item to be added
         TestDataHelper helper = new TestDataHelper();
         Slot slotToBeAdded = helper.slotOne();
-        LocalDate dateToBeAdded = LocalDate.now();
-        HashMap<LocalDate, Day> days = new HashMap<>();
-        days.put(dateToBeAdded, planner.getSemester().getDays().get(dateToBeAdded));
+        LocalDate dateToBeAdded = LocalDate.of(2019, 2, 2);
 
-        Planner expectedPlanner = new Planner();
+        // expectation
+        Planner expectedPlanner = createPlanner();
         expectedPlanner.addSlot(dateToBeAdded, slotToBeAdded);
+        Map<LocalDate, Day> days = new TreeMap<>();
+        days.put(dateToBeAdded, expectedPlanner.getDay(dateToBeAdded));
 
         // execute command and verify result
-        assertCommandBehavior(helper.generateAddCommand(dateToBeAdded, slotToBeAdded),
-                String.format(AddCommand.MESSAGE_SUCCESS, 1, AddCommand.craftSuccessMessage(days, slotToBeAdded)),
+        assertCommandBehavior(helper.generateAddCommand(slotToBeAdded, dateToBeAdded, ""),
+                String.format(AddCommand.MESSAGE_SUCCESS,
+                        1,
+                        AddCommand.craftSuccessMessage(days, slotToBeAdded)),
                 expectedPlanner,
                 false,
-                Collections.emptyList());
+                null);
+    }
+
+    @Test
+    public void execute_add_by_day_successful() throws Exception {
+        // because adding by day takes the nearest day, the planner has to be changed to be in respects to the current system date.
+        // item to be added
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        int dayToBeAdded = LocalDate.now().getDayOfWeek().getValue();
+        LocalDate dateToBeAdded = Utils.getNearestDayOfWeek(LocalDate.now(), dayToBeAdded);
+
+        // expectation
+        Planner expectedPlanner = createPlanner();
+        expectedPlanner.addSlot(dateToBeAdded, slotToBeAdded);
+        Map<LocalDate, Day> days = new TreeMap<>();
+        days.put(dateToBeAdded, expectedPlanner.getDay(dateToBeAdded));
+
+        // execute command and verify result
+        assertCommandBehavior(helper.generateAddCommand(slotToBeAdded, dayToBeAdded, ""),
+                String.format(AddCommand.MESSAGE_SUCCESS,
+                        1,
+                        AddCommand.craftSuccessMessage(days, slotToBeAdded)),
+                expectedPlanner,
+                false,
+                null);
+    }
+
+    @Test
+    public void execute_add_by_date_multiple_successful() throws Exception {
+        // item to be added
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        LocalDate dateToBeAdded = LocalDate.of(2019, 2, 2);
+
+        // expectation
+        Planner expectedPlanner = createPlanner();
+        Recurrence recurrence = new Recurrence(new HashSet<>(Arrays.asList("normal")), dateToBeAdded);
+        Map<LocalDate, Day> days = new TreeMap<>();
+        for (LocalDate date : recurrence.generateDates(expectedPlanner.getSemester())) {
+            expectedPlanner.addSlot(date, slotToBeAdded);
+            days.put(date, expectedPlanner.getDay(date));
+        }
+
+
+        // execute command and verify result
+        assertCommandBehavior(helper.generateAddCommand(slotToBeAdded, dateToBeAdded, "r/normal"),
+                String.format(AddCommand.MESSAGE_SUCCESS,
+                        days.size(),
+                        AddCommand.craftSuccessMessage(days, slotToBeAdded)),
+                expectedPlanner,
+                false,
+                null);
+    }
+
+    @Test
+    public void execute_add_by_day_multiple_successful() throws Exception {
+        // item to be added
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        int dayToBeAdded = LocalDate.of(2019, 2, 2).getDayOfWeek().getValue();
+        LocalDate dateToBeAdded = Utils.getNearestDayOfWeek(LocalDate.now(), dayToBeAdded);
+
+        // expectation
+        Planner expectedPlanner = createPlanner();
+        Recurrence recurrence = new Recurrence(new HashSet<>(Arrays.asList("normal")), dayToBeAdded);
+        Map<LocalDate, Day> days = new TreeMap<>();
+        for (LocalDate date : recurrence.generateDates(expectedPlanner.getSemester())) {
+            expectedPlanner.addSlot(date, slotToBeAdded);
+            days.put(date, expectedPlanner.getDay(date));
+        }
+
+
+        // execute command and verify result
+        assertCommandBehavior(helper.generateAddCommand(slotToBeAdded, dayToBeAdded, "r/normal"),
+                String.format(AddCommand.MESSAGE_SUCCESS,
+                        days.size(),
+                        AddCommand.craftSuccessMessage(days, slotToBeAdded)),
+                expectedPlanner,
+                false,
+                null);
+    }
+
+    @Test
+    public void execute_add_unsuccessful() throws Exception {
+        // item to be added
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        LocalDate dateToBeAdded = LocalDate.of(1999, 1, 1);
+
+        // execute command and verify result
+        assertCommandBehavior(helper.generateAddCommand(slotToBeAdded, dateToBeAdded, ""),
+                AddCommand.MESSAGE_FAIL_OUT_OF_BOUNDS);
     }
 
     /**
-     * Test delete command
+     * Test edit command
      */
 
     @Test
@@ -167,27 +284,66 @@ public class LogicTest {
                 "e nl/COM2 04-01", expectedMessage);
     }
 
-    //    @Test
-    //    public void execute_delete_successful() throws Exception {
-    //        // setup expectations
-    //        TestDataHelper helper = new TestDataHelper();
-    //        Slot slotToBeAdded = helper.slotOne();
-    //        LocalDate dateToBeAdded = LocalDate.now();
-    //        HashMap<LocalDate, Day> days = new HashMap<>();
-    //        days.put(dateToBeAdded, planner.getSemester().getDays().get(dateToBeAdded));
-    //
-    //        Planner expectedPlanner = new Planner();
-    //        expectedPlanner.addSlot(dateToBeAdded, slotToBeAdded);
-    //        expectedPlanner.getSemester().removeSlot(dateToBeAdded, slotToBeAdded);
-    //        planner.addSlot(dateToBeAdded, slotToBeAdded);
-    //
-    //        // execute command and verify result
-    //        assertCommandBehavior(helper.generateAddCommand(dateToBeAdded, slotToBeAdded),
-    //                String.format(AddCommand.MESSAGE_SUCCESS, 1, AddCommand.craftSuccessMessage(days, slotToBeAdded)),
-    //                expectedPlanner,
-    //                false,
-    //                Collections.emptyList());
-    //    }
+    @Test
+    public void execute_edit_successful() throws Exception {
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        LocalDate dateToBeAdded = LocalDate.of(2019, 2, 2);
+        planner.addSlot(dateToBeAdded, new Slot(slotToBeAdded));
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        selectedSlots.put(dateToBeAdded,
+                new Pair(planner.getDay(dateToBeAdded), new Slot(slotToBeAdded)));
+
+        // setup expectations
+        Planner expectedPlanner = createPlanner();
+        expectedPlanner.addSlot(dateToBeAdded, slotToBeAdded);
+
+        // create tags
+        Set<String> rawTags = new HashSet<>();
+        rawTags.add("CS2113T");
+        Set<Tag> tags = Utils.parseTags(rawTags);
+
+        Set<String> rawNewTags = new HashSet<>();
+        rawNewTags.add("CS2101");
+        Set<Tag> newTags = Utils.parseTags(rawNewTags);
+
+        expectedPlanner.editSlot(dateToBeAdded, slotToBeAdded, null, LocalTime.of(4, 0), 60,
+                "test", "testlo", "testdes", newTags);
+
+        // Just to generate the crafted message in this case.
+        EditCommand ec = new EditCommand("test", LocalTime.of(4, 0), 60,
+                "testlo", "testdes", rawTags, rawNewTags);
+
+        // execute command and verify result
+        assertCommandBehavior("edit t/CS2113T nt/CS2101 nn/test nl/testlo ndes/testdes nst/04:00 net/60",
+                String.format(EditCommand.MESSAGE_SUCCESS, selectedSlots.size(),
+                        Messages.craftSelectedMessage(tags), ec.craftSuccessMessage(selectedSlots)),
+                expectedPlanner,
+                false,
+                null);
+    }
+
+    @Test
+    public void execute_edit_no_change_successful() throws Exception {
+        TestDataHelper helper = new TestDataHelper();
+        Set<String> rawTags = new HashSet<>();
+        rawTags.add("someTagThatDoesNotExist");
+        Set<Tag> tags = Utils.parseTags(rawTags);
+
+        assertCommandBehavior("edit t/someTagThatDoesNotExist n/test",
+                String.format(EditCommand.MESSAGE_SUCCESS_NO_CHANGE,
+                        Messages.craftSelectedMessage(tags)));
+    }
+
+    @Test
+    public void execute_edit_invalid_slot_displayed_unsuccessful() throws Exception {
+        assertCommandBehavior("edit 100", MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
+    }
+
+//    @Test
+//    public void execute_edit_out_of_bound_unsuccessful() throws Exception {
+//        assertCommandBehavior("edit 100", MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
+//    }
 
     /**
      * Test delete command
@@ -206,13 +362,79 @@ public class LogicTest {
                 "d wrong", expectedMessage);
     }
 
+    @Test
+    public void execute_delete_successful() throws Exception {
+        TestDataHelper helper = new TestDataHelper();
+        Slot slotToBeAdded = helper.slotOne();
+        LocalDate dateToBeAdded = LocalDate.of(2019, 2, 2);
+        planner.addSlot(dateToBeAdded, slotToBeAdded);
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        selectedSlots.put(dateToBeAdded,
+                new Pair(planner.getDay(dateToBeAdded), slotToBeAdded));
+
+        // setup expectations
+        Planner expectedPlanner = createPlanner();
+        expectedPlanner.addSlot(dateToBeAdded, slotToBeAdded);
+        expectedPlanner.getSemester().removeSlot(dateToBeAdded, slotToBeAdded);
+
+        // execute command and verify result
+        assertCommandBehavior(helper.generateDeleteCommand(slotToBeAdded),
+                String.format(DeleteCommand.MESSAGE_SUCCESS,
+                        1,
+                        Messages.craftSelectedMessage(slotToBeAdded.getTags()),
+                        Messages.craftSelectedMessage("Deleted Slots:", selectedSlots)),                expectedPlanner,
+                false,
+                null);
+    }
+
+    @Test
+    public void execute_delete_no_change_successful() throws Exception {
+        TestDataHelper helper = new TestDataHelper();
+        Set<String> rawTags = new HashSet<>();
+        rawTags.add("someTagThatDoesNotExist");
+        Set<Tag> tags = Utils.parseTags(rawTags);
+
+        assertCommandBehavior(helper.generateDeleteCommand(tags),
+                String.format(DeleteCommand.MESSAGE_SUCCESS_NO_CHANGE,
+                        Messages.craftSelectedMessage(tags)));
+    }
+
+    @Test
+    public void execute_delete_invalid_slot_displayed_unsuccessful() throws Exception {
+        assertCommandBehavior("delete 100", MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
+    }
+
+    /**
+     * Test find command
+     */
+
+    @Test
+    public void execute_find_invalidArgsFormat() throws Exception {
+        String expectedMessageSingle = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE);
+        String expectedMessageMultipleParams = String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, FindCommand.MESSAGE_USAGE);
+        assertCommandBehavior(
+                "find wrong args wrong args", expectedMessageSingle);
+        assertCommandBehavior(
+                "find n/CS2113T t/Tutorial", expectedMessageMultipleParams);
+    }
+
+    @Test
+    public void execute_list_invalidArgsFormat() throws Exception {
+        String expectedMessageSingle = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE);
+        String expectedMessageMultipleParams = String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, ListCommand.MESSAGE_USAGE);
+        assertCommandBehavior(
+                "list wrong args wrong args", expectedMessageSingle);
+        assertCommandBehavior(
+                "list n/CS2113T t/Tutorial", expectedMessageMultipleParams);
+    }
+
     /**
      * Executes the command and confirms that the result message is correct.
      * Both the 'planner' and the 'last shown list' are expected to be empty.
      * @see #assertCommandBehavior(String, String, Planner, boolean, List)
      */
     private void assertCommandBehavior(String inputCommand, String expectedMessage) throws Exception {
-        assertCommandBehavior(inputCommand, expectedMessage, planner,false, Collections.emptyList());
+        assertCommandBehavior(inputCommand, expectedMessage, planner,false, null);
     }
 
     /**
@@ -281,13 +503,13 @@ public class LogicTest {
         }
 
         /** Generates the correct add command based on the person given */
-        String generateAddCommand(LocalDate date, Slot s) {
+        String generateAddCommand(Slot s, LocalDate date, String recurrence) {
             StringJoiner cmd = new StringJoiner(" ");
 
             cmd.add("add");
 
             cmd.add("n/" + s.getName());
-            cmd.add("d/" + date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            cmd.add("d/" + Utils.parseDate(date));
             cmd.add("st/" + s.getStartTime());
             cmd.add("et/" + s.getDuration());
             if (s.getLocation() != null) {
@@ -299,7 +521,53 @@ public class LogicTest {
 
             Set<Tag> tags = s.getTags();
             if (tags != null) {
-                for(Tag tag: tags){
+                for(Tag tag : tags){
+                    cmd.add("t/" + tag);
+                }
+            }
+
+            cmd.add(recurrence);
+
+            return cmd.toString();
+        }
+
+        /** Generates the correct add command based on the person given */
+        String generateAddCommand(Slot s, int day, String recurrence) {
+            StringJoiner cmd = new StringJoiner(" ");
+
+            cmd.add("add");
+
+            cmd.add("n/" + s.getName());
+            cmd.add("d/" + day);
+            cmd.add("st/" + s.getStartTime());
+            cmd.add("et/" + s.getDuration());
+            if (s.getLocation() != null) {
+                cmd.add("l/" + s.getLocation());
+            }
+            if (s.getDescription() != null) {
+                cmd.add("des/" + s.getDescription());
+            }
+
+            Set<Tag> tags = s.getTags();
+            if (tags != null) {
+                for(Tag tag : tags){
+                    cmd.add("t/" + tag);
+                }
+            }
+
+            cmd.add(recurrence);
+
+            return cmd.toString();
+        }
+
+        /** Generates the correct delete command based on tags */
+        String generateDeleteCommand(Set<Tag> tags) {
+            StringJoiner cmd = new StringJoiner(" ");
+
+            cmd.add("delete");
+
+            if (tags != null) {
+                for(Tag tag : tags){
                     cmd.add("t/" + tag);
                 }
             }
@@ -307,6 +575,41 @@ public class LogicTest {
             return cmd.toString();
         }
 
+        /** Generates the correct delete command based on the slot. */
+        String generateDeleteCommand(Slot slot) {
+            StringJoiner cmd = new StringJoiner(" ");
+
+            cmd.add("delete");
+
+            Set<Tag> tags = slot.getTags();
+            if (tags != null) {
+                for(Tag tag : tags){
+                    cmd.add("t/" + tag);
+                }
+            }
+
+            return cmd.toString();
+        }
+
+        //        public String recurrenceToString(Recurrence recurrence) {
+        //            StringJoiner cmd = new StringJoiner(" ");
+        //            if (recurrence.recess) {
+        //                cmd.add("r/" + "recess");
+        //            }
+        //            if (reading) {
+        //                cmd.add("r/" + "reading");
+        //            }
+        //            if (normal) {
+        //                cmd.add("r/" + "normal");
+        //            }
+        //            if (exam) {
+        //                cmd.add("r/" + "exam");
+        //            }
+        //            if (past) {
+        //                cmd.add("r/" + "past");
+        //            }
+        //            return cmd.toString();
+        //        }
         /**
          * Generates an AddressBook with auto-generated persons.
          * @param isPrivateStatuses flags to indicate if all contact details of respective persons should be set to

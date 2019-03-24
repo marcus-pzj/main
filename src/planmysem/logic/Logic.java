@@ -1,8 +1,7 @@
 package planmysem.logic;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.xml.bind.JAXBException;
@@ -11,6 +10,7 @@ import javafx.util.Pair;
 import planmysem.commands.Command;
 import planmysem.commands.CommandResult;
 import planmysem.data.Planner;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
 import planmysem.parser.Parser;
 import planmysem.storage.StorageFile;
@@ -25,7 +25,7 @@ public class Logic {
     /**
      * The list of Slots shown to the user most recently.
      */
-    private List<Pair<LocalDate, ? extends ReadOnlySlot>> lastShownSlots = Collections.emptyList();
+    private Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> lastShownSlots;
 
     public Logic() throws Exception {
         setStorage(initializeStorage());
@@ -61,11 +61,11 @@ public class Logic {
     /**
      * Unmodifiable view of the current last shown list.
      */
-    public List<Pair<LocalDate, ? extends ReadOnlySlot>> getLastShownSlots() {
+    public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownSlots() {
         return lastShownSlots;
     }
 
-    protected void setLastShownSlots(List<Pair<LocalDate, ? extends ReadOnlySlot>> slots) {
+    protected void setLastShownSlots(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
         lastShownSlots = slots;
     }
 
@@ -99,7 +99,7 @@ public class Logic {
      * Updates the {@link #lastShownSlots} if the result contains a list of Days.
      */
     private void recordResult(CommandResult result) {
-        final Optional<List<Pair<LocalDate, ? extends ReadOnlySlot>>> slots = result.getRelevantSlots();
+        final Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> slots = result.getRelevantSlots();
         if (slots.isPresent()) {
             lastShownSlots = slots.get();
         }

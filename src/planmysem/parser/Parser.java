@@ -3,6 +3,7 @@ package planmysem.parser;
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
 import static planmysem.common.Messages.MESSAGE_INVALID_DATE;
+import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
 import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
 
 import java.time.LocalDate;
@@ -274,9 +275,6 @@ public class Parser {
         } else {
             String nd = getFirstInSet(arguments.get(PARAMETER_NEW_DATE));
             LocalDate date = Utils.parseDate(nd);
-            if (date == null) {
-                return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
-            }
 
             try {
                 return new EditCommand(index, name, date, startTime, duration, location, description, newTags);
@@ -322,10 +320,14 @@ public class Parser {
     private Command prepareFind(String args) {
         HashMap<String, Set<String>> arguments = getParametersWithArguments(args);
         String name = getFirstInSet(arguments.get(PARAMETER_NAME));
-        if (name == null || name.trim().isEmpty()) {
+        String tag = getFirstInSet(arguments.get(PARAMETER_TAG));
+        if (name == null && tag == null) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        } else if (name != null && tag != null) {
+            return new IncorrectCommand(String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, FindCommand.MESSAGE_USAGE));
+
         }
-        return new FindCommand(name);
+        return new FindCommand(name, tag);
     }
 
     /**
@@ -337,10 +339,13 @@ public class Parser {
     private Command prepareList(String args) {
         HashMap<String, Set<String>> arguments = getParametersWithArguments(args);
         String name = getFirstInSet(arguments.get(PARAMETER_NAME));
-        if (name == null || name.trim().isEmpty()) {
+        String tag = getFirstInSet(arguments.get(PARAMETER_TAG));
+        if (name == null && tag == null) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+        } else if (name != null && tag != null) {
+            return new IncorrectCommand(String.format(MESSAGE_INVALID_MULTIPLE_PARAMS, ListCommand.MESSAGE_USAGE));
         }
-        return new ListCommand(name);
+        return new ListCommand(name, tag);
     }
 
     /**

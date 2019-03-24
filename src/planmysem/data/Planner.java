@@ -10,8 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javafx.util.Pair;
 import planmysem.data.exception.IllegalValueException;
 import planmysem.data.semester.Day;
 import planmysem.data.semester.ReadOnlyDay;
@@ -287,9 +289,9 @@ public class Planner {
      *
      * @throws Semester.DuplicateDayException if a date is not found in the semester.
      */
-    public void addDay(LocalDate date, Day day) throws Semester.DuplicateDayException {
-        semester.addDay(date, day);
-    }
+    //    public void addDay(LocalDate date, Day day) throws Semester.DuplicateDayException {
+    //        semester.addDay(date, day);
+    //    }
 
     /**
      * Adds a slot to the Planner.
@@ -300,15 +302,20 @@ public class Planner {
     }
 
     /**
+     * Removes a Slot in the Planner.
+     */
+    public void removeSlot(LocalDate date, ReadOnlySlot slot) {
+        semester.removeSlot(date, slot);
+    }
+
+    /**
      * Edit specific slot within the planner.
      *
-     * @throws Semester.DateNotFoundException if a targetDate is not found in the semester.
      * @throws IllegalValueException if a targetDate is not found in the semester.
      */
     public void editSlot(LocalDate targetDate, ReadOnlySlot targetSlot, LocalDate date,
                          LocalTime startTime, int duration, String name, String location,
-                         String description, Set<Tag> tags)
-            throws Semester.DateNotFoundException, IllegalValueException {
+                         String description, Set<Tag> tags) throws IllegalValueException {
         semester.editSlot(targetDate, targetSlot, date, startTime, duration, name, location, description, tags);
     }
 
@@ -371,6 +378,38 @@ public class Planner {
     public Semester getSemester() {
         return semester;
     }
+
+    /**
+     * gets all days in the Planner.
+     */
+    public HashMap<LocalDate, Day> getAllDays() {
+        return semester.getDays();
+    }
+
+    /**
+     * gets specific day in the Planner.
+     */
+    public Day getDay(LocalDate date) {
+        return getAllDays().get(date);
+    }
+
+    /**
+     * gets all slots in the Planner containing all specified tags.
+     */
+    public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<Tag> tags) {
+        final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+
+        for (Map.Entry<LocalDate, Day> entry : getAllDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                if (slot.getTags().containsAll(tags)) {
+                    selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                }
+            }
+        }
+
+        return selectedSlots;
+    }
+
 
     @Override
     public boolean equals(Object other) {

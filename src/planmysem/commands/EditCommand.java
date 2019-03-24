@@ -1,21 +1,19 @@
 package planmysem.commands;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
 import planmysem.common.Utils;
 import planmysem.data.exception.IllegalValueException;
-import planmysem.data.semester.Day;
-import planmysem.data.semester.Semester;
+import planmysem.data.semester.ReadOnlyDay;
 import planmysem.data.slot.ReadOnlySlot;
-import planmysem.data.slot.Slot;
 import planmysem.data.tag.Tag;
 
 /**
@@ -92,56 +90,58 @@ public class EditCommand extends Command {
 
     @Override
     public CommandResult execute() {
-        Map<LocalDateTime, ReadOnlySlot> selectedSlots = new TreeMap<>();
+        final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
         if (getTargetIndex() == -1) {
-            for (Map.Entry<LocalDate, Day> day : planner.getSemester().getDays().entrySet()) {
-                for (Slot slot : day.getValue().getSlots()) {
-                    if (slot.getTags().containsAll(tags)) {
-                        selectedSlots.put(LocalDateTime.of(day.getKey(), slot.getStartTime()), slot);
-                    }
-                }
-            }
+            selectedSlots.putAll(planner.getSlots(tags));
+
             if (selectedSlots.size() == 0) {
                 return new CommandResult(String.format(MESSAGE_SUCCESS_NO_CHANGE,
                         Messages.craftSelectedMessage(tags)));
             }
         } else {
             try {
-                final Pair<LocalDate, ? extends ReadOnlySlot> target = getTargetSlot();
-                selectedSlots.put(LocalDateTime.of(target.getKey(),
-                        target.getValue().getStartTime()), target.getValue());
-                if (!planner.containsSlot(target.getKey(), target.getValue())) {
-                    return new CommandResult(Messages.MESSAGE_SLOT_NOT_IN_PLANNER);
-                }
+                final Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> target = getTargetSlot();
+                selectedSlots.put(target.getKey(), target.getValue());
             } catch (IndexOutOfBoundsException ie) {
                 return new CommandResult(Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
             }
         }
 
-        for (Map.Entry<LocalDateTime, ReadOnlySlot> entry : selectedSlots.entrySet()) {
+        // Need to craft success message earlier to get original instead of edited Slots
+        String successMessage = craftSuccessMessage(selectedSlots);
+
+        for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : selectedSlots.entrySet()) {
             try {
-                planner.editSlot(entry.getKey().toLocalDate(), entry.getValue(), date,
+                planner.editSlot(entry.getKey(), entry.getValue().getValue(), date,
                         startTime, duration, name, location, description, newTags);
             } catch (IllegalValueException ive) {
                 return new CommandResult(MESSAGE_FAIL_ILLEGAL_VALUE);
-            } catch (Semester.DateNotFoundException dnfe) {
-                return new CommandResult(Messages.MESSAGE_SLOT_NOT_IN_PLANNER);
             }
         }
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftSelectedMessage(tags), craftSuccessMessage(selectedSlots)));
+                Messages.craftSelectedMessage(tags), successMessage));
     }
 
     /**
      * Craft success message.
      */
-    private String craftSuccessMessage(Map<LocalDateTime, ReadOnlySlot> selectedSlots) {
+    public String craftSuccessMessage(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Details Edited: ");
 
+        if (name != null) {
+            sb.append("\nName: ");
+            sb.append("\"");
+            if ("".equals(name)) {
+                sb.append("null");
+            } else {
+                sb.append(name);
+            }
+            sb.append("\"");
+        }
         if (startTime != null) {
             sb.append("\nStart Time: ");
             sb.append("\"");
@@ -174,38 +174,23 @@ public class EditCommand extends Command {
             }
             sb.append("\"");
         }
+        if (newTags.size() > 0) {
+            sb.append("\nTags: ");
+            StringJoiner sj = new StringJoiner(", ");
+
+            for (Tag tag : newTags) {
+                StringBuilder sb2 = new StringBuilder();
+                sb2.append("\"");
+                sb2.append(tag);
+                sb2.append("\"");
+                sj.add(sb2.toString());
+            }
+            sb.append(sj.toString());
+        }
 
         sb.append("\n\n");
-        sb.append("Edited Slots: ");
-        sb.append("\n");
 
-        sb.append(craftSelectedMessage(selectedSlots));
-
-        return sb.toString();
-    }
-
-    /**
-     * Craft success message.
-     */
-    private String craftSelectedMessage(Map<LocalDateTime, ReadOnlySlot> selectedSlots) {
-        StringBuilder sb = new StringBuilder();
-
-        int count = 1;
-        for (Map.Entry<LocalDateTime, ReadOnlySlot> editedSlot : selectedSlots.entrySet()) {
-            sb.append(count);
-            sb.append(".\t");
-            sb.append(editedSlot.getValue().getName().toString());
-            sb.append(", ");
-            sb.append(editedSlot.getKey().toLocalDate().toString());
-            sb.append(" ");
-            sb.append(editedSlot.getKey().toLocalTime().toString());
-            sb.append(", ");
-            sb.append(planner.getSemester().getDays().get(editedSlot.getKey().toLocalDate()).getType());
-            sb.append(", ");
-            sb.append(editedSlot.getKey().getDayOfWeek().toString());
-            count++;
-            sb.append("\n");
-        }
+        sb.append(Messages.craftSelectedMessage("Edited Slots:", selectedSlots));
 
         return sb.toString();
     }

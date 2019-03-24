@@ -119,16 +119,26 @@ public class Utils {
     }
 
     /**
-     * Parse String LocalDate.
+     * Parse String to LocalDate.
      */
     public static LocalDate parseDate(String date) {
-        if (date != null && DATE_FORMAT.matcher(date).matches()) {
+        if (date == null) {
+            return null;
+        }
+        if (DATE_FORMAT.matcher(date).matches()) {
             return LocalDate.parse(date, DateTimeFormatter.ofPattern("d-MM-yyyy"));
         } else if (DATE_FORMAT_NO_YEAR.matcher(date).matches()) {
             return LocalDate.parse(date + "-" + Year.now().getValue(), DateTimeFormatter.ofPattern("d-MM-yyyy"));
         }
 
         return null;
+    }
+
+    /**
+     * Parse LocalDate to String.
+     */
+    public static String parseDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("d-MM-yyyy"));
     }
 
     /**
@@ -177,21 +187,21 @@ public class Utils {
 
 
     /**
-     * Get the time difference between two LocalTimes
+     * Get the time difference between two LocalTimes in minutes.
      */
     public static int getDuration(LocalTime startTime, LocalTime endTime) {
         return (int) MINUTES.between(startTime, endTime);
     }
 
     /**
-     * Get the end time of a time after a duration
+     * Get the end time of a time after a duration.
      */
     public static LocalTime getEndTime(LocalTime time, int duration) {
         return time.plusMinutes(duration);
     }
 
     /**
-     * Get the nearest date to a type of day from today
+     * Get the nearest date to a type of day from today.
      */
     public static LocalDate getNearestDayOfWeek(LocalDate date, int day) {
         return date.with(TemporalAdjusters.next(DayOfWeek.of(day)));
