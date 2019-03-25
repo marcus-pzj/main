@@ -441,6 +441,32 @@ These are some possible enhancements:
 
 ==== Future Implementation
 
+=== Find feature
+==== Current Implementation
+The find function supports searching using a single keyword. +
+If some part of the name of `Slot` / tags attributed to `Slot` contains the specified keyword,
+a positive match is registered and the designated `Slot` will be added to the output list. +
+Examples: +
+`find n/CS` +
+`CS2101`, `CS2113T`, `SOCSMeet` are considered positive matches. +
+`ST2334`, `Hockey`, `Lunch` are NOT considered positive matches. +
+
+==== Future Implementation
+The find function will be revamped to support search guessing. +
+FindCommand will be enhanced by using Levenshtein Distance to generate an ordered set of `Slot` attributes ordered by similarity.
+
+==== Design Considerations
+===== Aspect: What constitutes a positive search result in `find` command
+* **Alternative 1:** Positive search result by strictly matching the entered keyword
+** Pros: Easy to implement.
+** Cons: Search must be exact, typos or an incomplete keyword will yield incorrect results. Nothing different from `List` feature.
+* **Alternative 2 (current choice):** Positive search result as long as name/tag contains the keyword.
+** Pros: Searches can now consider names/tags similar to the keyword.
+** Cons: Output list will be longer. May become excessively long if short keyword is provided.
+* **Alternative 3 (future implementation):** Store the search results in a `treeMap` ordered by their Levenshtein distances from the search keyword
+** Pros: Will also consider searches that are similar to what we want and will account for typos or incomplete keywords
+** Cons: Added complexities in finding and searching.
+
 === Month/Week/Day View feature
 ==== Future Implementation
 
