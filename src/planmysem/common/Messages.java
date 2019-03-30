@@ -56,6 +56,7 @@ public class Messages {
             sb.append("\n");
             count++;
         }
+        sb.append("\nEnter 'list n/{name} OR t/{tag}' to list all slots related to the name/tag\n");
 
         return sb.toString();
     }
