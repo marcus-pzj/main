@@ -11,7 +11,6 @@ import javafx.util.Pair;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.semester.Semester;
-import planmysem.model.semester.WeightedName;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 

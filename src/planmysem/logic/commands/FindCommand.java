@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javafx.util.Pair;
+
 import planmysem.common.Messages;
 import planmysem.common.Utils;
 import planmysem.logic.CommandHistory;

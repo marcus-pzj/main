@@ -71,17 +71,17 @@ public class ParserManager {
         case ViewCommand.COMMAND_WORD_SHORT:
             return new ViewCommandParser().parse(arguments);
 
-            case HistoryCommand.COMMAND_WORD:
-                return new HistoryCommand();
+        case HistoryCommand.COMMAND_WORD:
+            return new HistoryCommand();
 
-            case UndoCommand.COMMAND_WORD:
-                return new UndoCommand();
+        case UndoCommand.COMMAND_WORD:
+            return new UndoCommand();
 
-            case RedoCommand.COMMAND_WORD:
-                return new RedoCommand();
+        case RedoCommand.COMMAND_WORD:
+            return new RedoCommand();
 
-            case ClearCommand.COMMAND_WORD:
-                return new ClearCommand();
+        case ClearCommand.COMMAND_WORD:
+            return new ClearCommand();
 
         case ExitCommand.COMMAND_WORD:
             return new ExitCommand();

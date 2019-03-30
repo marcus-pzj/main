@@ -1,12 +1,10 @@
 //@@author marcus-pzj
 package planmysem.model.semester;
 
-import javafx.util.Pair;
-import planmysem.model.slot.ReadOnlySlot;
-import planmysem.model.slot.Slot;
-
 import java.time.LocalDate;
 import java.util.Map;
+
+import planmysem.model.slot.Slot;
 
 /**
  * WeightedName of integer and string
@@ -15,7 +13,7 @@ import java.util.Map;
 public class WeightedName {
     private int dist;
     private String name;
-    private Map.Entry<LocalDate, Day>  map;
+    private Map.Entry<LocalDate, Day> map;
     private Slot slot;
 
     public WeightedName(Map.Entry<LocalDate, Day> map, Slot slot, int dist) {
