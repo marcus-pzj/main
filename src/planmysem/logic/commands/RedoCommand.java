@@ -24,7 +24,7 @@ public class RedoCommand extends Command {
         }
 
         model.redo();
-        model.setLastShownList(null);
+        model.clearLastShownList();
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }

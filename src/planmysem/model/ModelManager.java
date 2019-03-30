@@ -2,10 +2,11 @@ package planmysem.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.model.semester.Day;
@@ -18,7 +19,7 @@ import planmysem.model.slot.Slot;
  * Represents the entire Planner. Contains the model of the Planner.
  */
 public class ModelManager implements Model {
-    protected Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> lastShownList = new TreeMap<>();
+    protected List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> lastShownList = new ArrayList<>();
     private final VersionedPlanner versionedPlanner;
 
     /**
@@ -38,13 +39,29 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list) {
+        lastShownList.clear();
+
+        if (list != null) {
+            lastShownList.addAll(list);
+        }
+    }
+
     public void setLastShownList(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list) {
         lastShownList.clear();
 
         if (list != null) {
-            lastShownList.putAll(list);
+            for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : list.entrySet()) {
+                lastShownList.add(new Pair<>(entry.getKey(), entry.getValue()));
+            }
         }
     }
+
+    @Override
+    public void clearLastShownList() {
+        lastShownList.clear();
+    }
+
 
     @Override
     public void commit() {
@@ -52,7 +69,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownList() {
+    public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownList() {
         return lastShownList;
     }
 
@@ -62,17 +79,7 @@ public class ModelManager implements Model {
             throw new IndexOutOfBoundsException();
         }
 
-        int adjustedIndex = index - 1;
-
-        int count = 0;
-        for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : lastShownList.entrySet()) {
-            if (count == adjustedIndex) {
-                return new Pair<>(entry.getKey(), entry.getValue());
-            }
-            count++;
-        }
-
-        throw new IndexOutOfBoundsException();
+        return lastShownList.get(index - 1);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package planmysem.logic;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
@@ -29,7 +29,7 @@ public interface Logic {
     /**
      * Gets unmodifiable view of the current last shown list.
      */
-    Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownSlots();
+    List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownSlots();
 
     /**
      * Returns an unmodifiable view of the list of commands entered by the user.

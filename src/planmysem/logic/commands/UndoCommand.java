@@ -24,7 +24,7 @@ public class UndoCommand extends Command {
         }
 
         model.undo();
-        model.setLastShownList(null);
+        model.clearLastShownList();
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }

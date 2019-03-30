@@ -16,6 +16,7 @@ public interface ReadOnlySemester {
     LocalDate getStartDate();
     LocalDate getEndDate();
     int getNoOfWeeks();
+    HashMap<Integer, String> getAcadCal();
 
     // These variables aid in making searches more effective
     Set<LocalDate> getRecessDays();

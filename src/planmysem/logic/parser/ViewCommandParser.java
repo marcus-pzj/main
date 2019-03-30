@@ -27,6 +27,10 @@ public class ViewCommandParser implements Parser<ViewCommand> {
             return new ViewCommand(viewArgs[1]);
         } else if ("month".equals(viewArgs[1]) && viewArgs.length == 2) {
             return new ViewCommand(viewArgs[1]);
+        } else if ("week".equals(viewArgs[1]) && viewArgs.length == 2) {
+            return new ViewCommand(viewArgs[1]);
+        } else if ("day".equals(viewArgs[1]) && viewArgs.length == 2) {
+            return new ViewCommand(viewArgs[1]);
         } else if ("month".equals(viewArgs[1]) && viewArgs.length == 3) {
             //TODO: ensure month arguments
             return new ViewCommand(viewArgs[1] + " " + viewArgs[2]);

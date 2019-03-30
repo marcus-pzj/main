@@ -189,9 +189,9 @@ public class Utils {
      *
      * Computes Levenshtein Distance from strings
      */
-    public static int getLevenshteinDistance (String lhs, String rhs) {
-        lhs = lhs.toLowerCase();
-        rhs = rhs.toLowerCase();
+    public static int getLevenshteinDistance (String lhsIn, String rhsIn) {
+        String lhs = lhsIn.toLowerCase();
+        String rhs = rhsIn.toLowerCase();
 
         // the array of distances
         int[] cost = new int[lhs.length() + 1];

@@ -1,7 +1,7 @@
 package planmysem.logic;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
@@ -40,7 +40,7 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownSlots() {
+    public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownSlots() {
         return model.getLastShownList();
     }
 

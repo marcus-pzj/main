@@ -24,6 +24,7 @@ import planmysem.model.slot.Slot;
  * @see Day#equals(Object)
  */
 public class Semester implements ReadOnlySemester {
+    private static HashMap<Integer, String> acadCal = new HashMap<>();
     private final String name;
     private final String academicYear;
     private final HashMap<LocalDate, Day> days = new HashMap<>();
@@ -107,6 +108,7 @@ public class Semester implements ReadOnlySemester {
         Set<LocalDate> examDays = new HashSet<>();
 
         acadCalMap = generateAcadCalMap(currentDate);
+        acadCal = acadCalMap;
         semesterDetails = getSemesterDetails(currentDate, acadCalMap);
         acadSem = semesterDetails[1];
         acadYear = semesterDetails[2];
@@ -242,6 +244,7 @@ public class Semester implements ReadOnlySemester {
             acadCalMap.put(vacationWeekNo++, "Vacation_Sem 2");
         }
 
+        //System.out.println(acadCalMap); //why does this print twice?
         return acadCalMap;
     }
 
@@ -468,11 +471,6 @@ public class Semester implements ReadOnlySemester {
     }
 
     @Override
-    public HashMap<LocalDate, Day> getDays() {
-        return days;
-    }
-
-    @Override
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -505,6 +503,16 @@ public class Semester implements ReadOnlySemester {
     @Override
     public Set<LocalDate> getExamDays() {
         return examDays;
+    }
+
+    @Override
+    public HashMap<LocalDate, Day> getDays() {
+        return days;
+    }
+
+    @Override
+    public HashMap<Integer, String> getAcadCal() {
+        return acadCal;
     }
 
     @Override

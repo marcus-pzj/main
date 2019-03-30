@@ -18,7 +18,7 @@ public class Gui implements Ui {
      */
     public static final int DISPLAYED_INDEX_OFFSET = 1;
 
-    public static final int INITIAL_WINDOW_WIDTH = 800;
+    public static final int INITIAL_WINDOW_WIDTH = 1000;
     public static final int INITIAL_WINDOW_HEIGHT = 600;
     private final LogicManager logicManager;
 

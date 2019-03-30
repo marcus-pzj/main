@@ -98,7 +98,7 @@ public class FindCommand extends Command {
         }
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedNames.size(),
-                Messages.craftSelectedMessagePair(selectedNames)));
+                Messages.craftListMessage(selectedNames)));
     }
 
     /**
@@ -117,11 +117,6 @@ public class FindCommand extends Command {
         //System.out.println(compareString + " vs key: " + keyword + " dist: " + dist);
         WeightedName distNamePair = new WeightedName(compareString, dist);
 
-        for (WeightedName weightName : weightedNames) {
-            if (weightName.getName().equalsIgnoreCase(distNamePair.getName())) {
-                return;
-            }
-        }
         weightedNames.add(distNamePair);
     }
 }

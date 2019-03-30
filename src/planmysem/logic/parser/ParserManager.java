@@ -16,6 +16,8 @@ import planmysem.logic.commands.FindCommand;
 import planmysem.logic.commands.HelpCommand;
 import planmysem.logic.commands.HistoryCommand;
 import planmysem.logic.commands.ListCommand;
+import planmysem.logic.commands.RedoCommand;
+import planmysem.logic.commands.UndoCommand;
 import planmysem.logic.commands.ViewCommand;
 import planmysem.logic.parser.exceptions.ParseException;
 
@@ -69,11 +71,17 @@ public class ParserManager {
         case ViewCommand.COMMAND_WORD_SHORT:
             return new ViewCommandParser().parse(arguments);
 
-        case HistoryCommand.COMMAND_WORD:
-            return new HistoryCommand();
+            case HistoryCommand.COMMAND_WORD:
+                return new HistoryCommand();
 
-        case ClearCommand.COMMAND_WORD:
-            return new ClearCommand();
+            case UndoCommand.COMMAND_WORD:
+                return new UndoCommand();
+
+            case RedoCommand.COMMAND_WORD:
+                return new RedoCommand();
+
+            case ClearCommand.COMMAND_WORD:
+                return new ClearCommand();
 
         case ExitCommand.COMMAND_WORD:
             return new ExitCommand();

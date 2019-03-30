@@ -3,6 +3,7 @@ package planmysem.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +22,11 @@ public interface Model {
     /**
      * Set last shown list.
      */
+    void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list);
+
     void setLastShownList(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list);
+
+    void clearLastShownList();
 
     /**
      * Saves the current planner state for undo/redo.
@@ -31,7 +36,7 @@ public interface Model {
     /**
      * Get last shown list.
      */
-    Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownList();
+    List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownList();
 
     /**
      * Get item in last shown list.
