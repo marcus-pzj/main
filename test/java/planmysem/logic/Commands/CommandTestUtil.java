@@ -3,8 +3,8 @@ package planmysem.logic.Commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.util.Pair;
 import planmysem.logic.CommandHistory;
@@ -104,7 +104,7 @@ public class CommandTestUtil {
                 String expectedMessage) {
             Planner expectedPlanner = new Planner(actualModel.getPlanner());
             actualModel.getDays();
-            Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> expectedLastShownList = new TreeMap<>(actualModel.getLastShownList());
+            List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> expectedLastShownList = new ArrayList<>(actualModel.getLastShownList());
 
             CommandHistory expectedCommandHistory = new CommandHistory(actualCommandHistory);
 

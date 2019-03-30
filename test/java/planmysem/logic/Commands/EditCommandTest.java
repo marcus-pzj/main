@@ -11,7 +11,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -98,11 +97,11 @@ public class EditCommandTest {
         model.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
         model.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
 
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list = new HashMap<>();
-        list.put(pair1.getKey(), pair1.getValue());
-        list.put(pair2.getKey(), pair2.getValue());
-        list.put(pair3.getKey(), pair3.getValue());
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list = new TreeMap<>();
         list.put(pair4.getKey(), pair4.getValue());
+        list.put(pair3.getKey(), pair3.getValue());
+        list.put(pair2.getKey(), pair2.getValue());
+        list.put(pair1.getKey(), pair1.getValue());
         model.setLastShownList(list);
 
         expectedModel = new ModelManager();

@@ -1,6 +1,7 @@
 package planmysem.common;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,40 +86,29 @@ public class Messages {
     /**
      * Craft selected message via weighted Set of Pairs.
      */
-    public static String craftListMessage(Set<WeightedName> pairs) {
+    public static String craftListMessage(List<WeightedName> tries) {
         StringBuilder sb = new StringBuilder();
+
         sb.append("Here are the closest matching names/tags: \n");
 
         int count = 1;
-        for (WeightedName p : pairs) {
-            sb.append(count);
-            sb.append(".\t");
-            sb.append(p.getName());
+        for (WeightedName wn : tries) {
+            sb.append("\n");
+            sb.append(count + ".\t");
+            sb.append("Name: ");
+            sb.append(wn.getName());
+            sb.append(",\n\t");
+            sb.append("Date: ");
+            sb.append(wn.getMap().getKey().toString());
+            sb.append(",\n\t");
+            sb.append("Start Time: ");
+            sb.append(wn.getSlot().getStartTime());
+            sb.append("\n\t");
+            sb.append("Tags: ");
+            sb.append(wn.getSlot().getTags());
             sb.append("\n");
             count++;
         }
-        sb.append("\nEnter 'list n/{name} OR t/{tag}' to list all slots related to the name/tag\n");
-
-        return sb.toString();
-    }
-
-    /**
-     * Craft selected message via weighted Set of Pairs.
-     */
-    public static String craftSelectedMessagePair(Set<WeightedName> pairs) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Here are the closest matching names/tags: \n");
-
-        int count = 1;
-        for (WeightedName p : pairs) {
-            sb.append(count);
-            sb.append(".\t");
-            sb.append(p.getName());
-            sb.append("\n");
-            count++;
-        }
-        sb.append("\nEnter 'list n/{name} OR t/{tag}' to list all slots related to the name/tag\n");
-
         return sb.toString();
     }
 

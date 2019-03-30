@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -123,12 +124,22 @@ public class AddCommandTest {
      */
     private class ModelStub implements Model {
         @Override
-        public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownList() {
+        public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void clearLastShownList() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void commit() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list) {
             throw new AssertionError("This method should not be called.");
         }
 
