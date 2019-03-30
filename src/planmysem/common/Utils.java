@@ -184,10 +184,57 @@ public class Utils {
     }
 
     /**
+     * Adapted from:
+     * https://rosettacode.org/wiki/Levenshtein_distance#Java
+     *
+     * Computes Levenshtein Distance from strings
+     */
+    public static int getLevenshteinDistance (String lhs, String rhs) {
+        lhs = lhs.toLowerCase();
+        rhs = rhs.toLowerCase();
+
+        // the array of distances
+        int[] cost = new int[lhs.length()+1];
+        int[] newCost = new int[lhs.length()+1];
+
+        // initial cost in String lhs
+        for (int i = 0; i < lhs.length(); i++) {
+            cost[i] = i;
+        }
+
+        // cost for transforming each letter in String rhs
+        for (int j = 1; j < rhs.length()+1; j++) {
+            // initial cost in String rhs
+            newCost[0] = j;
+
+            // transformation cost for each letter in String lhs
+            for (int i = 1; i < lhs.length()+1; i++) {
+                // match current letters in both strings
+                int match = (lhs.charAt(i - 1) == rhs.charAt(j - 1)) ? 0 : 1;
+
+                // cost for each type of transformation
+                int costReplace = cost[i - 1] + match;
+                int costInsert = cost[i] + 1;
+                int costDelete = newCost[i - 1] + 1;
+
+                // keep minimum cost
+                newCost[i] = Math.min(Math.min(costInsert, costDelete), costReplace);
+            }
+
+            // switch cost array with newCost array
+            int[] temp = cost;
+            cost = newCost;
+            newCost = temp;
+        }
+
+        // the distance is the cost for transforming all letters in both strings
+        return cost[lhs.length()];
+    }
+
+    /**
      * Get the nearest date to a type of day from today.
      */
     public static LocalDate getNearestDayOfWeek(LocalDate date, int day) {
         return date.with(TemporalAdjusters.next(DayOfWeek.of(day)));
     }
-
 }

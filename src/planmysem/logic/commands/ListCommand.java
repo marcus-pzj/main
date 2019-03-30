@@ -2,9 +2,7 @@
 package planmysem.logic.commands;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
@@ -27,7 +25,7 @@ public class ListCommand extends Command {
     public static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots whose name "
-            + "directly matches the specified keyword (case-sensitive)."
+            + "directly matches the specified keyword (not case-sensitive)."
             //+ "\n\tOptional Parameters: [past] [next] [all]"
             //+ "\n\tDefault: list all"
             + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
@@ -43,6 +41,7 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) {
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> sl = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
@@ -53,7 +52,6 @@ public class ListCommand extends Command {
                 } else {
                     Set<String> tagSet = slot.getTags();
                     for (String tag : tagSet) {
-                        //                        if (slot.getTags().contains(keyword))
                         if (tag.equalsIgnoreCase(keyword)) {
                             selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
                         }

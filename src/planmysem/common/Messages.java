@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javafx.util.Pair;
 import planmysem.model.semester.ReadOnlyDay;
+import planmysem.model.semester.WeightedName;
 import planmysem.model.slot.ReadOnlySlot;
 
 /**
@@ -44,7 +45,7 @@ public class Messages {
      */
     public static String craftSelectedMessage(Set<String> tags) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Selected Slots containing tags: \n");
+        sb.append("Selected Slots containing: \n");
 
         int count = 1;
         for (String tag : tags) {
@@ -54,6 +55,26 @@ public class Messages {
             sb.append("\n");
             count++;
         }
+
+        return sb.toString();
+    }
+
+    /**
+     * Craft selected message via weighted Set of Pairs.
+     */
+    public static String craftSelectedMessagePair(Set<WeightedName> pairs) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the closest matching names/tags: \n");
+
+        int count = 1;
+        for (WeightedName p : pairs) {
+            sb.append(count);
+            sb.append(".\t");
+            sb.append(p.getName());
+            sb.append("\n");
+            count++;
+        }
+        sb.append("\nEnter 'list n/{name} OR t/{tag}' to list all slots related to the name/tag\n");
 
         return sb.toString();
     }
