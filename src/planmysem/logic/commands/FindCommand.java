@@ -2,7 +2,12 @@
 package planmysem.logic.commands;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 import planmysem.common.Messages;
 import planmysem.common.Utils;
@@ -40,13 +45,13 @@ public class FindCommand extends Command {
             int d1 = p1.getDist();
             int d2 = p2.getDist();
 
-            if (d1!=d2) {
-                return d1-d2;
-            }
-            else {
+            if (d1 != d2) {
+                return d1 - d2;
+            } else {
                 return n1.compareTo(n2);
+            }
         }
-    }});
+    });
 
     private Set<WeightedName> selectedNames = new TreeSet<>(new Comparator<WeightedName>() {
         @Override
@@ -56,13 +61,13 @@ public class FindCommand extends Command {
             int d1 = p1.getDist();
             int d2 = p2.getDist();
 
-            if (d1!=d2) {
-                return d1-d2;
-            }
-            else {
+            if (d1 != d2) {
+                return d1 - d2;
+            } else {
                 return n1.compareTo(n2);
             }
-        }});
+        }
+    });
 
     public FindCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
@@ -74,11 +79,11 @@ public class FindCommand extends Command {
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 if (isFindByName) {
-                    generateDiscoveredPQ(keyword, slot.getName());
+                    generateDiscoveredNames(keyword, slot.getName());
                 } else {
                     Set<String> tagSet = slot.getTags();
                     for (String tag : tagSet) {
-                        generateDiscoveredPQ(keyword, tag);
+                        generateDiscoveredNames(keyword, tag);
                     }
                 }
             }
@@ -96,7 +101,11 @@ public class FindCommand extends Command {
                 Messages.craftSelectedMessagePair(selectedNames)));
     }
 
-    private void generateDiscoveredPQ(String keyword, String compareString) {
+    /**
+    * If a slot entry is found, calculates the Levenshtein Distance between the name and the keyword.
+    * Updates the weightedNames PQ with the new WeightedName pair containing the name and its weight.
+    */
+    private void generateDiscoveredNames(String keyword, String compareString) {
         if (compareString == null) {
             return;
         }
@@ -105,7 +114,7 @@ public class FindCommand extends Command {
         if (dist < minDistance) {
             minDistance = dist;
         }
-//        System.out.println(compareString + " vs key: " + keyword + " dist: " + dist);
+        //System.out.println(compareString + " vs key: " + keyword + " dist: " + dist);
         WeightedName distNamePair = new WeightedName(compareString, dist);
 
         for (WeightedName weightName : weightedNames) {

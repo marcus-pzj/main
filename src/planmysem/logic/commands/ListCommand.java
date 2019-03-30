@@ -2,7 +2,9 @@
 package planmysem.logic.commands;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
@@ -41,7 +43,6 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) {
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
-        List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> sl = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {

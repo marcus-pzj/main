@@ -194,8 +194,8 @@ public class Utils {
         rhs = rhs.toLowerCase();
 
         // the array of distances
-        int[] cost = new int[lhs.length()+1];
-        int[] newCost = new int[lhs.length()+1];
+        int[] cost = new int[lhs.length() + 1];
+        int[] newCost = new int[lhs.length() + 1];
 
         // initial cost in String lhs
         for (int i = 0; i < lhs.length(); i++) {
@@ -203,12 +203,12 @@ public class Utils {
         }
 
         // cost for transforming each letter in String rhs
-        for (int j = 1; j < rhs.length()+1; j++) {
+        for (int j = 1; j < rhs.length() + 1; j++) {
             // initial cost in String rhs
             newCost[0] = j;
 
             // transformation cost for each letter in String lhs
-            for (int i = 1; i < lhs.length()+1; i++) {
+            for (int i = 1; i < lhs.length() + 1; i++) {
                 // match current letters in both strings
                 int match = (lhs.charAt(i - 1) == rhs.charAt(j - 1)) ? 0 : 1;
 
