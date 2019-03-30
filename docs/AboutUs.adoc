@@ -14,7 +14,7 @@ image::seanieyap.png[width="150", align="left"]
 {empty}[https://github.com/seanieyap[Github]] [<<seanieyap#, Portfolio>>] [https://seanieyap.com[Personal Website]]
 
 Role: Team Lead, Developer +
-Responsibilities: Add, Edit, list, Delete Slots
+Responsibilities: Add, Edit, Delete Commands and handling of Storage.
 
 '''
 
@@ -23,24 +23,24 @@ image::marcus-pzj.png[width="150", align="left"]
 {empty}[https://github.com/marcus-pzj[Github]] [<<marcus-pzj#, Portfolio>>]
 
 Role: Developer +
-Responsibilities: View, Find, Auto-Complete
+Responsibilities: List, Find, Undo, Redo, History commands and Auto-Complete feature.
 
 '''
 
 === Julian Lim
-image::julianlim.png[width="150", align="left"]
+image::macchazuki.png[width="150", align="left"]
 {empty}[https://github.com/macchazuki[Github]] [<<macchazuki#, Portfolio>>]
 
 Role: Developer +
-Responsibilities: Encryption, Import, Export, Generate Summary
+Responsibilities: Encryption, Decryption, Import, Export and Generate Summary feature.
 
 '''
 
 === Lim Ding Heng
-image::limdingheng.png[width="150", align="left"]
+image::dingheng4448.png[width="150", align="left"]
 {empty}[https://github.com/dingheng4448[Github]] [<<dingheng4448#, Portfolio>>]
 
 Role: Developer +
-Responsibilities: Generate Day, Week, Month Views
+Responsibilities: View day, week, month commands and Initialization of calendars.
 
 '''

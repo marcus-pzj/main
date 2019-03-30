@@ -15,7 +15,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 :experimental:
 endif::[]
-:repoURL: https://github.com/CS2113-AY1819S2-T08-3/main/tree/master
+:repoURL: https://github.com/CS2113-AY1819S2-T08-3/main/blob/master
 
 By: `T08-3`      Since: `Jan 2019`      Licence: `MIT`
 
@@ -113,14 +113,14 @@ When you are ready to start coding,
 === Architecture
 
 .Architecture Diagram
-image::Architecture.png[width="100%"]
+image::Architecture.png[width="800"]
 
 The *_Architecture Diagram_* given above explains the high-level design of the App. Given below is a quick overview of each component.
 
 [TIP]
 The `.pptx` files used to create diagrams in this document can be found in the link:{repoURL}/docs/diagrams/[diagrams] folder. To update a diagram, modify the diagram in the pptx file, select the objects of the diagram, and choose `Save as picture`.
 
-`Main` has only one class called link:{repoURL}/src/PlanMySem/Main.java[`Main`]. It is responsible for,
+`Main` has only one class called link:{repoURL}/src/planmysem/Main.java[`Main`]. It is responsible for,
 
 * At app launch: Initializes the components in the correct sequence, and connects them up with each other.
 * At shut down: Shuts down the components and invokes cleanup method where necessary.
@@ -142,7 +142,7 @@ Each of the four components
 For example, the `Logic` component (see the class diagram given below) defines it's API in the `Logic.java` interface and exposes its functionality using the `Logic.java` class.
 
 .Class Diagram of overall application.
-image::OverallClassDiagram.png[width="100%"]
+image::OverallClassDiagram.png[width="800"]
 
 [discrete]
 ==== How the architecture components interact with each other
@@ -150,7 +150,7 @@ image::OverallClassDiagram.png[width="100%"]
 The _Sequence Diagram_ below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
 .Component interactions for `delete 1` command
-image::SDforDeleteSlot.png[width="100%"]
+image::SDforDeleteSlot.png[width="800"]
 
 The sections below give more details of each component.
 
@@ -160,7 +160,7 @@ The sections below give more details of each component.
 .Structure of the UI Component
 image::UiClassDiagram.png[width="800"]
 
-*API* : link:{repoURL}/src/main/PlanMySem/ui/Ui.java[`Ui.java`]
+*API* : link:{repoURL}/src/planmysem/ui/Ui.java[`Ui.java`]
 
 The UI consists of a `MainWindow` that is made up of just `commandInput` and `outputConsole`.
 This application is mainly a text-based application, hence here are not much componenets here.
@@ -181,7 +181,7 @@ The `UI` component,
 image::LogicClassDiagram.png[width="800"]
 
 *API* :
-link:{repoURL}/src/main/java/plamysem/logicManager/Logic.java[`Logic.java`]
+link:{repoURL}/src/planmysem/logic/Logic.java[`Logic.java`]
 
 .  `Logic` uses the `parser` class to parse the user command.
 .  This results in a `Command` object which is executed.
@@ -192,20 +192,20 @@ link:{repoURL}/src/main/java/plamysem/logicManager/Logic.java[`Logic.java`]
 Given below is the Sequence Diagram for interactions within the `Logic` component for the `execute("delete 1")` API call.
 
 .Interactions Inside the Logic Component for the `delete 1` Command
-image::DeletePersonSdForLogic.png[width="800"]
+image::SDforDeleteSlot.png[width="800"]
 
 [[Design-Model]]
 === Model component
 
 .Overall structure of the Model Component
-image::ModelClassDiagram.png[width="400"]
+image::ModelClassDiagram.png[width="600"]
 
-*API* : link:{repoURL}/src/PlanMySem/model/Model.java[`Model.java`]
+*API* : link:{repoURL}/src/planmysem/model/Model.java[`Model.java`]
 
 [[Design-Planner]]
 ==== Planner component
 
-*API* : link:{repoURL}/src/PlanMySem/model/Planner.java[`Planner.java`]
+*API* : link:{repoURL}/src/planmysem/data/Planner.java[`Planner.java`]
 
 The `Planner` component,
 
@@ -216,7 +216,7 @@ The `Planner` component,
 [[Design-Semester]]
 ==== Semester component
 
-*API* : link:{repoURL}/src/PlanMySem/model/semester/Semester.java[`Semester.java`]
+*API* : link:{repoURL}/src/planmysem/model/semester/Semester.java[`Semester.java`]
 
 The `Semester` component,
 
@@ -227,7 +227,7 @@ The `Semester` component,
 [[Design-Slot]]
 ==== Slot component
 
-*API* : link:{repoURL}/src/PlanMySem/model/slot/Slot.java[`Slot.java`]
+*API* : link:{repoURL}/src/planmysem/model/slot/Slot.java[`Slot.java`]
 
 The `Slot` component,
 
@@ -244,7 +244,7 @@ Notice how `Slot` does not hold it's end time but rather it holds the `duration`
 .Structure of the Storage Component
 image::StorageClassDiagram.png[width="400"]
 
-*API* : link:{repoURL}/src/PlanMySem/storageFile/Storage.java[`Storage.java`]
+*API* : link:{repoURL}/src/planmysem/storage/Storage.java[`Storage.java`]
 
 The `Storage` component,
 
@@ -381,10 +381,10 @@ Arguments are then parsed via 2 different methods/techniques according to the fo
 
 Hence, parameters in *PlanMySem* can be categorised into 2 categories:
 
-1. Prepended parameters such as `n/NAME`, `st/START_TIME`, `des/DESCRIPTION`, etc.
-2. Non-prepended parameters, A.K.A. keywords, such as `INDEX`, `TYPE_OF_VIEW`. etc.
+1. Prefixed parameters such as `n/NAME`, `st/START_TIME`, `des/DESCRIPTION`, etc.
+2. Non-Prefixed parameters, A.K.A. keywords, such as `INDEX`, `TYPE_OF_VIEW`. etc.
 
-===== Parsing Prepended Parameters
+===== Parsing Prefixed Parameters
 
 To retrieve the set of parameters, the function `private static HashMap<String, Set<String>> getParametersWithArguments(String args)` can be called.
 The function returns a `Hashmap` data structure, specifically `HashMap<String, Set<String>>`, to hold parameters, allowing for easy, quick and efficient access to specific parameters.
@@ -398,9 +398,9 @@ The following are cases in which `IncorrectCommand` is invoked:
 
 ===== Parsing Keywords
 
-Here, keywords are thought of as parameters that are not prepended.
+Here, keywords are thought of as parameters that are not prefixed.
 In *PlanMySem*, keywords are utilized in command structures when they are to be used alone or when order of parameters are important.
-In such cases, there is no logical need for prepending as the meaning of these parameters can be identified.
+In such cases, there is no logical need for prefixing as the meaning of these parameters can be identified.
 
 The function `private String getStartingArgument(String args)` provides this functionality.
 Here, `IncorrectCommand` is invoked due to different circumstances:
@@ -469,9 +469,37 @@ The `Edit` and `Delete` command then makes use of the _tagging_ system to then s
 
 ==== Design Considerations
 
+===== Aspect: Wrapping of primitive data types in `Slot`
 
+* *Alternative 1 (current choice):* Use of "primitive" data types instead of creating and utilising wrapped objects. +
+E.g. `name`, `location` amd `description` are not wrapped but "primitive".
+** Pros: Allows for more flexible code to account for flexible parsing (as needed in this application).
+** Cons: Bigger code base and duplicated code.
+
+* *Alternative 2:* Wrap "primitive" data types.
+** Pros: Less errors in handling invalid values.
+** Cons: May cause inflexibility in writing code to account for flexible parsing.
+
+In summary, in this cause of *PlanMySme*, there is a need to achieve varied and flexible commands and as such,
+it is not necessary to handle invalid values with the innate `Model` objects as these are taken care of when parsing.
+
+Additionally, doing these actions when parsing, though bloats code, allows for more varied responses to the user and improves user experience.
+
+===== Aspect: Storing and accessing `Slots`
+
+* *Alternative 1 (current choice):* Use of `Map`, such as `HashMap` to store `Days` that store `Slots`.
+** Pros: `HashMap` allows for easier and faster, O(1) access time, access of particular `Day` according to date.
+** Cons: This requires splitting of the calendar into days, as such there is no easy way to account for `Slots` that occur across days.
+
+* *Alternative 2:* Store `Slots` in a huge list.
+** Pros: Allows for easier access by "index" and offers flexibility, for example, in the time of slots.
+** Cons: Expensive to access, add and remove items. Furthermore, it is extremely expensive to collect slots that occur in a day, a very important and most likely to be a commonly used feature.
 
 ==== Future Implementation
+
+===== Create and utilise an object to hold `Slots`
+
+===== Create and utilise an object in `Planner` to hold multiple `Semesters`
 
 === List feature
 
@@ -516,7 +544,7 @@ FindCommand will be enhanced by using Levenshtein Distance to generate an ordere
 ** Cons: Large amount of additional operations.
 
 ==== Future Implementation
-
+// to be edited
 The month/week/day view mechanism is facilitated by `PlannerView`.
 It extends `Planner` with different calendar views, stored internally as `monthView`, `weekView` and `dayView`.
 Additionally, it implements the following operations:
@@ -535,6 +563,84 @@ Step 3. The user executes `view month March` command to view the calendar for Ma
 
 // tag::undoredo[]
 === Undo/Redo feature
+
+==== Current Implementation
+
+The undo/redo mechanism is facilitated by `VersionedAddressBook`.
+It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`.
+Additionally, it implements the following operations:
+
+* `VersionedAddressBook#commit()` -- Saves the current address book state in its history.
+* `VersionedAddressBook#undo()` -- Restores the previous address book state from its history.
+* `VersionedAddressBook#redo()` -- Restores a previously undone address book state from its history.
+
+These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
+
+Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
+
+Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
+
+image::UndoRedoStartingStateListDiagram.png[width="800"]
+
+Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+
+image::UndoRedoNewCommand1StateListDiagram.png[width="800"]
+
+Step 3. The user executes `add n/David ...` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
+
+image::UndoRedoNewCommand2StateListDiagram.png[width="800"]
+
+[NOTE]
+If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+
+Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+
+image::UndoRedoExecuteUndoStateListDiagram.png[width="800"]
+
+[NOTE]
+If the `currentStatePointer` is at index 0, pointing to the initial address book state, then there are no previous address book states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+
+The following sequence diagram shows how the undo operation works:
+
+image::UndoRedoSequenceDiagram.png[width="800"]
+
+The `redo` command does the opposite -- it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+
+[NOTE]
+If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone address book states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+
+Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
+
+image::UndoRedoNewCommand3StateListDiagram.png[width="800"]
+
+Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
+
+image::UndoRedoNewCommand4StateListDiagram.png[width="800"]
+
+The following activity diagram summarizes what happens when a user executes a new command:
+
+image::UndoRedoActivityDiagram.png[width="650"]
+
+==== Design Considerations
+
+===== Aspect: How undo & redo executes
+
+* **Alternative 1 (current choice):** Saves the entire address book.
+** Pros: Easy to implement.
+** Cons: May have performance issues in terms of memory usage.
+* **Alternative 2:** Individual command knows how to undo/redo by itself.
+** Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
+** Cons: We must ensure that the implementation of each individual command are correct.
+
+===== Aspect: Data structure to support the undo/redo commands
+
+* **Alternative 1 (current choice):** Use a list to store the history of address book states.
+** Pros: Easy for new Computer Science student undergraduates to understand, who are likely to be the new incoming developers of our project.
+** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both `HistoryManager` and `VersionedAddressBook`.
+* **Alternative 2:** Use `HistoryManager` for undo/redo
+** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
+** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
+
 ==== Current Implementation
 
 The undo/redo mechanism is facilitated by `VersionedPlanner`.

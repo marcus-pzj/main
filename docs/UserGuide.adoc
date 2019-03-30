@@ -344,24 +344,26 @@ image::Find_Command_Output_1.png[width="790"]
 View the planner in a month/week/day view.
 
 1. View the monthly calendar view of the current academic semester. +
-Format: `view month [MONTH]`
+Format: `view month`
 2. View the weekly calendar view of the current academic week. +
 Format: `view week [WEEK]`
 3. View the day view of a particular day in the academic semester. +
-Format: `view day [DATE]`
+Format: `view day [DATE_OR_DAY_OF_WEEK]`
 4. View all the details in the planner. +
 Format: `view all`
 
 [TIP]
-You may omit `[MONTH]`/`[WEEK]`/`[DATE]` to view the format chosen in respect to the current day! +
-E.g. `view month` will allow you to view the current month and `view day` will allow you to view the current day!
+You may omit `[WEEK]`/`[DATE_OR_DAY_OF_WEEK]` to view the calendar with respect to the current date! +
+E.g. `view week` will allow you to view the current week and `view day` will allow you to view the current day!
 
 Examples:
 
 * `view day` +
 View planner for the current date.
-* `view day 01/03/2019` +
+* `view day 01-03-2019` +
 View planner for the first of March.
+* `view day monday` +
+View planner for the upcoming Monday.
 * `view week 7` +
 View planner for week 7 of the academic calendar.
 * `view week recess` +
