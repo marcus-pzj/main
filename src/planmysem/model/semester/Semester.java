@@ -114,7 +114,7 @@ public class Semester implements ReadOnlySemester {
         acadYear = semesterDetails[2];
         noOfWeeks = Integer.parseInt(semesterDetails[3]);
         startDate = LocalDate.parse(semesterDetails[4]);
-        endDate = LocalDate.parse(semesterDetails[5]);
+        endDate = LocalDate.parse(semesterDetails[5]).plusDays(1);
 
         // Initialise HashMap and Sets of all days in current semester
         datesList = startDate.datesUntil(endDate).collect(Collectors.toList());

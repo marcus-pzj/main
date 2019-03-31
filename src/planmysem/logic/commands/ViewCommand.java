@@ -28,27 +28,30 @@ public class ViewCommand extends Command {
     public static final String COMMAND_WORD = "view";
     public static final String COMMAND_WORD_SHORT = "v";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": View month/week/day view or all details of planner."
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": View month/week/day view of planner."
             + "\n\tFormat: view [viewType] [specifier]"
             + "\n\tParameters:"
             + "\n\t\tMandatory: [viewType]"
             + "\n\t\tOptional: [specifier]"
-            + "\n\tExample 1: " + COMMAND_WORD
+            + "\n\tView month example: "
+            + "\n\t\tExample 1: " + COMMAND_WORD
             + " month"
-            + "\n\tExample 2: " + COMMAND_WORD
+            + "\n\tView week example: "
+            + "\n\t\tExample 1: " + COMMAND_WORD
             + " week 7"
-            + "\n\tExample 3: " + COMMAND_WORD
+            + "\n\t\tExample 2: " + COMMAND_WORD
             + " week recess"
-            + "\n\tExample 4: " + COMMAND_WORD
+            + "\n\t\tExample 3: " + COMMAND_WORD
             + " week"
-            + "\n\tExample 5: " + COMMAND_WORD
+            + "\n\t\tExample 4: " + COMMAND_WORD
+            + " week details"
+            + "\n\tView day example: "
+            + "\n\t\tExample 1: " + COMMAND_WORD
             + " day 01/03/2019"
-            + "\n\tExample 6: " + COMMAND_WORD
+            + "\n\t\tExample 2: " + COMMAND_WORD
             + " day monday"
-            + "\n\tExample 7: " + COMMAND_WORD
-            + " day"
-            + "\n\tExample 8: " + COMMAND_WORD
-            + " all";
+            + "\n\t\tExample 3: " + COMMAND_WORD
+            + " day";
 
     private final String viewArgs;
 
@@ -60,13 +63,11 @@ public class ViewCommand extends Command {
     public CommandResult execute(Model model, CommandHistory commandHistory) {
         String viewType;
         String viewSpecifier;
+        String detailFlag = null;
         final Semester currentSemester = model.getPlanner().getSemester();
         String output = null;
 
-        if ("all".equals(viewArgs)) {
-            //TODO: print all planner details
-            output = "all";
-        } else if ("month".equals(viewArgs)) {
+        if ("month".equals(viewArgs)) {
             output = displayMonthView(currentSemester);
         } else if ("week".equals(viewArgs)) {
             output = displayWeekView(currentSemester, null);
@@ -75,10 +76,19 @@ public class ViewCommand extends Command {
         } else {
             viewType = viewArgs.split(" ")[0];
             viewSpecifier = viewArgs.split(" ")[1];
+            viewSpecifier = viewSpecifier.substring(0, 1).toUpperCase() + viewSpecifier.substring(1).toLowerCase();
+
+            if (viewArgs.split(" ").length == 3) {
+                detailFlag = viewArgs.split(" ")[2];
+            }
 
             switch (viewType) {
             case "week":
-                output = displayWeekView(currentSemester, viewSpecifier);
+                if ("Details".matches(viewSpecifier) || detailFlag != null) {
+                    output = displayDetailedWeekView(currentSemester, viewSpecifier);
+                } else {
+                    output = displayWeekView(currentSemester, viewSpecifier);
+                }
                 break;
             case "day":
                 output = displayDayView(currentSemester, viewSpecifier);
@@ -158,31 +168,34 @@ public class ViewCommand extends Command {
     }
 
     /**
-     * Display all slots for a given week.
+     * Display all slots for a given week in a formatted view.
      */
     private String displayWeekView(Semester currentSemester, String week) {
         HashMap<LocalDate, Day> allDays = currentSemester.getDays();
+        List<LocalDate> datesList;
+        LocalDate weekStart;
+        LocalDate weekEnd;
+        int[] weekOfYear = {0, 0};
         StringBuilder sb = new StringBuilder();
 
         if (week == null) {
-            System.out.println(allDays.get(LocalDate.now()).getType());
+            week = allDays.get(LocalDate.now()).getType() + " of " + currentSemester.getName();
 
+            weekStart = LocalDate.now().with(WeekFields.ISO.dayOfWeek(), 1);
+            weekEnd = weekStart.plusDays(7);
+            datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
         } else {
             HashMap<Integer, String> acadCal = currentSemester.getAcadCal();
-            //System.out.println(currentSemester.getAcadCal());
             String key;
-            int[] weekOfYear = {0, 0};
-            List<LocalDate> datesList;
 
             if ("Recess".equals(week) || "Reading".equals(week) || "Examination".equals(week)
                     || "Orientation".equals(week)) {
                 key = week + " Week" + "_" + currentSemester.getName();
-                sb.append(week + "Week" + " of " + currentSemester.getName() + "\n");
+                week = week + " Week of " + currentSemester.getName();
             } else {
                 key = "Week " + week + "_" + currentSemester.getName();
-                sb.append("Week " + week + " of " + currentSemester.getName() + "\n");
+                week = "Week " + week + " of " + currentSemester.getName();
             }
-            //System.out.println(key);
 
             for (Map.Entry<Integer, String> entry: acadCal.entrySet()) {
                 if (key.equals(entry.getValue())) {
@@ -193,27 +206,83 @@ public class ViewCommand extends Command {
                     }
                 }
             }
-            //System.out.println(weekOfYear[0] + ", " + weekOfYear[1]);
 
-            LocalDate weekStart = LocalDate.now().with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
+            weekStart = LocalDate.now().with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
             weekStart = weekStart.with(WeekFields.ISO.dayOfWeek(), 1);
-            LocalDate weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 1);
+            weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 1);
             datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
-            //System.out.println(datesList);
+        }
 
-            sb.append("__________________________________________________________________________\n\n");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            for (LocalDate date : datesList) {
-                sb.append(displayDayView(currentSemester, date.format(formatter)));
-                sb.append("__________________________________________________________________________\n\n");
+        // Print academic week header.
+        int width = 92;
+        sb.append(centerAlignText(width, week) + "\n");
+
+        // Print formatted week view.
+        sb.append(getFormattedWeek(allDays, datesList));
+        if (weekOfYear[1] != 0) {
+            weekStart = weekEnd;
+            weekEnd = weekStart.plusDays(7);
+            datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
+            sb.append("\n" + getFormattedWeek(allDays, datesList));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Display all slots for a given week in a detailed view.
+     */
+    private String displayDetailedWeekView(Semester currentSemester, String week) {
+        HashMap<LocalDate, Day> allDays = currentSemester.getDays();
+        List<LocalDate> datesList;
+        LocalDate weekStart;
+        LocalDate weekEnd;
+        int[] weekOfYear = {0, 0};
+        StringBuilder sb = new StringBuilder();
+
+        if (week == null || "Details".matches(week)) {
+            sb.append(allDays.get(LocalDate.now()).getType() + " of " + currentSemester.getName() + "\n");
+
+            weekStart = LocalDate.now().with(WeekFields.ISO.dayOfWeek(), 1);
+            weekEnd = weekStart.plusDays(7);
+            datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
+        } else {
+            HashMap<Integer, String> acadCal = currentSemester.getAcadCal();
+            String key;
+
+            if ("Recess".equals(week) || "Reading".equals(week) || "Examination".equals(week)
+                    || "Orientation".equals(week)) {
+                key = week + " Week" + "_" + currentSemester.getName();
+                sb.append(week + " Week" + " of " + currentSemester.getName() + "\n");
+            } else {
+                key = "Week " + week + "_" + currentSemester.getName();
+                sb.append("Week " + week + " of " + currentSemester.getName() + "\n");
             }
 
-            // get acad cal map
-            // swap key and value
-            // find week of year from acad week
-            // get all dates for week of year
-            // get all slots for all dates found
-            // format and print out all slots
+            for (Map.Entry<Integer, String> entry: acadCal.entrySet()) {
+                if (key.equals(entry.getValue())) {
+                    if (weekOfYear[0] == 0) {
+                        weekOfYear[0] = entry.getKey();
+                    } else {
+                        weekOfYear[1] = entry.getKey();
+                    }
+                }
+            }
+
+            weekStart = LocalDate.now().with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
+            weekStart = weekStart.with(WeekFields.ISO.dayOfWeek(), 1);
+            weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 1);
+            if (weekOfYear[1] != 0) {
+                weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 2);
+            }
+            datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
+        }
+
+        sb.append("__________________________________________________________________________\n\n");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        for (LocalDate date : datesList) {
+            sb.append(displayDayView(currentSemester, date.format(formatter)));
+            sb.append("__________________________________________________________________________\n\n");
         }
 
         return sb.toString();
@@ -276,6 +345,111 @@ public class ViewCommand extends Command {
             }
 
             sb.append("\n\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Center aligns text.
+     */
+    private String centerAlignText(int width, String text) {
+        String formattedString = text;
+        int padSize = width - formattedString.length();
+        int padStart = formattedString.length() + padSize / 2;
+        formattedString = String.format("%" + padStart + "s", formattedString);
+        formattedString = String.format("%-" + width + "s", formattedString);
+
+        return formattedString;
+    }
+
+    /**
+     * Returns formatted week view.
+     */
+    private String getFormattedWeek(HashMap<LocalDate, Day> allDays, List<LocalDate> datesList) {
+        StringBuilder sb = new StringBuilder();
+
+        // Print line divider.
+        int width = 92;
+        for (int i = 0; i < width; i++) {
+            sb.append("-");
+        }
+        sb.append("\n");
+
+        // Print days of week header.
+        width = 12;
+        sb.append("|" + centerAlignText(width, "Monday") + "|");
+        sb.append(centerAlignText(width, "Tuesday") + "|");
+        sb.append(centerAlignText(width, "Wednesday") + "|");
+        sb.append(centerAlignText(width, "Thursday") + "|");
+        sb.append(centerAlignText(width, "Friday") + "|");
+        sb.append(centerAlignText(width, "Saturday") + "|");
+        sb.append(centerAlignText(width, "Sunday") + "|");
+
+        sb.append("\n|");
+        for (LocalDate date : datesList) {
+            sb.append(centerAlignText(width, date.toString()) + "|");
+        }
+        sb.append("\n");
+
+        width = 92;
+        for (int i = 0; i < width; i++) {
+            sb.append("-");
+        }
+        sb.append("\n");
+
+        // Retrieve all slots for each day.
+        ArrayList<ArrayList<Slot>> slotsInDayList = new ArrayList<>();
+        for (LocalDate date : datesList) {
+            ArrayList<Slot> allSlotsInDay = allDays.get(date).getSlots();
+            Comparator<Slot> comparator = new Comparator<Slot>() {
+                @Override
+                public int compare(final Slot o1, final Slot o2) {
+                    return o1.getStartTime().compareTo(o2.getStartTime());
+                }
+            };
+            allSlotsInDay.sort(comparator);
+            slotsInDayList.add(new ArrayList<>(allSlotsInDay));
+        }
+
+        // Print all slots for each day.
+        width = 12;
+        while (!slotsInDayList.get(0).isEmpty() || !slotsInDayList.get(1).isEmpty()
+                || !slotsInDayList.get(2).isEmpty() || !slotsInDayList.get(3).isEmpty()
+                || !slotsInDayList.get(4).isEmpty() || !slotsInDayList.get(5).isEmpty()
+                || !slotsInDayList.get(6).isEmpty()) {
+            StringBuilder slotTimingLine = new StringBuilder();
+            StringBuilder slotTitleLine = new StringBuilder();
+            StringBuilder emptyLine = new StringBuilder();
+            slotTimingLine.append("|");
+            slotTitleLine.append("\n|");
+            emptyLine.append("\n|");
+
+            for (ArrayList<Slot> allSlotsInDay : slotsInDayList) {
+                if (allSlotsInDay.isEmpty()) {
+                    slotTimingLine.append(centerAlignText(width, "") + "|");
+                    slotTitleLine.append(centerAlignText(width, "") + "|");
+                } else {
+                    Slot slot = allSlotsInDay.get(0);
+                    slotTimingLine.append("*" + slot.getStartTime());
+                    slotTimingLine.append("-");
+                    slotTimingLine.append(Utils.getEndTime(slot.getStartTime(), slot.getDuration()) + "|");
+
+                    String shortTitle = slot.getName().substring(0, 10) + "..";
+                    slotTitleLine.append(shortTitle + "|");
+
+                    allSlotsInDay.remove(0);
+                }
+                emptyLine.append(centerAlignText(width, "") + "|");
+            }
+
+            sb.append(slotTimingLine.toString() + slotTitleLine.toString() + emptyLine.toString() + "\n");
+        }
+
+        // Print closing border.
+        width = 92;
+        for (int i = 0; i < width; i++) {
+            sb.append("-");
         }
 
         return sb.toString();

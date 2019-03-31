@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import planmysem.logic.LogicManager;
-import planmysem.model.Model;
-import planmysem.model.ModelManager;
 import planmysem.storage.Storage;
 import planmysem.storage.StorageFile;
 import planmysem.ui.Gui;

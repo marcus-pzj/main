@@ -15,6 +15,7 @@ import planmysem.logic.commands.ExportCommand;
 import planmysem.logic.commands.FindCommand;
 import planmysem.logic.commands.HelpCommand;
 import planmysem.logic.commands.HistoryCommand;
+import planmysem.logic.commands.ImportCommand;
 import planmysem.logic.commands.ListCommand;
 import planmysem.logic.commands.RedoCommand;
 import planmysem.logic.commands.UndoCommand;
@@ -88,6 +89,9 @@ public class ParserManager {
 
         case ExportCommand.COMMAND_WORD:
             return new ExportCommand();
+
+        case ImportCommand.COMMAND_WORD:
+            return new ImportCommand(arguments);
 
         case HelpCommand.COMMAND_WORD: // Fallthrough
 

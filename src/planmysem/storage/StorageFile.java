@@ -18,8 +18,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import planmysem.common.exceptions.IllegalValueException;
-import planmysem.model.Model;
-import planmysem.model.ModelManager;
+import planmysem.model.Planner;
 import planmysem.storage.jaxb.AdaptedPlanner;
 
 /**
@@ -70,14 +69,14 @@ public class StorageFile implements Storage {
     }
 
     @Override
-    public void save(Model model) throws StorageOperationException {
+    public void save(Planner planner) throws StorageOperationException {
         /* Note: Note the 'try with resource' statement below.
          * More info: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
          */
         try (final Writer fileWriter =
                      new BufferedWriter(new FileWriter(path.toFile()))) {
 
-            final AdaptedPlanner toSave = new AdaptedPlanner(model.getPlanner());
+            final AdaptedPlanner toSave = new AdaptedPlanner(planner);
             final Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             if (isEncrypted) {
@@ -96,7 +95,7 @@ public class StorageFile implements Storage {
     }
 
     @Override
-    public Model load() throws StorageOperationException {
+    public Planner load() throws StorageOperationException {
         try (final BufferedReader fileReader =
                      new BufferedReader(new FileReader(path.toFile()))) {
 
@@ -114,7 +113,7 @@ public class StorageFile implements Storage {
             if (loaded.isAnyRequiredFieldMissing()) {
                 throw new StorageOperationException("File model missing some elements");
             }
-            return new ModelManager(loaded.toModelType());
+            return loaded.toModelType();
 
             /* Note: Here, we are using an exception to create the file if it is missing or empty. However, we should
              * minimize using exceptions to facilitate normal paths of execution. If we consider the missing file as a
@@ -123,7 +122,7 @@ public class StorageFile implements Storage {
 
             // create empty file if not found or is empty
         } catch (FileNotFoundException | NullPointerException ex) {
-            final Model empty = new ModelManager();
+            final Planner empty = new Planner();
             save(empty);
             return empty;
 

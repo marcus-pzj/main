@@ -40,6 +40,8 @@ public class ViewCommandParser implements Parser<ViewCommand> {
         } else if ("day".equals(viewArgs[1]) && viewArgs.length == 3) {
             //TODO: ensure day arguments
             return new ViewCommand(viewArgs[1] + " " + viewArgs[2]);
+        } else if ("week".equals(viewArgs[1]) && viewArgs.length == 4) {
+            return new ViewCommand(viewArgs[1] + " " + viewArgs[2] + " " + viewArgs[3]);
         }
 
         throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewCommand.MESSAGE_USAGE));

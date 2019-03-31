@@ -1,7 +1,7 @@
 package planmysem.storage;
 
 import planmysem.common.exceptions.IllegalValueException;
-import planmysem.model.Model;
+import planmysem.model.Planner;
 
 /**
  * API of the Logic component
@@ -13,14 +13,14 @@ public interface Storage {
      *
      * @throws StorageFile.StorageOperationException if there were errors converting and/or storing model to file.
      */
-    void save(Model model) throws StorageFile.StorageOperationException;
+    void save(Planner planner) throws StorageFile.StorageOperationException;
 
     /**
      * Loads model from this storage file.
      *
      * @throws StorageFile.StorageOperationException if there were errors reading and/or converting model from file.
      */
-    Model load() throws StorageFile.StorageOperationException;
+    Planner load() throws StorageFile.StorageOperationException;
 
     /**
      * Gets path of file.

@@ -349,8 +349,10 @@ Format: `view month`
 Format: `view week [WEEK]`
 3. View the day view of a particular day in the academic semester. +
 Format: `view day [DATE_OR_DAY_OF_WEEK]`
-4. View all the details in the planner. +
-Format: `view all`
+
+[TIP]
+You may add in the parameter `details` after `[WEEK]` to view the details of all _slots_ with respect to `[WEEK]`. +
+E.g. `view week details` will allow you to view details of all _slots_ in the current week!
 
 [TIP]
 You may omit `[WEEK]`/`[DATE_OR_DAY_OF_WEEK]` to view the calendar with respect to the current date! +
@@ -364,6 +366,8 @@ View planner for the current date.
 View planner for the first of March.
 * `view day monday` +
 View planner for the upcoming Monday.
+* `view week details` +
+View planner for current week of the academic calendar with details of all _slots_.
 * `view week 7` +
 View planner for week 7 of the academic calendar.
 * `view week recess` +
@@ -374,9 +378,6 @@ View planner for the months of the current academic semester.
 [#img-view]
 .[.underline]#Output after entering `view month`#
 image::Ui.png[width="790"]
-
-* `view all` +
-View all the details in the planner.
 {zwsp}
 
 {zwsp}
