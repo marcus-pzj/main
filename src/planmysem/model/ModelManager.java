@@ -14,7 +14,6 @@ import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.semester.Semester;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
-import planmysem.storage.Storage;
 
 /**
  * Represents the entire Planner. Contains the model of the Planner.
