@@ -487,7 +487,7 @@ Additionally, doing these actions when parsing, though bloats code, allows for m
 
 ===== Aspect: Storing and accessing `Slots`
 
-* *Alternative 1 (current choice):* Use of `Map`, such as `HashMap` to store `Days` that store `Slots`.
+* *Alternative 1 (current implementation):* Use of `Map`, such as `HashMap` to store `Days` that store `Slots`.
 ** Pros: `HashMap` allows for easier and faster, O(1) access time, access of particular `Day` according to date.
 ** Cons: This requires splitting of the calendar into days, as such there is no easy way to account for `Slots` that occur across days.
 
@@ -502,13 +502,23 @@ Additionally, doing these actions when parsing, though bloats code, allows for m
 ===== Create and utilise an object in `Planner` to hold multiple `Semesters`
 
 === List feature
+==== Current Implementation
+The list function supports searching using a single keyword. +
 
+The keyword is compared to all names/tags of all `Slots` existing in `Planner`. +
+
+If an exact match is found, the `Slot` will be added to the output list.
 
 === Find feature
 ==== Current Implementation
 The find function supports searching using a single keyword. +
-If some part of the name of `Slot` / tags attributed to `Slot` contains the specified keyword,
-a positive match is registered and the designated `Slot` will be added to the output list. +
+All existing `Slots` are weighted based on their name/tag's <<levenshtein-distance,Levenshtein Distance>> from the keyword.
+
+A low <<levenshtein-distance,Levenshtein Distance>> is attributed to a high level of similarity between the name/tag and the keyword.
+(A value of 0 constitutes an exact match.)
+
+The weighted `Slots` are inserted into a `PriorityQueue` and the closest matching `Slots`
+will be polled into the output list. +
 
 ==== Design Considerations
 
@@ -555,87 +565,12 @@ Step 3. The user executes `view month March` command to view the calendar for Ma
 
 // tag::undoredo[]
 === Undo/Redo feature
-
 ==== Current Implementation
 
-The undo/redo mechanism is facilitated by `VersionedAddressBook`.
-It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`.
-Additionally, it implements the following operations:
-
-* `VersionedAddressBook#commit()` -- Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` -- Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` -- Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-image::UndoRedoStartingStateListDiagram.png[width="800"]
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-image::UndoRedoNewCommand1StateListDiagram.png[width="800"]
-
-Step 3. The user executes `add n/David ...` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-image::UndoRedoNewCommand2StateListDiagram.png[width="800"]
-
+The undo/redo mechanism is facilitated by `VersionedPlanner`. +
 [NOTE]
-If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+Only `Add`, `Edit` and `Delete` commands can be undone/redone. +
 
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-image::UndoRedoExecuteUndoStateListDiagram.png[width="800"]
-
-[NOTE]
-If the `currentStatePointer` is at index 0, pointing to the initial address book state, then there are no previous address book states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
-
-The following sequence diagram shows how the undo operation works:
-
-image::UndoRedoSequenceDiagram.png[width="800"]
-
-The `redo` command does the opposite -- it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-[NOTE]
-If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone address book states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-image::UndoRedoNewCommand3StateListDiagram.png[width="800"]
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
-
-image::UndoRedoNewCommand4StateListDiagram.png[width="800"]
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-image::UndoRedoActivityDiagram.png[width="650"]
-
-==== Design Considerations
-
-===== Aspect: How undo & redo executes
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-** Pros: Easy to implement.
-** Cons: May have performance issues in terms of memory usage.
-* **Alternative 2:** Individual command knows how to undo/redo by itself.
-** Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-** Cons: We must ensure that the implementation of each individual command are correct.
-
-===== Aspect: Data structure to support the undo/redo commands
-
-* **Alternative 1 (current choice):** Use a list to store the history of address book states.
-** Pros: Easy for new Computer Science student undergraduates to understand, who are likely to be the new incoming developers of our project.
-** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both `HistoryManager` and `VersionedAddressBook`.
-* **Alternative 2:** Use `HistoryManager` for undo/redo
-** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
-** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
-
-==== Current Implementation
-
-The undo/redo mechanism is facilitated by `VersionedPlanner`.
 It extends `Planner` with an undo/redo history, stored internally as an `plannerStateList` and `currentStatePointer`.
 Additionally, it implements the following operations:
 
@@ -649,26 +584,46 @@ Given below is an example usage scenario and how the undo/redo mechanism behaves
 
 Step 1. The user launches the application for the first time. The `VersionedPlanner` will be initialized with the initial planner state, and the `currentStatePointer` pointing to that single planner state.
 
-Step 2. The user executes `delete 5` command to delete the 5th slot in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+image::UndoRedoStartingStateListDiagram.png[width="800"]
+
+Step 2. The user executes `delete 5` command to delete the 5th `Slot` in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+
+image::UndoRedoNewCommand1StateListDiagram.png[width="800"]
 
 Step 3. The user executes `add n/CS2113T ...` to add a new slot. The `add` command also calls `Model#commitPlanner()`, causing another modified planner state to be saved into the `plannerStateList`.
+
+image::UndoRedoNewCommand2StateListDiagram.png[width="800"]
 
 [NOTE]
 If a command fails its execution, it will not call `Model#commitPlanner()`, so the planner state will not be saved into the `plannerStateList`.
 
-Step 4. The user now decides that adding the slot was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoPlanner()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+Step 4. The user now decides that adding the `Slot` was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undo()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+
+image::UndoRedoExecuteUndoStateListDiagram.png[width="800"]
 
 [NOTE]
-If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndo()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+
+The following sequence diagram shows how the undo operation works:
+
+image::UndoRedoSequenceDiagram.png[width="800"]
 
 The `redo` command does the opposite -- it calls `Model#redoPlanner()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the planner to that state.
 
 [NOTE]
-If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedo()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
 
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the planner, such as `list`, will usually not call `Model#commitPlanner()`, `Model#undoPlanner()` or `Model#redoPlanner()`. Thus, the `plannerStateList` remains unchanged.
 
-Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/CS2113T ...` command. This is the behavior that most modern desktop applications follow.
+image::UndoRedoNewCommand3StateListDiagram.png[width="800"]
+
+Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
+
+image::UndoRedoNewCommand4StateListDiagram.png[width="800"]
+
+The following activity diagram summarizes what happens when a user executes a new command:
+
+image::UndoRedoActivityDiagram.png[width="650"]
 
 ==== Design Considerations
 
@@ -678,7 +633,7 @@ Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since th
 ** Pros: Easy to implement.
 ** Cons: May have performance issues in terms of memory usage.
 * **Alternative 2:** Individual command knows how to undo/redo by itself.
-** Pros: Will use less memory (e.g. for `delete`, just save the slot being deleted).
+** Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
 ** Cons: We must ensure that the implementation of each individual command are correct.
 
 ===== Aspect: Data structure to support the undo/redo commands
@@ -689,6 +644,63 @@ Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since th
 * **Alternative 2:** Use `HistoryManager` for undo/redo
 ** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
 ** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
+
+//==== Current Implementation
+//
+//The undo/redo mechanism is facilitated by `VersionedPlanner`.
+//It extends `Planner` with an undo/redo history, stored internally as an `plannerStateList` and `currentStatePointer`.
+//Additionally, it implements the following operations:
+//
+//* `VersionedPlanner#commit()` -- Saves the current planner state in its history.
+//* `VersionedPlanner#undo()` -- Restores the previous planner state from its history.
+//* `VersionedPlanner#redo()` -- Restores a previously undone planner state from its history.
+//
+//These operations are exposed in the `Model` interface as `Model#commitPlanner()`, `Model#undoPlanner()` and `Model#redoPlanner()` respectively.
+//
+//Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
+//
+//Step 1. The user launches the application for the first time. The `VersionedPlanner` will be initialized with the initial planner state, and the `currentStatePointer` pointing to that single planner state.
+//
+//Step 2. The user executes `delete 5` command to delete the 5th slot in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+//
+//Step 3. The user executes `add n/CS2113T ...` to add a new slot. The `add` command also calls `Model#commitPlanner()`, causing another modified planner state to be saved into the `plannerStateList`.
+//
+//[NOTE]
+//If a command fails its execution, it will not call `Model#commitPlanner()`, so the planner state will not be saved into the `plannerStateList`.
+//
+//Step 4. The user now decides that adding the slot was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoPlanner()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+//
+//[NOTE]
+//If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+//
+//The `redo` command does the opposite -- it calls `Model#redoPlanner()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the planner to that state.
+//
+//[NOTE]
+//If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+//
+//Step 5. The user then decides to execute the command `list`. Commands that do not modify the planner, such as `list`, will usually not call `Model#commitPlanner()`, `Model#undoPlanner()` or `Model#redoPlanner()`. Thus, the `plannerStateList` remains unchanged.
+//
+//Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/CS2113T ...` command. This is the behavior that most modern desktop applications follow.
+//
+//==== Design Considerations
+//
+//===== Aspect: How undo & redo executes
+//
+//* **Alternative 1 (current choice):** Saves the entire planner.
+//** Pros: Easy to implement.
+//** Cons: May have performance issues in terms of memory usage.
+//* **Alternative 2:** Individual command knows how to undo/redo by itself.
+//** Pros: Will use less memory (e.g. for `delete`, just save the slot being deleted).
+//** Cons: We must ensure that the implementation of each individual command are correct.
+//
+//===== Aspect: Data structure to support the undo/redo commands
+//
+//* **Alternative 1 (current choice):** Use a list to store the history of planner states.
+//** Pros: Easy for new Computer Science student undergraduates to understand, who are likely to be the new incoming developers of our project.
+//** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both `HistoryManager` and `VersionedPlanner`.
+//* **Alternative 2:** Use `HistoryManager` for undo/redo
+//** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
+//** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
 // end::undoredo[]
 
 === Data Encryption / Decryption feature
@@ -1383,23 +1395,6 @@ Any model stored on to the planner is not meant to be shared with others, unless
 ////
 
 [appendix]
-== Product Survey
-
-*Product Name*
-
-Author: ...
-
-Pros:
-
-* ...
-* ...
-
-Cons:
-
-* ...
-* ...
-
-[appendix]
 == Instructions for Manual Testing
 
 Given below are instructions to test the app manually.
@@ -1421,7 +1416,6 @@ These instructions only provide a starting point for testers to work on; testers
 .. Re-launch the app by double-clicking the jar file. +
    Expected: The most recent window size and location is retained.
 
-_{ more test cases ... }_
 
 === Deleting a slot
 
@@ -1435,7 +1429,6 @@ _{ more test cases ... }_
 .. Other incorrect delete commands to try: `delete`, `delete x` (where x is larger than the list size) _{give more}_ +
    Expected: Similar to previous.
 
-_{ more test cases ... }_
 
 === Saving data
 
@@ -1443,4 +1436,3 @@ _{ more test cases ... }_
 
 .. _{explain how to simulate a missing/corrupted file and the expected behavior}_
 
-_{ more test cases ... }_
