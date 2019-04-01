@@ -92,7 +92,7 @@ public class Messages {
     public static String craftListMessage(List<WeightedName> tries) {
         StringBuilder sb = new StringBuilder();
 
-//        sb.append("Here are the closest matching names/tags: \n");
+        //sb.append("Here are the closest matching names/tags: \n");
 
         int count = 1;
         for (WeightedName wn : tries) {
