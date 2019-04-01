@@ -119,4 +119,12 @@ public class FindCommand extends Command {
 
         weightedNames.add(distNameTrie);
     }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public boolean getIsFindByName() {
+        return isFindByName;
+    }
 }
