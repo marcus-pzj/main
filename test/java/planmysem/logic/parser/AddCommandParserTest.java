@@ -40,8 +40,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         null
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
