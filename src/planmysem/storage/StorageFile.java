@@ -35,7 +35,7 @@ public class StorageFile implements Storage {
      */
     public final Path path;
     private final JAXBContext jaxbContext;
-    private final boolean isEncrypted = false; //set to true to encrypt model
+    private final boolean isEncrypted = true; //set to true to encrypt model
 
     /**
      * @throws InvalidStorageFilePathException if the default path is invalid

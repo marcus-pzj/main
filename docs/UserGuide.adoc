@@ -411,7 +411,7 @@ Format: `redo`
 
 [[encrypt]]
 === Encrypting/decrypting data files
-Planner data is automatically encrypted before saving and decrypted before loading. You do not need to encrypt or decrypt he data manually.
+Planner data is automatically encrypted before saving and decrypted before loading. You do not need to encrypt or decrypt the data manually.
 {zwsp}
 
 {zwsp}
@@ -419,7 +419,16 @@ Planner data is automatically encrypted before saving and decrypted before loadi
 [[import]]
 === Importing .ics formatted files `[coming in v2.0]`
 You can import an .ics file into the planner.
-Format: `import FILENAME`
+Format: `import filename`
+[NOTE]
+====
+The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. The file to be imported has to be located in the PlanMySem main directory.+
+{zwsp}
+====
+[WARNING]
+For .ics files that are created from other calendar applications, events with recurrence will not be recursed in our
+application. Events that are outside of the current school semester will also not be imported.
+
 {zwsp}
 
 {zwsp}
@@ -436,6 +445,10 @@ image::Export_Command_Output_1.png[width="420"]
 ====
 The exported file is named "PlanMySem.ics" and is saved in the main directory.
 The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. +
+
+====
+[WARNING]
+Exporting will REMOVE all tags in the planner.
 
 [#img-exportFile]
 .[.underline]#Location of PlanMySem.ics file#
