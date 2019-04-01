@@ -9,9 +9,11 @@ import planmysem.common.Clock;
 import planmysem.common.Messages;
 import planmysem.common.Utils;
 import planmysem.logic.CommandHistory;
+import planmysem.logic.commands.Command;
 import planmysem.logic.commands.CommandResult;
 import planmysem.logic.commands.FindCommand;
 import planmysem.logic.parser.FindCommandParser;
+import planmysem.logic.parser.ParserManager;
 import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
 import planmysem.model.ModelManager;
@@ -51,6 +53,8 @@ public class FindCommandTest {
             "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore " +
             "eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui " +
             "officia deserunt mollit anim id est laborum";
+
+    private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -124,6 +128,13 @@ public class FindCommandTest {
      *  Parser Tests
      */
 
+    @Test
+    public void execute_Valid_FindCommand_ParserManager() throws Exception {
+        ParserManager parserManager = new ParserManager();
+        Command actualFindCommand = parserManager.parseCommand("find n/CS2113T");
+        CommandResult expectedFindCommandOutput = new FindCommandParser().parse("n/CS2113T").execute(model, EMPTY_COMMAND_HISTORY );
+        assertEquals(expectedFindCommandOutput, actualFindCommand.execute(model, EMPTY_COMMAND_HISTORY));
+    }
     @Test
     public void execute_Invalid_IncorrectPrefix_throwsParserException() throws Exception {
         FindCommandParser findCommandParser = new FindCommandParser();
