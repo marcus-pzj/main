@@ -1,7 +1,6 @@
 package planmysem.model.semester;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class Day implements ReadOnlyDay {
         this.dayOfWeek = day.getDayOfWeek();
         this.type = day.getType();
         for (Slot slot : day.getSlots()) {
-            this.slots.add(slot);
+            this.slots.add(new Slot(slot));
         }
     }
 
@@ -38,7 +37,7 @@ public class Day implements ReadOnlyDay {
         this.type = weekType;
 
         for (Slot slot : slots) {
-            this.slots.add(slot);
+            this.slots.add(new Slot(slot));
         }
     }
 
@@ -46,30 +45,7 @@ public class Day implements ReadOnlyDay {
      * Add a slot to the day.
      */
     public void addSlot(Slot slot) {
-        slots.add(slot);
-    }
-
-    /**
-     * Edit a slot in the day.
-     */
-    public void editSlot(ReadOnlySlot targetSlot, LocalTime startTime, int duration,
-                         String name, String location, String description) {
-        for (Slot slot : slots) {
-            if (slot.equals(targetSlot)) {
-                if (startTime != null) {
-                    slot.setStartTime(startTime);
-                }
-                if (duration != -1) {
-                    slot.setDuration(duration);
-                }
-
-                slot.setName(name);
-
-                slot.setLocation(location);
-
-                slot.setDescription(description);
-            }
-        }
+        slots.add(new Slot(slot));
     }
 
     /**

@@ -71,6 +71,13 @@ public class ListCommand extends Command {
                 Messages.craftListMessage(selectedSlots)));
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public boolean getIsListByName() {
+        return isListByName;
+    }
 }
 
 

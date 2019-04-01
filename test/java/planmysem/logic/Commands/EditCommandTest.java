@@ -167,7 +167,7 @@ public class EditCommandTest {
                 description,
                 tags
         );
-
+        expectedModel.commit();
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
     }
 
@@ -269,6 +269,7 @@ public class EditCommandTest {
                 description,
                 tags
         );
+        expectedModel.commit();
 
         assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
     }

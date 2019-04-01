@@ -85,7 +85,7 @@ public class DeleteCommand extends Command {
                 throw new CommandException(Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
             }
         }
-
+        model.commit();
         return new CommandResult(String.format(MESSAGE_SUCCESS,
                 selectedSlots.size(), messageSelected, messageSlots));
     }

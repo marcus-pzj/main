@@ -131,6 +131,7 @@ public class DeleteCommandTest {
 
         expectedModel.removeSlot(pair3);
         expectedModel.removeSlot(pair4);
+        expectedModel.commit();
 
         assertCommandSuccess(deleteCommand, model, commandHistory, expectedMessage, expectedModel);
     }
@@ -147,6 +148,7 @@ public class DeleteCommandTest {
                 Messages.craftSelectedMessage("Deleted Slot:", selectedSlots));
 
         expectedModel.removeSlot(slot);
+        expectedModel.commit();
 
         assertCommandSuccess(deleteCommand, model, commandHistory, expectedMessage, expectedModel);
     }

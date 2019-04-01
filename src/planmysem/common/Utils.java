@@ -203,7 +203,7 @@ public class Utils {
         }
 
         // cost for transforming each letter in String rhs
-        for (int j = 1; j < rhs.length() + 1; j++) {
+        for (int j = 1; j < rhs.length() + 1 && j < 20; j++) {
             // initial cost in String rhs
             newCost[0] = j;
 

@@ -75,7 +75,8 @@ public class AdaptedSlot {
      * @throws IllegalValueException if there were any model constraints violated in the IcsSemester
      */
     public Slot toModelType() throws IllegalValueException {
-        if (hasIllegalValues(name) || hasIllegalValues(location) || hasIllegalValues(description) || duration < 0) {
+        if ((name != null && hasIllegalValues(name)) || (location != null && hasIllegalValues(location))
+                || (description != null && hasIllegalValues(description)) || duration < 0) {
             throw new IllegalValueException(MESSAGE_ILLEGAL_VALUE);
         }
 

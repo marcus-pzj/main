@@ -11,6 +11,7 @@ import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.logic.parser.ParserManager;
 import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
+import planmysem.model.ModelManager;
 import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.storage.Storage;
@@ -27,9 +28,9 @@ public class LogicManager implements Logic {
     private final CommandHistory history;
     private final ParserManager parserManager;
 
-    public LogicManager(Storage storageFile, Model model) {
+    public LogicManager(Storage storageFile) throws Exception {
         this.storageFile = storageFile;
-        this.model = model;
+        this.model = new ModelManager(storageFile.load());
         this.history = new CommandHistory();
         this.parserManager = new ParserManager();
     }
@@ -54,7 +55,7 @@ public class LogicManager implements Logic {
             history.add(userCommandText);
         }
         try {
-            storageFile.save(model);
+            storageFile.save(model.getPlanner());
         } catch (StorageFile.StorageOperationException soe) {
             throw new CommandException(STORAGE_ERROR + soe, soe);
         }
@@ -66,24 +67,4 @@ public class LogicManager implements Logic {
     public ObservableList<String> getHistory() {
         return history.getHistory();
     }
-
-
-    //    /**
-    //     * Creates the StorageFile object based on the user specified path (if any) or the default storageFile path.
-    //     *
-    //     * @throws StorageFile.InvalidStorageFilePathException if the target file path is incorrect.
-    //     */
-    //    private StorageFile initializeStorage() throws JAXBException, StorageFile.InvalidStorageFilePathException {
-    //        return new StorageFile();
-    //    }
-
-    //    /**
-    //     * Updates the {@link #lastShownSlots} if the commandResult contains a list of Days.
-    //     */
-    //    private void recordResult(CommandResult commandResult) {
-    //        final Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> slots = commandResult.getRelevantSlots();
-    //        if (slots.isPresent()) {
-    //            lastShownSlots = slots.get();
-    //        }
-    //    }
 }

@@ -1,3 +1,4 @@
+//@@author marcus-pzj
 package planmysem.logic.commands;
 
 import static java.util.Objects.requireNonNull;
@@ -7,7 +8,7 @@ import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.model.Model;
 
 /**
- * Reverts the {@code model}'s address book to its previously undone state.
+ * Reverts the {@code model}'s planner to its previously undone state.
  */
 public class RedoCommand extends Command {
 
