@@ -40,6 +40,8 @@ public class Messages {
     public static final String MESSAGE_INVALID_TAG = "Tags cannot be empty !";
 
     public static final String MESSAGE_ILLEGAL_VALUE = "Illegal value detected!";
+    public static final String MESSAGE_ILLEGAL_WEEK_VALUE = "No such week is found in the current semester!";
+    public static final String MESSAGE_DATE_OUT_OF_BOUNDS = "No such date is found in the current semester!";
 
     /**
      * Craft selected message via tags.

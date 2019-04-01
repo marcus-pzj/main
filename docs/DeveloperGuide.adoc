@@ -22,7 +22,7 @@ By: `T08-3`      Since: `Jan 2019`      Licence: `MIT`
 == Introduction
 Welcome to *PlanMySem*!
 
-*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that caters to NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
 *PlanMySem* automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
 Special weeks such as recess week and reading week are taken into account within our unique recursion system.
 Items can then be efficiently managed via the intuitive tagging system.

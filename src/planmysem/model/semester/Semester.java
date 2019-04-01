@@ -114,10 +114,10 @@ public class Semester implements ReadOnlySemester {
         acadYear = semesterDetails[2];
         noOfWeeks = Integer.parseInt(semesterDetails[3]);
         startDate = LocalDate.parse(semesterDetails[4]);
-        endDate = LocalDate.parse(semesterDetails[5]).plusDays(1);
+        endDate = LocalDate.parse(semesterDetails[5]);
 
         // Initialise HashMap and Sets of all days in current semester
-        datesList = startDate.datesUntil(endDate).collect(Collectors.toList());
+        datesList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
         for (LocalDate date: datesList) {
             int weekOfYear = date.get(WeekFields.ISO.weekOfWeekBasedYear());
             String weekType = acadCalMap.get(weekOfYear).split("_")[0];

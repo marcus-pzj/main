@@ -1,5 +1,6 @@
 package planmysem.logic.commands;
 
+import static planmysem.common.Messages.MESSAGE_DATE_OUT_OF_BOUNDS;
 import static planmysem.common.Utils.getNearestDayOfWeek;
 
 import java.time.LocalDate;
@@ -53,49 +54,47 @@ public class ViewCommand extends Command {
             + "\n\t\tExample 3: " + COMMAND_WORD
             + " day";
 
-    private final String viewArgs;
+    private final String[] viewArgs;
 
-    public ViewCommand(String viewArgs) {
+    public ViewCommand(String[] viewArgs) {
         this.viewArgs = viewArgs;
     }
 
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) {
-        String viewType;
-        String viewSpecifier;
-        String detailFlag = null;
         final Semester currentSemester = model.getPlanner().getSemester();
-        String output = null;
+        String viewType = viewArgs[0];
+        String output = "";
 
-        if ("month".equals(viewArgs)) {
+        switch (viewType) {
+        case "month":
             output = displayMonthView(currentSemester);
-        } else if ("week".equals(viewArgs)) {
-            output = displayWeekView(currentSemester, null);
-        } else if ("day".equals(viewArgs)) {
-            output = displayDayView(currentSemester, null);
-        } else {
-            viewType = viewArgs.split(" ")[0];
-            viewSpecifier = viewArgs.split(" ")[1];
-            viewSpecifier = viewSpecifier.substring(0, 1).toUpperCase() + viewSpecifier.substring(1).toLowerCase();
+            break;
 
-            if (viewArgs.split(" ").length == 3) {
-                detailFlag = viewArgs.split(" ")[2];
+        case "week":
+            if ((viewArgs.length == 3 && "Details".equals(viewArgs[2]))
+                    || (viewArgs.length == 2 && "Details".equals(viewArgs[1]))) {
+                output = displayDetailedWeekView(currentSemester, viewArgs[1]);
+                break;
             }
 
-            switch (viewType) {
-            case "week":
-                if ("Details".matches(viewSpecifier) || detailFlag != null) {
-                    output = displayDetailedWeekView(currentSemester, viewSpecifier);
-                } else {
-                    output = displayWeekView(currentSemester, viewSpecifier);
-                }
-                break;
-            case "day":
-                output = displayDayView(currentSemester, viewSpecifier);
-                break;
-            default:
-                break;
+            if (viewArgs.length == 2) {
+                output = displayWeekView(currentSemester, viewArgs[1]);
+            } else {
+                output = displayWeekView(currentSemester, null);
             }
+            break;
+
+        case "day":
+            if (viewArgs.length == 2) {
+                output = displayDayView(currentSemester, viewArgs[1]);
+            } else {
+                output = displayDayView(currentSemester, null);
+            }
+            break;
+
+        default:
+            break;
         }
 
         return new CommandResult(output);
@@ -240,7 +239,7 @@ public class ViewCommand extends Command {
         int[] weekOfYear = {0, 0};
         StringBuilder sb = new StringBuilder();
 
-        if (week == null || "Details".matches(week)) {
+        if ("Details".equals(week)) {
             sb.append(allDays.get(LocalDate.now()).getType() + " of " + currentSemester.getName() + "\n");
 
             weekStart = LocalDate.now().with(WeekFields.ISO.dayOfWeek(), 1);
@@ -312,7 +311,13 @@ public class ViewCommand extends Command {
                 givenDate = getNearestDayOfWeek(LocalDate.now(Clock.get()), day);
             }
         }
-        sb.append(givenDate.getDayOfWeek().name() + " , " + givenDate + "\n\n");
+
+        if (givenDate.isAfter(currentSemester.getStartDate().minusDays(1))
+                && givenDate.isBefore(currentSemester.getEndDate().plusDays(1))) {
+            sb.append(givenDate.getDayOfWeek().name() + " , " + givenDate + "\n\n");
+        } else {
+            return MESSAGE_DATE_OUT_OF_BOUNDS;
+        }
 
         // Retrieve all slots for given day/date in sorted order.
         ArrayList<Slot> allSlotsInDay = allDays.get(givenDate).getSlots();

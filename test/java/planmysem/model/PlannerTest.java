@@ -81,7 +81,7 @@ public class PlannerTest {
                 noOfWeeks = 18;
                 acadYear = "AY" + givenYear + "/" + (givenYear + 1);
                 endDate = startDate.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfStartDate + 18 - 1);
-                endDate = endDate.with(WeekFields.ISO.dayOfWeek(), 7).plusDays(1);
+                endDate = endDate.with(WeekFields.ISO.dayOfWeek(), 7);
 
                 weekNames.put(weekOfStartDate, "Orientation Week");
                 int week = 1;
@@ -102,7 +102,7 @@ public class PlannerTest {
                 noOfWeeks = 17;
                 acadYear = "AY" + (givenYear - 1) + "/" + givenYear;
                 endDate = startDate.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfStartDate + 17 - 1);
-                endDate = endDate.with(WeekFields.ISO.dayOfWeek(), 7).plusDays(1);
+                endDate = endDate.with(WeekFields.ISO.dayOfWeek(), 7);
 
                 int week = 1;
                 for (int i = weekOfStartDate; i < weekOfStartDate + 6; i++) {
@@ -121,7 +121,7 @@ public class PlannerTest {
             }
 
             // Initialises HashMap and Sets of all days in current semester
-            List<LocalDate> datesList = startDate.datesUntil(endDate).collect(Collectors.toList());
+            List<LocalDate> datesList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
             for (LocalDate date: datesList) {
                 int weekOfYear = date.get(WeekFields.ISO.weekOfWeekBasedYear());
                 String weekType = weekNames.get(weekOfYear);
