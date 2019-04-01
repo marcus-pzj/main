@@ -38,7 +38,6 @@ public class FindCommand extends Command {
 
     private final String keyword;
     private final boolean isFindByName;
-    private final int lengthOfKeyword;
 
     private Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
         @Override
@@ -62,7 +61,6 @@ public class FindCommand extends Command {
     public FindCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
         this.isFindByName = (name != null);
-        this.lengthOfKeyword = keyword.length();
     }
 
     @Override
@@ -84,8 +82,7 @@ public class FindCommand extends Command {
             return new CommandResult(MESSAGE_SUCCESS_NONE);
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
 
@@ -107,7 +104,7 @@ public class FindCommand extends Command {
     */
     private void generateDiscoveredNames(String keyword, String compareString,
                                          Map.Entry<LocalDate, Day> entry, Slot slot) {
-        if (compareString == null) {
+        if (compareString.length() + 3 < keyword.length()) {
             return;
         }
 
