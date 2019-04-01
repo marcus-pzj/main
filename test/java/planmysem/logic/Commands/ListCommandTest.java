@@ -15,17 +15,14 @@ import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.*;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
-import planmysem.model.semester.Semester;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 import planmysem.testutil.SlotBuilder;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
-import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,17 +32,81 @@ import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
 import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
 
 public class ListCommandTest {
-
-    private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
-
+    private Model model;
+    private Model expectedModel;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair1;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair2;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair3;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair4;
     private CommandHistory commandHistory = new CommandHistory();
+    private SlotBuilder slotBuilder = new SlotBuilder();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         Clock.set("2019-01-14T10:00:00Z");
+        // Create typical planner
+        model = new ModelManager();
+        pair1 = new Pair<>(
+                LocalDate.of(2019, 02, 01),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.FRIDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(1)
+                )
+        );
+        pair2 = new Pair<>(
+                LocalDate.of(2019, 02, 02),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.SATURDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(2)
+                )
+        );
+        pair3 = new Pair<>(
+                LocalDate.of(2019, 02, 03),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.SUNDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(3)
+                )
+        );
+        pair4 = new Pair<>(
+                LocalDate.of(2019, 02, 04),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.MONDAY,
+                                "Week 4"
+                        ),
+                        slotBuilder.generateSlot(3)
+                )
+        );
+        model.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.generateSlot(1));
+        model.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.generateSlot(2));
+        model.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
+        model.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
+
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list = new TreeMap<>();
+        list.put(pair4.getKey(), pair4.getValue());
+        list.put(pair3.getKey(), pair3.getValue());
+        list.put(pair2.getKey(), pair2.getValue());
+        list.put(pair1.getKey(), pair1.getValue());
+        model.setLastShownList(list);
+
+        expectedModel = new ModelManager();
+        expectedModel.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.generateSlot(1));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.generateSlot(2));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
+        expectedModel.setLastShownList(model.getLastShownList());
     }
 
     /**
@@ -129,19 +190,14 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_ListNameSuccessful() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        CommandResult commandResult = new ListCommand(validSlot.getName(), null).execute(modelStub, commandHistory);
+    public void execute_slotAcceptedByModel_ListNameSuccessful() throws Exception {
+        CommandResult commandResult = new ListCommand(slotBuilder.generateSlot(1).getName(), null).execute(model, commandHistory);
 
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
-                if (slot.getName().equalsIgnoreCase(validSlot.getName())) {
+                if (slot.getName().equalsIgnoreCase(slotBuilder.generateSlot(1).getName())) {
                     selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
                 }
             }
@@ -152,20 +208,15 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_ListTagSuccessful() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        Set<String> tags = validSlot.getTags();
+    public void execute_slotAcceptedByModel_ListTagSuccessful() throws Exception {
+        Set<String> tags = slotBuilder.generateSlot(1).getTags();
         String tagToTest = tags.iterator().next();
 
-        CommandResult commandResult = new ListCommand(null, tagToTest).execute(modelStub, commandHistory);
+        CommandResult commandResult = new ListCommand(null, tagToTest).execute(model, commandHistory);
 
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
@@ -181,18 +232,14 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_ListNameNotFound() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-        String nameToTest = validSlot.getName().concat("NotTheSame");
+    public void execute_slotAcceptedByModel_ListNameNotFound() throws Exception {
+        String nameToTest = slotBuilder.generateSlot(1).getName().concat("NotTheSame");
 
-        CommandResult commandResult = new ListCommand(nameToTest, null).execute(modelStub, commandHistory);
+        CommandResult commandResult = new ListCommand(nameToTest, null).execute(model, commandHistory);
 
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 if (slot.getName().equalsIgnoreCase(nameToTest)) {
                     selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
@@ -203,21 +250,16 @@ public class ListCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_ListTagNotFound() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        Set<String> tags = validSlot.getTags();
+    public void execute_slotAcceptedByModel_ListTagNotFound() throws Exception {
+        Set<String> tags = slotBuilder.generateSlot(1).getTags();
         String tagToTest = tags.iterator().next();
-        tagToTest.concat("NotTheSame");
+        tagToTest = tagToTest.concat("NotTheSame");
 
-        CommandResult commandResult = new ListCommand(null, tagToTest).execute(modelStub, commandHistory);
+        CommandResult commandResult = new ListCommand(null, tagToTest).execute(model, commandHistory);
 
         Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
@@ -228,157 +270,6 @@ public class ListCommandTest {
             }
         }
         assertEquals(MESSAGE_SUCCESS_NONE, commandResult.getFeedbackToUser());
-    }
-
-    /**
-     * A default model stub that have all of the methods failing.
-     */
-    private class ModelStub implements Model {
-        private final VersionedPlanner versionedPlanner = new VersionedPlanner(new Planner());
-
-        @Override
-        public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void clearLastShownList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void commit() {
-        }
-
-        @Override
-        public void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void setLastShownList(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownItem(int index) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Day addSlot(LocalDate date, Slot slot) throws Semester.DateNotFoundException {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void removeSlot(LocalDate date, ReadOnlySlot slot) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void removeSlot(Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slot) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void editSlot(LocalDate targetDate, ReadOnlySlot targetSlot, LocalDate date,
-                             LocalTime startTime, int duration, String name, String location,
-                             String description, Set<String> tags) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void clearSlots() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Planner getPlanner() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public HashMap<LocalDate, Day> getDays() {
-            return versionedPlanner.getDays();
-        }
-
-        @Override
-        public Day getDay(LocalDate date) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<String> tags) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean canUndo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean canRedo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void undo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void redo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            throw new AssertionError("This method should not be called.");
-        }
-    }
-
-    /**
-     * A Model stub that contains a single slot.
-     */
-    private class ModelStubWithSlot extends ModelStub {
-        private final Slot slot;
-
-        ModelStubWithSlot(Slot slot) {
-            requireNonNull(slot);
-            this.slot = slot;
-        }
-    }
-
-    /**
-     * A Model stub that always accept the slot being added.
-     */
-    private class ModelStubAcceptingSlotAdded extends ModelStub {
-        Map<LocalDate, Day> days = new TreeMap<>();
-
-        @Override
-        public Day addSlot(LocalDate date, Slot slot) {
-            Day day = new Day(DayOfWeek.MONDAY, "type");
-            day.addSlot(slot);
-
-            days.put(date, day);
-
-            return day;
-        }
-
-        @Override
-        public Planner getPlanner() {
-            return new Planner();
-        }
-    }
-
-    private ModelStubAcceptingSlotAdded generateModelStubAddedSlot() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        return modelStub;
     }
 }
 

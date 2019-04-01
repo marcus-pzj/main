@@ -14,11 +14,9 @@ import planmysem.logic.commands.FindCommand;
 import planmysem.logic.parser.FindCommandParser;
 import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
-import planmysem.model.Planner;
-import planmysem.model.VersionedPlanner;
+import planmysem.model.ModelManager;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
-import planmysem.model.semester.Semester;
 import planmysem.model.semester.WeightedName;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
@@ -26,10 +24,8 @@ import planmysem.testutil.SlotBuilder;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
-import static java.util.Objects.requireNonNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,16 +35,89 @@ import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
 import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
 
 public class FindCommandTest {
-    private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
-
+    private Model model;
+    private Model expectedModel;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair1;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair2;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair3;
+    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair4;
     private CommandHistory commandHistory = new CommandHistory();
+
+    private SlotBuilder slotBuilder = new SlotBuilder();
+
+    private static final String LONG_STRING = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+            "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip " +
+            "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore " +
+            "eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui " +
+            "officia deserunt mollit anim id est laborum";
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         Clock.set("2019-01-14T10:00:00Z");
+        // Create typical planner
+        model = new ModelManager();
+        pair1 = new Pair<>(
+                LocalDate.of(2019, 02, 01),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.FRIDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(1)
+                )
+        );
+        pair2 = new Pair<>(
+                LocalDate.of(2019, 02, 02),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.SATURDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(2)
+                )
+        );
+        pair3 = new Pair<>(
+                LocalDate.of(2019, 02, 03),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.SUNDAY,
+                                "Week 3"
+                        ),
+                        slotBuilder.generateSlot(3)
+                )
+        );
+        pair4 = new Pair<>(
+                LocalDate.of(2019, 02, 04),
+                new Pair<>(
+                        new Day(
+                                DayOfWeek.MONDAY,
+                                "Week 4"
+                        ),
+                        slotBuilder.generateSlot(3)
+                )
+        );
+        model.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.generateSlot(1));
+        model.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.generateSlot(2));
+        model.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
+        model.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
+
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list = new TreeMap<>();
+        list.put(pair4.getKey(), pair4.getValue());
+        list.put(pair3.getKey(), pair3.getValue());
+        list.put(pair2.getKey(), pair2.getValue());
+        list.put(pair1.getKey(), pair1.getValue());
+        model.setLastShownList(list);
+
+        expectedModel = new ModelManager();
+        expectedModel.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.generateSlot(1));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.generateSlot(2));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
+        expectedModel.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
+        expectedModel.setLastShownList(model.getLastShownList());
     }
 
     /**
@@ -132,69 +201,11 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindExactNameSuccessful() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        CommandResult commandResult = new FindCommand(validSlot.getName(), null).execute(modelStub, commandHistory);
-
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
-
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
-            for (Slot slot : entry.getValue().getSlots()) {
-                if (slot.getName().equalsIgnoreCase(validSlot.getName())) {
-                    selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
-                }
-            }
-        }
-
-        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
-    }
-
-    @Test
-    public void execute_slotAcceptedByModel_FindExactTagSuccessful() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        Set<String> tags = validSlot.getTags();
-        String tagToTest = tags.iterator().next();
-
-        CommandResult commandResult = new FindCommand(null, tagToTest).execute(modelStub, commandHistory);
-
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
-
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
-            for (Slot slot : entry.getValue().getSlots()) {
-                Set<String> tagSet = slot.getTags();
-                for (String tag : tagSet) {
-                    if (tag.equalsIgnoreCase(tagToTest)) {
-                        selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
-                    }
-                }
-            }
-        }
-
-        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
-    }
-
-    @Test
-    public void execute_slotAcceptedByModel_FindNameNotExact() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 4, 30);
-        modelStub.addSlot(date, validSlot);
-        String nameToTest = validSlot.getName().concat("NotTheSame");
-
-        CommandResult commandResult = new FindCommand(nameToTest, null).execute(modelStub, commandHistory);
+    public void execute_slotAcceptedByModel_FindExactNameSuccessful() throws Exception {
+        CommandResult commandResult = new FindCommand(slotBuilder.generateSlot(1).getName(), null).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int minDistance = Integer.MAX_VALUE;
+        int lengthOfKeyword = slotBuilder.generateSlot(1).getName().length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -211,201 +222,189 @@ public class FindCommandTest {
             }
         });
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
-                int dist = Utils.getLevenshteinDistance(nameToTest, slot.getName());
-                if (dist < minDistance) {
-                    minDistance = dist;
-                }
+                int dist = Utils.getLevenshteinDistance(slotBuilder.generateSlot(1).getName(), slot.getName());
                 WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                 weightedNames.add(distNameTrie);
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < minDistance + 1) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
             selectedSlots.add(weightedNames.poll());
         }
-
         assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
                 Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindTagNotFound() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        Set<String> tags = validSlot.getTags();
+    public void execute_slotAcceptedByModel_FindExactTagSuccessful() throws Exception {
+        Set<String> tags = slotBuilder.generateSlot(1).getTags();
         String tagToTest = tags.iterator().next();
-        tagToTest.concat("NotTheSame");
 
-        CommandResult commandResult = new FindCommand(null, tagToTest).execute(modelStub, commandHistory);
+        CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
 
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        List<WeightedName> selectedSlots = new ArrayList<>();
+        int lengthOfKeyword = slotBuilder.generateSlot(1).getName().length();
+        Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
+            @Override
+            public int compare(WeightedName p1, WeightedName p2) {
+                String n1 = p1.getName();
+                String n2 = p2.getName();
+                int d1 = p1.getDist();
+                int d2 = p2.getDist();
 
-        for (Map.Entry<LocalDate, Day> entry : modelStub.getDays().entrySet()) {
+                if (d1 != d2) {
+                    return d1 - d2;
+                } else {
+                    return n1.compareTo(n2);
+                }
+            }
+        });
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
-                    if (tag.equalsIgnoreCase(tagToTest)) {
-                        selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
-                    }
+                    int dist = Utils.getLevenshteinDistance(tagToTest, tag);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    weightedNames.add(distNameTrie);
                 }
             }
         }
+
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+            selectedSlots.add(weightedNames.poll());
+        }
+            assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                    Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_slotAcceptedByModel_FindNameNotExact() throws Exception {
+        String nameToTest = slotBuilder.generateSlot(1).getName().concat("NotTheSame");
+
+        CommandResult commandResult = new FindCommand(nameToTest, null).execute(model, commandHistory);
+
+        List<WeightedName> selectedSlots = new ArrayList<>();
+        int lengthOfKeyword = nameToTest.length();
+        Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
+            @Override
+            public int compare(WeightedName p1, WeightedName p2) {
+                String n1 = p1.getName();
+                String n2 = p2.getName();
+                int d1 = p1.getDist();
+                int d2 = p2.getDist();
+
+                if (d1 != d2) {
+                    return d1 - d2;
+                } else {
+                    return n1.compareTo(n2);
+                }
+            }
+        });
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                int dist = Utils.getLevenshteinDistance(nameToTest, slot.getName());
+                WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                weightedNames.add(distNameTrie);
+            }
+        }
+
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+            selectedSlots.add(weightedNames.poll());
+        }
+        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_slotAcceptedByModel_FindTagNotExact() throws Exception {
+        Set<String> tags = slotBuilder.generateSlot(1).getTags();
+        String tagToTest = tags.iterator().next();
+        tagToTest = tagToTest.concat("NotTheSame");
+
+        CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
+
+        List<WeightedName> selectedSlots = new ArrayList<>();
+        int lengthOfKeyword = tagToTest.length();
+        Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
+            @Override
+            public int compare(WeightedName p1, WeightedName p2) {
+                String n1 = p1.getName();
+                String n2 = p2.getName();
+                int d1 = p1.getDist();
+                int d2 = p2.getDist();
+
+                if (d1 != d2) {
+                    return d1 - d2;
+                } else {
+                    return n1.compareTo(n2);
+                }
+            }
+        });
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                Set<String> tagSet = slot.getTags();
+                for (String tag : tagSet) {
+                    int dist = Utils.getLevenshteinDistance(tagToTest, tag);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    weightedNames.add(distNameTrie);
+                }
+            }
+        }
+
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+            selectedSlots.add(weightedNames.poll());
+        }
+        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_slotAcceptedByModel_FindTagNotFound() throws Exception {
+        String tagToTest = LONG_STRING;
+
+        CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
+        List<WeightedName> selectedSlots = new ArrayList<>();
+        int lengthOfKeyword = tagToTest.length();
+        Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
+            @Override
+            public int compare(WeightedName p1, WeightedName p2) {
+                String n1 = p1.getName();
+                String n2 = p2.getName();
+                int d1 = p1.getDist();
+                int d2 = p2.getDist();
+
+                if (d1 != d2) {
+                    return d1 - d2;
+                } else {
+                    return n1.compareTo(n2);
+                }
+            }
+        });
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                Set<String> tagSet = slot.getTags();
+                for (String tag : tagSet) {
+                    int dist = Utils.getLevenshteinDistance(tagToTest, tag);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    weightedNames.add(distNameTrie);
+                }
+            }
+        }
+
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+            selectedSlots.add(weightedNames.poll());
+        }
         assertEquals(MESSAGE_SUCCESS_NONE, commandResult.getFeedbackToUser());
-    }
-
-    /**
-     * A default model stub that have all of the methods failing.
-     */
-    private class ModelStub implements Model {
-        private final VersionedPlanner versionedPlanner = new VersionedPlanner(new Planner());
-
-        @Override
-        public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void clearLastShownList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void commit() {
-        }
-
-        @Override
-        public void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void setLastShownList(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownItem(int index) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Day addSlot(LocalDate date, Slot slot) throws Semester.DateNotFoundException {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void removeSlot(LocalDate date, ReadOnlySlot slot) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void removeSlot(Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slot) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void editSlot(LocalDate targetDate, ReadOnlySlot targetSlot, LocalDate date,
-                             LocalTime startTime, int duration, String name, String location,
-                             String description, Set<String> tags) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void clearSlots() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Planner getPlanner() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public HashMap<LocalDate, Day> getDays() {
-            return versionedPlanner.getDays();
-        }
-
-        @Override
-        public Day getDay(LocalDate date) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<String> tags) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean canUndo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean canRedo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void undo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void redo() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            throw new AssertionError("This method should not be called.");
-        }
-    }
-
-    /**
-     * A Model stub that contains a single slot.
-     */
-    private class ModelStubWithSlot extends ModelStub {
-        private final Slot slot;
-
-        ModelStubWithSlot(Slot slot) {
-            requireNonNull(slot);
-            this.slot = slot;
-        }
-    }
-
-    /**
-     * A Model stub that always accept the slot being added.
-     */
-    private class ModelStubAcceptingSlotAdded extends ModelStub {
-        Map<LocalDate, Day> days = new TreeMap<>();
-
-        @Override
-        public Day addSlot(LocalDate date, Slot slot) {
-            Day day = new Day(DayOfWeek.MONDAY, "type");
-            day.addSlot(slot);
-
-            days.put(date, day);
-
-            return day;
-        }
-
-        @Override
-        public Planner getPlanner() {
-            return new Planner();
-        }
-    }
-
-    private ModelStubAcceptingSlotAdded generateModelStubAddedSlot() {
-        ModelStubAcceptingSlotAdded modelStub = new ModelStubAcceptingSlotAdded();
-        Slot validSlot = new SlotBuilder().slotOne();
-        LocalDate date = LocalDate.of(2019, 2, 1);
-        modelStub.addSlot(date, validSlot);
-
-        return modelStub;
     }
 }

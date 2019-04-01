@@ -29,7 +29,7 @@ public class FindCommand extends Command {
 
     public static final String COMMAND_WORD = "find";
     public static final String COMMAND_WORD_SHORT = "f";
-    private static final String MESSAGE_SUCCESS = "%1$s Slots found.\n%2$s";
+    private static final String MESSAGE_SUCCESS = "%1$s Slots listed.\n%2$s";
     private static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ":\n" + "Finds all slots whose name "
             + "contains the specified keywords (case-sensitive).\n\t"
@@ -38,8 +38,7 @@ public class FindCommand extends Command {
 
     private final String keyword;
     private final boolean isFindByName;
-
-    private int minDistance = Integer.MAX_VALUE;
+    private final int lengthOfKeyword;
 
     private Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
         @Override
@@ -63,6 +62,7 @@ public class FindCommand extends Command {
     public FindCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
         this.isFindByName = (name != null);
+        this.lengthOfKeyword = keyword.length();
     }
 
     @Override
@@ -84,7 +84,8 @@ public class FindCommand extends Command {
             return new CommandResult(MESSAGE_SUCCESS_NONE);
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < minDistance + 1) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
+                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
             selectedSlots.add(weightedNames.poll());
         }
 
@@ -111,10 +112,6 @@ public class FindCommand extends Command {
         }
 
         int dist = Utils.getLevenshteinDistance(keyword, compareString);
-        if (dist < minDistance) {
-            minDistance = dist;
-        }
-        //System.out.println(compareString + " vs key: " + keyword + " dist: " + dist);
         WeightedName distNameTrie = new WeightedName(entry, slot, dist);
 
         weightedNames.add(distNameTrie);
