@@ -1,4 +1,3 @@
-//@@author marcus-pzj
 package planmysem.logic.commands;
 
 import java.time.LocalDate;

@@ -67,24 +67,4 @@ public class LogicManager implements Logic {
     public ObservableList<String> getHistory() {
         return history.getHistory();
     }
-
-
-    //    /**
-    //     * Creates the StorageFile object based on the user specified path (if any) or the default storageFile path.
-    //     *
-    //     * @throws StorageFile.InvalidStorageFilePathException if the target file path is incorrect.
-    //     */
-    //    private StorageFile initializeStorage() throws JAXBException, StorageFile.InvalidStorageFilePathException {
-    //        return new StorageFile();
-    //    }
-
-    //    /**
-    //     * Updates the {@link #lastShownSlots} if the commandResult contains a list of Days.
-    //     */
-    //    private void recordResult(CommandResult commandResult) {
-    //        final Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> slots = commandResult.getRelevantSlots();
-    //        if (slots.isPresent()) {
-    //            lastShownSlots = slots.get();
-    //        }
-    //    }
 }

@@ -394,37 +394,6 @@ public class Semester implements ReadOnlySemester {
     }
 
     /**
-     * Removes the equivalent Day from the list.
-     *
-     * @throws DateNotFoundException if no such Day could be found in the list.
-     */
-    public void remove(ReadOnlyDay day) throws DateNotFoundException {
-        if (!contains(day)) {
-            throw new DateNotFoundException();
-        }
-        days.remove(day);
-    }
-
-    /**
-     * Removes the equivalent Day from the list.
-     *
-     * @throws DateNotFoundException if no such Day could be found in the list.
-     */
-    public void remove(LocalDate date) throws DateNotFoundException {
-        if (!contains(date)) {
-            throw new DateNotFoundException();
-        }
-        days.remove(date);
-    }
-
-    /**
-     * Clears all Days from the address book.
-     */
-    public void clearDays() {
-        days.clear();
-    }
-
-    /**
      * Clears all Days from the address book.
      */
     public void clearSlots() {
