@@ -12,8 +12,7 @@
 This portfolio documents my contributions to _PlanMySem_, a software engineering module project.
 This module was taken in my third year during the second semester.
 
-
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
 
 == Summary of contributions
 

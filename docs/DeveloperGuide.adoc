@@ -15,9 +15,50 @@ ifdef::env-github[]
 :warning-caption: :warning:
 :experimental:
 endif::[]
-:repoURL: https://github.com/CS2113-AY1819S2-T08-3/main/tree/master
+:repoURL: https://github.com/CS2113-AY1819S2-T08-3/main/blob/master
 
 By: `T08-3`      Since: `Jan 2019`      Licence: `MIT`
+
+== Introduction
+Welcome to *PlanMySem*!
+
+*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that caters to NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+*PlanMySem* automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
+Special weeks such as recess week and reading week are taken into account within our unique recursion system.
+Items can then be efficiently managed via the intuitive tagging system.
+
+*PlanMySem* is optimized for those who prefer to work with a Command Line Interface (CLI) and/or are learning to work more efficiently with CLI tools. Additionally, unlike traditional calendar/scheduling applications, *PlanMySem* utilizes minimal resources on the user’s machine while still allowing the user to view their schedules swiftly and efficiently.
+{zwsp}
+
+{zwsp}
+
+== About this Developer Guide
+This developer guide provides a detailed documentation on the implementation of all the various features *PlanMySem*
+offers. To navigate between the different sections, you could use the table of contents above.
+
+For ease of communication, this document will refer to lessons/activities/events/appointments that you might add into
+the planner as _slots_.
+
+Additionally, throughout this developer guide, there will be various icons used as described below.
+
+[TIP]
+This is a tip. Follow these suggested tips to make your life much simpler when using *PlanMySem*!
+
+[NOTE]
+This is a note. These are things for you to take note of when using *PlanMySem*.
+
+[IMPORTANT]
+This is a sign-post dictating important information. These are information that you will surely need to know to use
+*PlanMySem* efficiently.
+
+[CAUTION]
+This is a sign-post informing caution. Please take note of these items and exercise some care.
+
+[WARNING]
+This is a rule. Ensure that you follow these rules to ensure proper usage of *PlanMySem*.
+{zwsp}
+
+{zwsp}
 
 == Setting up
 
@@ -34,6 +75,9 @@ Windows developers are highly recommended to use JDK `9`.
 [NOTE]
 IntelliJ by default has Gradle and JavaFx plugins installed. +
 Do not disable them. If you have disabled them, go to `File` > `Settings` > `Plugins` to re-enable them.
+{zwsp}
+
+{zwsp}
 
 === Setting up the project in your computer
 
@@ -55,11 +99,17 @@ This will generate all resources required by the application and tests.
 .. Due to an ongoing https://youtrack.jetbrains.com/issue/IDEA-189060[issue] with some of the newer versions of IntelliJ, code errors may be detected even if the project can be built and run successfully
 .. To resolve this, place your cursor over any of the code section highlighted in red. Press kbd:[ALT + ENTER], and select `Add '--add-modules=...' to module compiler options` for each error
 . Repeat this for the test folder as well (e.g. check link:{repoURL}/src/test/java/seedu/address/ui/HelpWindowTest.java[`HelpWindowTest.java`] for code errors, and if so, resolve it the same way)
+{zwsp}
+
+{zwsp}
 
 === Verifying the setup
 
 . Run the `PlanMySem.Main` and try a few commands
 . <<Testing,Run the tests>> to ensure they all pass.
+{zwsp}
+
+{zwsp}
 
 === Configurations to do before writing code
 
@@ -75,6 +125,9 @@ This project follows https://github.com/oss-generic/process/blob/master/docs/Cod
 * For `Import Layout`: The order is `import static all other imports`, `import java.\*`, `import javax.*`, `import org.\*`, `import com.*`, `import all other imports`. Add a `<blank line>` between each `import`
 
 Optionally, you can follow the <<UsingCheckstyle#, UsingCheckstyle.adoc>> document to configure Intellij to check style-compliance as you write code.
+{zwsp}
+
+{zwsp}
 
 ==== Updating documentation to match your fork
 
@@ -85,6 +138,9 @@ If you plan to develop this fork as a separate product (i.e. instead of contribu
 . Configure the <<Docs-SiteWideDocSettings, site-wide documentation settings>> in link:{repoURL}/build.gradle[`build.gradle`], such as the `site-name`, to suit your own project.
 
 . Replace the URL in the attribute `repoURL` in link:{repoURL}/docs/DeveloperGuide.adoc[`DeveloperGuide.adoc`] and link:{repoURL}/docs/UserGuide.adoc[`UserGuide.adoc`] with the URL of your fork.
+{zwsp}
+
+{zwsp}
 
 ==== Setting up CI
 
@@ -99,6 +155,9 @@ Optionally, you can set up AppVeyor as a second CI (see <<UsingAppVeyor#, UsingA
 
 [NOTE]
 Having both Travis and AppVeyor ensures your App works on both Unix-based platforms and Windows-based platforms (Travis is Unix-based and AppVeyor is Windows-based)
+{zwsp}
+
+{zwsp}
 
 ==== Getting started with coding
 
@@ -106,6 +165,9 @@ When you are ready to start coding,
 
 1. Get some sense of the overall design by reading <<Design-Architecture>>.
 2. Take a look at <<GetStartedProgramming>>.
+{zwsp}
+
+{zwsp}
 
 == Design
 
@@ -113,14 +175,14 @@ When you are ready to start coding,
 === Architecture
 
 .Architecture Diagram
-image::Architecture.png[width="100%"]
+image::Architecture.png[width="800"]
 
 The *_Architecture Diagram_* given above explains the high-level design of the App. Given below is a quick overview of each component.
 
 [TIP]
 The `.pptx` files used to create diagrams in this document can be found in the link:{repoURL}/docs/diagrams/[diagrams] folder. To update a diagram, modify the diagram in the pptx file, select the objects of the diagram, and choose `Save as picture`.
 
-`Main` has only one class called link:{repoURL}/src/PlanMySem/Main.java[`Main`]. It is responsible for,
+`Main` has only one class called link:{repoURL}/src/planmysem/Main.java[`Main`]. It is responsible for,
 
 * At app launch: Initializes the components in the correct sequence, and connects them up with each other.
 * At shut down: Shuts down the components and invokes cleanup method where necessary.
@@ -142,7 +204,10 @@ Each of the four components
 For example, the `Logic` component (see the class diagram given below) defines it's API in the `Logic.java` interface and exposes its functionality using the `Logic.java` class.
 
 .Class Diagram of overall application.
-image::OverallClassDiagram.png[width="100%"]
+image::OverallClassDiagram.png[width="800"]
+{zwsp}
+
+{zwsp}
 
 [discrete]
 ==== How the architecture components interact with each other
@@ -150,9 +215,12 @@ image::OverallClassDiagram.png[width="100%"]
 The _Sequence Diagram_ below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
 .Component interactions for `delete 1` command
-image::SDforDeleteSlot.png[width="100%"]
+image::SDforDeleteSlot.png[width="800"]
 
 The sections below give more details of each component.
+{zwsp}
+
+{zwsp}
 
 [[Design-Ui]]
 === UI component
@@ -160,7 +228,7 @@ The sections below give more details of each component.
 .Structure of the UI Component
 image::UiClassDiagram.png[width="800"]
 
-*API* : link:{repoURL}/src/main/PlanMySem/ui/Ui.java[`Ui.java`]
+*API* : link:{repoURL}/src/planmysem/ui/Ui.java[`Ui.java`]
 
 The UI consists of a `MainWindow` that is made up of just `commandInput` and `outputConsole`.
 This application is mainly a text-based application, hence here are not much componenets here.
@@ -172,6 +240,9 @@ The `UI` component,
 
 * Executes user commands read from `commandInput`, using the `Logic` component.
 * Displays `commandResult` to the user via `outputConsole`.
+{zwsp}
+
+{zwsp}
 
 [[Design-Logic]]
 === Logic component
@@ -181,7 +252,7 @@ The `UI` component,
 image::LogicClassDiagram.png[width="800"]
 
 *API* :
-link:{repoURL}/src/main/java/plamysem/logicManager/Logic.java[`Logic.java`]
+link:{repoURL}/src/planmysem/logic/Logic.java[`Logic.java`]
 
 .  `Logic` uses the `parser` class to parse the user command.
 .  This results in a `Command` object which is executed.
@@ -192,42 +263,54 @@ link:{repoURL}/src/main/java/plamysem/logicManager/Logic.java[`Logic.java`]
 Given below is the Sequence Diagram for interactions within the `Logic` component for the `execute("delete 1")` API call.
 
 .Interactions Inside the Logic Component for the `delete 1` Command
-image::DeletePersonSdForLogic.png[width="800"]
+image::SDforDeleteSlot.png[width="800"]
+{zwsp}
+
+{zwsp}
 
 [[Design-Model]]
 === Model component
 
 .Overall structure of the Model Component
-image::ModelClassDiagram.png[width="400"]
+image::ModelClassDiagram.png[width="600"]
 
-*API* : link:{repoURL}/src/PlanMySem/model/Model.java[`Model.java`]
+*API* : link:{repoURL}/src/planmysem/model/Model.java[`Model.java`]
+{zwsp}
+
+{zwsp}
 
 [[Design-Planner]]
 ==== Planner component
 
-*API* : link:{repoURL}/src/PlanMySem/model/Planner.java[`Planner.java`]
+*API* : link:{repoURL}/src/planmysem/data/Planner.java[`Planner.java`]
 
 The `Planner` component,
 
 * stores a `Planner` object that represents the entire Planner.
 * stores the data of the entire application.
 * stores the data of the current semester in an unmodifiable `Semester`.
+{zwsp}
+
+{zwsp}
 
 [[Design-Semester]]
 ==== Semester component
 
-*API* : link:{repoURL}/src/PlanMySem/model/semester/Semester.java[`Semester.java`]
+*API* : link:{repoURL}/src/planmysem/model/semester/Semester.java[`Semester.java`]
 
 The `Semester` component,
 
 * stores a `Semester` object that represents the an academic semester.
 * stores the data of the entire semester in an unmodifiable `HashMap<LocalDate, Day>`.
 * Semesters essentially hold "days" in which holds slots.
+{zwsp}
+
+{zwsp}
 
 [[Design-Slot]]
 ==== Slot component
 
-*API* : link:{repoURL}/src/PlanMySem/model/slot/Slot.java[`Slot.java`]
+*API* : link:{repoURL}/src/planmysem/model/slot/Slot.java[`Slot.java`]
 
 The `Slot` component,
 
@@ -237,6 +320,9 @@ The `Slot` component,
 
 [NOTE]
 Notice how `Slot` does not hold it's end time but rather it holds the `duration`. This is simply our design choice as it is meaningless to save both variables.
+{zwsp}
+
+{zwsp}
 
 [[Design-Storage]]
 === Storage component
@@ -244,26 +330,36 @@ Notice how `Slot` does not hold it's end time but rather it holds the `duration`
 .Structure of the Storage Component
 image::StorageClassDiagram.png[width="400"]
 
-*API* : link:{repoURL}/src/PlanMySem/storageFile/Storage.java[`Storage.java`]
+*API* : link:{repoURL}/src/planmysem/storage/Storage.java[`Storage.java`]
 
 The `Storage` component,
 
 * can save `UserPref` objects in json format and read it back.
 * can save the Address Book data in json format and read it back.
+{zwsp}
+
+{zwsp}
 
 [[Design-Common]]
 === Common classes
 
 Classes used by multiple components are in the `PlanMySem.common` package.
+{zwsp}
+
+{zwsp}
 
 == Implementation
 
 This section describes some noteworthy details on how certain features are implemented.
 
+[[Planner-Initialization]]
 === Initialization of the Planner and it's Semester
 
 The `Planner` and it's `Semester` has to be initialized for *PlanMySem* to work as all other features of *PlanMySem* would
-interact with this `Semester` object.
+interact with this `Semester` object. The initialization is automated and dynamic to ensure sustainability.
+{zwsp}
+
+{zwsp}
 
 ==== Current Implementation
 
@@ -281,9 +377,11 @@ e.g. If the date is 25/3/2019, the academic year is "2018 / 2019".
 * If the current date is after August, the current academic year is "the current year / next year". +
 e.g. If the date is 25/8/2019, the academic year is "2019 / 2020".
 
-After determining the academic year, the details of the semesters will be generated. Semester 1 will always begin from
-the first Monday of August. The rest of the weeks can be calculated from the first day of semester 1 since each
-semester has a fixed amount of weeks.
+After determining the academic year, the details of the semesters will be generated. All the weeks of the academic
+year can be calculated from the first day of semester 1 since each semester has a fixed amount of weeks.
+
+[NOTE]
+Semester 1 of the academic year starts with an orientation week and will always begin from the first Monday of August.
 
 * Semester 1 has 18 weeks (inclusive of orientation week) and semester 2 has 17 weeks.
 * The vacation between semester 1 and 2 has 5 weeks.
@@ -350,6 +448,9 @@ Hence, the information listed below can be determined from the current date.
 * End date of current academic semester
 
 These information would be assigned to the `Semester` object upon initialization of the `Planner`.
+{zwsp}
+
+{zwsp}
 
 ==== Design Considerations
 
@@ -362,6 +463,9 @@ These information would be assigned to the `Semester` object upon initialization
 * *Alternative 2:* Retrieve academic calendar from a pre-generated file.
 ** Pros: Generation of academic calendar is efficient and not prone to calculation errors.
 ** Cons: Requires the pre-generated file which may be accidentally edited or deleted by the user.
+{zwsp}
+
+{zwsp}
 
 === Parser / Command Format and Structure
 
@@ -371,6 +475,9 @@ instead of relying on the existing regex implementation in AB3 for heavy parsing
 The AB3 parser was heavily modified to serve unordered command parameters as well as to allow more flexibility such that mistakes in commands will still be
 interpreted as valid as long as the "minimal" set of parameters are present. Regex is currently only used to retrieve the command keywords and arguments.
 Arguments are then parsed via 2 different methods/techniques according to the format and structure of the command keyword.
+{zwsp}
+
+{zwsp}
 
 ==== Current Implementation
 
@@ -381,26 +488,32 @@ Arguments are then parsed via 2 different methods/techniques according to the fo
 
 Hence, parameters in *PlanMySem* can be categorised into 2 categories:
 
-1. Prepended parameters such as `n/NAME`, `st/START_TIME`, `des/DESCRIPTION`, etc.
-2. Non-prepended parameters, A.K.A. keywords, such as `INDEX`, `TYPE_OF_VIEW`. etc.
+1. Prefixed parameters such as `n/NAME`, `st/START_TIME`, `des/DESCRIPTION`, etc.
+2. Non-Prefixed parameters, A.K.A. keywords, such as `INDEX`, `TYPE_OF_VIEW`. etc.
+{zwsp}
 
-===== Parsing Prepended Parameters
+{zwsp}
+
+===== Parsing Prefixed Parameters
 
 To retrieve the set of parameters, the function `private static HashMap<String, Set<String>> getParametersWithArguments(String args)` can be called.
-The function returns a `Hashmap` data structure, specifically `HashMap<String, Set<String>>`, to hold parameters, allowing for easy, quick and efficient access to specific parameters.
+The function returns a `HashMap` data structure, specifically `HashMap<String, Set<String>>`, to hold parameters, allowing for easy, quick and efficient access to specific prefixes and its keyed in parameters; O(1) access, insertion and removal.
 
-However, this means that exceptions have to be manually taken care of, at the stage of parsing, this exception would particularly be `IncorrectCommand`.
+However, this means that exceptions have to be manually taken care of, at the stage of parsing, this exception would particularly be `ParseException`.
 
-The following are cases in which `IncorrectCommand` is invoked:
+The following are cases in which `ParseException` is invoked:
 
-* When the returned set is `null`, then the parameter was not keyed in at all.
-* When the returned set is not `null` but contains empty `strings` such that `string.isEmpty()`, then the paramter was keyed in but was left empty on purpose.
+* When the returned set is `null`, then the prefix and parameters was not keyed in at all.
+* When the returned set is not `null` but contains empty `strings` such that `string.isEmpty()`, then the prefix was keyed in but was left empty on purpose.
+{zwsp}
+
+{zwsp}
 
 ===== Parsing Keywords
 
-Here, keywords are thought of as parameters that are not prepended.
+Here, keywords are thought of as parameters that are not prefixed.
 In *PlanMySem*, keywords are utilized in command structures when they are to be used alone or when order of parameters are important.
-In such cases, there is no logical need for prepending as the meaning of these parameters can be identified.
+In such cases, there is no logical need for prefixing as the meaning of these parameters can be identified.
 
 The function `private String getStartingArgument(String args)` provides this functionality.
 Here, `IncorrectCommand` is invoked due to different circumstances:
@@ -410,6 +523,9 @@ Here, `IncorrectCommand` is invoked due to different circumstances:
 
 [NOTE]
 Additional keywords are purposefully *not* handled to provide ease of use and cater to user mistakes.
+{zwsp}
+
+{zwsp}
 
 ==== Design Considerations
 
@@ -422,6 +538,9 @@ Additional keywords are purposefully *not* handled to provide ease of use and ca
 * *Alternative 2:* Accept repeated parameters only when as necessary.
 ** Pros: Errors are shown to the user so that the invalid command may be fixed.
 ** Cons: May hinder user experience, ease of use.
+{zwsp}
+
+{zwsp}
 
 ===== Aspect: Handling order of parameters
 
@@ -432,6 +551,9 @@ Additional keywords are purposefully *not* handled to provide ease of use and ca
 * *Alternative 2:* Accept only a specific ordering of parameters.
 ** Pros: Less computationally expensive and short development process, able to use existing regex solutions in AB3.
 ** Cons: Greatly hinder user experience as order of parameters have no relation to meaning of commands.
+{zwsp}
+
+{zwsp}
 
 ==== Future Implementation
 
@@ -441,12 +563,18 @@ These are some possible enhancements:
 1. Parse more formats of date and time.
 2. Parse time as a single parameter instead of two.
 3. Enhance function calls to retrieve prepended parameters and keywords to handle trivial cases that should invoke `IncorrectCommand`.
+{zwsp}
+
+{zwsp}
 
 === Slot Management
 
 _Slot_ Management involves mainly the interaction between the users and their _slots_.
 
 The section below will describe in detail the Current Implementation, Design Considerations and Future Implementation of the Slot Management.
+{zwsp}
+
+{zwsp}
 
 ==== Current Implementation
 
@@ -466,25 +594,91 @@ The `Add` command heavily relies on the _recursion_ system to select multiple da
 Additionally, the `Add` command also allows users to input _tags_ to tag _slots_.
 
 The `Edit` and `Delete` command then makes use of the _tagging_ system to then select multiple slots for editing/deleting.
+{zwsp}
+
+{zwsp}
 
 ==== Design Considerations
 
+===== Aspect: Wrapping of primitive data types in `Slot`
 
+* *Alternative 1 (current choice):* Use of "primitive" data types instead of creating and utilising wrapped objects. +
+E.g. `name`, `location` amd `description` are not wrapped but "primitive".
+** Pros: Allows for more flexible code to account for flexible parsing (as needed in this application).
+** Cons: Bigger code base and duplicated code.
+
+* *Alternative 2:* Wrap "primitive" data types.
+** Pros: Less errors in handling invalid values.
+** Cons: May cause inflexibility in writing code to account for flexible parsing.
+
+In summary, in this cause of *PlanMySme*, there is a need to achieve varied and flexible commands and as such,
+it is not necessary to handle invalid values with the innate `Model` objects as these are taken care of when parsing.
+
+Additionally, doing these actions when parsing, though bloats code, allows for more varied responses to the user and improves user experience.
+{zwsp}
+
+{zwsp}
+
+===== Aspect: Storing and accessing `Slots`
+
+* *Alternative 1 (current implementation):* Use of `Map`, such as `HashMap` to store `Days` that store `Slots`.
+** Pros: `HashMap` allows for easier and faster, O(1) access time, access of particular `Day` according to date.
+** Cons: This requires splitting of the calendar into days, as such there is no easy way to account for `Slots` that occur across days.
+
+* *Alternative 2:* Store `Slots` in a huge list.
+** Pros: Allows for easier access by "index" and offers flexibility, for example, in the time of slots.
+** Cons: Expensive to access, add and remove items. Furthermore, it is extremely expensive to collect slots that occur in a day, a very important and most likely to be a commonly used feature.
+{zwsp}
+
+{zwsp}
 
 ==== Future Implementation
 
+===== Create a class to hold `Days`, instead of utilising a `HashMap`
+
+Currently, `Days` are held in a HashMap of key `LocalDate` and value `Day`. While this works without any loss in performance, this causes duplication of code and removes some key concepts of abstraction.
+For example, there are code blocks dedicated to retrieving days or slots that could have been placed into this new class. This is an issue as these code have nothing to do with for instance, `Semester` but they are placed there.
+
+Therefore, this needs to be implemented in the future to achieve less coupling, more cohesion and respect the Single Responsibility Principle (SRP), Open-Closed Principle (OCP) and Separation of Concerns Principle (SoC).
+{zwsp}
+
+{zwsp}
+
+===== `Planner` to hold multiple `Semesters`
+
+While *PlanMySem* now allow users to work on the current semester, it is unable to cater to future semesters. For instance when a semester is about to end, users are not able to plan ahead for the coming semester.
+
+This is an issue that plagues user experience and is a significant problem. To solve this issue, `Planner` needs to hold multiple semesters in a `List` and more features need to be included to allow saving, loading and switching of semesters and etc.
+{zwsp}
+
+{zwsp}
+
 === List feature
 
+==== Current Implementation
+The list function supports searching using a single keyword. +
+
+The keyword is compared to all names/tags of all `Slots` existing in `Planner`. +
+
+If an exact match is found, the `Slot` will be added to the output list.
+{zwsp}
+
+{zwsp}
 
 === Find feature
+
 ==== Current Implementation
 The find function supports searching using a single keyword. +
-If some part of the name of `Slot` / tags attributed to `Slot` contains the specified keyword,
-a positive match is registered and the designated `Slot` will be added to the output list. +
-Examples: +
-`find n/CS` +
-`CS2101`, `CS2113T`, `SOCSMeet` are considered positive matches. +
-`ST2334`, `Hockey`, `Lunch` are NOT considered positive matches. +
+All existing `Slots` are weighted based on their name/tag's <<levenshtein-distance,Levenshtein Distance>> from the keyword.
+
+A low <<levenshtein-distance,Levenshtein Distance>> is attributed to a high level of similarity between the name/tag and the keyword.
+(A value of 0 constitutes an exact match.)
+
+The weighted `Slots` are inserted into a `PriorityQueue` and the closest matching `Slots`
+will be polled into the output list. +
+{zwsp}
+
+{zwsp}
 
 ==== Design Considerations
 
@@ -492,52 +686,106 @@ Examples: +
 * **Alternative 1:** Positive search result by strictly matching the entered keyword
 ** Pros: Easy to implement.
 ** Cons: Search must be exact, typos or an incomplete keyword will yield incorrect results. Nothing different from `List` feature.
-* **Alternative 2 (current choice):** Positive search result as long as name/tag contains the keyword.
-** Pros: Searches can now consider names/tags similar to the keyword.
+* **Alternative 2:** Positive search result as long as name/tag contains the keyword.
+** Pros: Searches will detect names/tags similar to the keyword.
 ** Cons: Output list will be longer. May become excessively long if short keyword is provided.
-* **Alternative 3 (future implementation):** Store the search results in a `treeMap` ordered by their Levenshtein distances from the search keyword
-** Pros: Will also consider searches that are similar to what we want and will account for typos or incomplete keywords
+* **Alternative 3 (current implementation):** Store the search results in a `PriorityQueue` ordered by their <<levenshtein-distance,Levenshtein distances>> from the search keyword.
+** Pros: Will also consider searches that are similar to the desired name/tag and will account for a typo or an incomplete keyword
 ** Cons: Added complexities in finding and searching.
+{zwsp}
 
-==== Future Implementation
-The find function will be revamped to support search guessing. +
-FindCommand will be enhanced by using Levenshtein Distance to generate an ordered set of `Slot` attributes ordered by similarity.
+{zwsp}
 
 === View Month/Week/Day feature
 
-==== Design Considerations
+This feature presents the planner in different formats. This section will detail how this feature is implemented.
+{zwsp}
 
-===== Aspect: How a type of view is initialised or updated
+{zwsp}
 
-* **Alternative 1 (current choice):** Initialised from `Planner` only upon `view` command.
-** Pros: Easy to implement. Less operations performed by the program.
-* **Alternative 2:** Updated upon any `add`/`edit`/`delete` slot command.
-** Pros: `PlannerView` is always updated.
-** Cons: Large amount of additional operations.
-
-==== Future Implementation
-// to be edited
-The month/week/day view mechanism is facilitated by `PlannerView`.
-It extends `Planner` with different calendar views, stored internally as `monthView`, `weekView` and `dayView`.
-Additionally, it implements the following operations:
-
-* `PlannerView.displayMonthView()` - Displays the current semester in a monthly calendar view.
-* `PlannerView.displayWeekView()` - Displays the current semester in a weekly calendar view.
-* `PlannerView.displayDayView()` - Displays the current semester in a daily calendar view.
-
-Given below is an example usage scenario and how the month/week/day view feature behaves at each step.
-
-Step 1. The user launches the application for the first time. The `PlannerView` will be initialized with the contents in the `Planner`. The `Planner` might contain a `Semester` which is empty or a `Semester` populated with slots after reading `PlanMySem.txt`.
-
-Step 2. The user executes `add n/CS2113T Tutorial ...` to add a new slot to the planner. The `add` command would add a new `Slot` to the `Semester` of the `Planner`.
-
-Step 3. The user executes `view month March` command to view the calendar for March. The `view` command calls `PlannerView.displayMonthView()`, which loads the data the updated `Semester` from the `Planner` into `monthView`.
-
-// tag::undoredo[]
-=== Undo/Redo feature
 ==== Current Implementation
 
-The undo/redo mechanism is facilitated by `VersionedPlanner`.
+Upon entering the `view` command with valid parameters (refer to <<UserGuide#, UserGuide.adoc>> for `view` usage), the
+following sequence of events is executed:
+
+1. The `Parser` component parses the `view` command. It can be parsed into only 3 general types of views which are the
+month, week or day view.
+2. This results in a Command object which is executed.
+3. The command execution will retrieve data from the `Model` (e.g. retrieving data from the current `Semester`).
+4. The result of the command execution is encapsulated as a `CommandResult` object which is passed back to `Ui`.
+5. In addition, the `CommandResult` object can also instruct the `Ui` to display results, such as displaying help to
+the user.
+
+Given below is the Sequence Diagram upon executing the `view month` command.
+
+.Interactions between components for the `view month` Command
+image::ViewMonthSequenceDiagram.png[width="800"]
+{zwsp}
+
+The 3 general types of view (month, week, day) are generated by the methods `displayMonthView()`, `displayWeekView()`,
+`displayDetailedWeekView()` and `displayDayView()` from the `ViewCommand` class.
+
+`displayMonthView()` displays all the months of the current semester in a monthly calendar format. Each academic week
+of the semester is also indicated in the display as seen in the figure below. The implementation of this function can be
+broken down into 2 parts:
+
+1. Print month header and calculate required amount of whitespace before the 1st of the month.
+2. Print all days of the month using a loop.
+   * Append academic week after each Saturday or last day of month.
+
+.View of months in current semester with academic weeks indicated.
+image::Ui.png[width="800"]
+{zwsp}
+
+`displayWeekView()` displays the weekly calendar format of a specified week. The implementation of this function can be
+broken down into the following steps:
+
+1. Print academic week header.
+2. Retrieve all days of the week and for each day, retrieve its _slots_ into an `ArrayList`.
+3. For each day, print the _slot_ details (only start time, end time and a shortened title) and remove the _slot_ from
+the `ArrayList`.
+4. Repeat step 3 until the `ArrayList` of _slots_ for each day is empty.
+
+`displayDayView()` displays the details of all _slots_ of a specified day. The implementation of this function can be
+broken down into 2 parts:
+
+1. Retrieve all _slots_ for the specified day.
+2. Print all details of each _slot_ found.
+
+`displayDetailedWeekView()` displays the details of all _slots_ of a specified week since `displayWeekView()` only shows
+ a formatted and summarised week view. The implementation of this function can be broken down into the following steps:
+
+1. Print academic week header.
+2. Retrieve all days of the week.
+3. For each day, print all details of all _slots_ via the `displayDayView()` method.
+{zwsp}
+
+{zwsp}
+
+==== Design Considerations
+
+===== Aspect: Functionality of `view week` command
+
+* *Alternative 1 (current choice):* Option for user to display a formatted summarised week view or a detailed week view.
+** Pros: The formatted summarised week view is uncluttered. User given the choice and flexibility for the week view.
+** Cons: User is required to spend a little more time to specify an additional parameter in the `view week` command.
+
+* *Alternative 2:* Only a single formatted week view which displays details of all _slots_ in the specified week.
+** Pros: Efficient for the user as user is only required to enter a single command to view all details of all _slots_.
+** Cons: The formatted week view will be too cluttered as there are too many _slots_ and lots of details. Formatting is
+an issue as well as details of each _slot_ can be of varying lengths.
+{zwsp}
+
+{zwsp}
+
+=== Undo/Redo feature
+
+==== Current Implementation
+
+The undo/redo mechanism is facilitated by `VersionedPlanner`. +
+[NOTE]
+Only `Add`, `Edit` and `Delete` commands can be undone/redone. +
+
 It extends `Planner` with an undo/redo history, stored internally as an `plannerStateList` and `currentStatePointer`.
 Additionally, it implements the following operations:
 
@@ -551,26 +799,49 @@ Given below is an example usage scenario and how the undo/redo mechanism behaves
 
 Step 1. The user launches the application for the first time. The `VersionedPlanner` will be initialized with the initial planner state, and the `currentStatePointer` pointing to that single planner state.
 
-Step 2. The user executes `delete 5` command to delete the 5th slot in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+image::UndoRedoStartingStateListDiagram.png[width="800"]
+
+Step 2. The user executes `delete 5` command to delete the 5th `Slot` in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+
+image::UndoRedoNewCommand1StateListDiagram.png[width="800"]
 
 Step 3. The user executes `add n/CS2113T ...` to add a new slot. The `add` command also calls `Model#commitPlanner()`, causing another modified planner state to be saved into the `plannerStateList`.
+
+image::UndoRedoNewCommand2StateListDiagram.png[width="800"]
 
 [NOTE]
 If a command fails its execution, it will not call `Model#commitPlanner()`, so the planner state will not be saved into the `plannerStateList`.
 
-Step 4. The user now decides that adding the slot was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoPlanner()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+Step 4. The user now decides that adding the `Slot` was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undo()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+
+image::UndoRedoExecuteUndoStateListDiagram.png[width="800"]
 
 [NOTE]
-If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndo()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+
+The following sequence diagram shows how the undo operation works:
+
+image::UndoRedoSequenceDiagram.png[width="800"]
 
 The `redo` command does the opposite -- it calls `Model#redoPlanner()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the planner to that state.
 
 [NOTE]
-If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedo()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
 
 Step 5. The user then decides to execute the command `list`. Commands that do not modify the planner, such as `list`, will usually not call `Model#commitPlanner()`, `Model#undoPlanner()` or `Model#redoPlanner()`. Thus, the `plannerStateList` remains unchanged.
 
-Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/CS2113T ...` command. This is the behavior that most modern desktop applications follow.
+image::UndoRedoNewCommand3StateListDiagram.png[width="800"]
+
+Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/David ...` command. This is the behavior that most modern desktop applications follow.
+
+image::UndoRedoNewCommand4StateListDiagram.png[width="800"]
+
+The following activity diagram summarizes what happens when a user executes a new command:
+
+image::UndoRedoActivityDiagram.png[width="650"]
+{zwsp}
+
+{zwsp}
 
 ==== Design Considerations
 
@@ -580,8 +851,11 @@ Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since th
 ** Pros: Easy to implement.
 ** Cons: May have performance issues in terms of memory usage.
 * **Alternative 2:** Individual command knows how to undo/redo by itself.
-** Pros: Will use less memory (e.g. for `delete`, just save the slot being deleted).
+** Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
 ** Cons: We must ensure that the implementation of each individual command are correct.
+{zwsp}
+
+{zwsp}
 
 ===== Aspect: Data structure to support the undo/redo commands
 
@@ -591,6 +865,66 @@ Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since th
 * **Alternative 2:** Use `HistoryManager` for undo/redo
 ** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
 ** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
+{zwsp}
+
+{zwsp}
+
+//==== Current Implementation
+//
+//The undo/redo mechanism is facilitated by `VersionedPlanner`.
+//It extends `Planner` with an undo/redo history, stored internally as an `plannerStateList` and `currentStatePointer`.
+//Additionally, it implements the following operations:
+//
+//* `VersionedPlanner#commit()` -- Saves the current planner state in its history.
+//* `VersionedPlanner#undo()` -- Restores the previous planner state from its history.
+//* `VersionedPlanner#redo()` -- Restores a previously undone planner state from its history.
+//
+//These operations are exposed in the `Model` interface as `Model#commitPlanner()`, `Model#undoPlanner()` and `Model#redoPlanner()` respectively.
+//
+//Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
+//
+//Step 1. The user launches the application for the first time. The `VersionedPlanner` will be initialized with the initial planner state, and the `currentStatePointer` pointing to that single planner state.
+//
+//Step 2. The user executes `delete 5` command to delete the 5th slot in the planner. The `delete` command calls `Model#commitPlanner()`, causing the modified state of the planner after the `delete 5` command executes to be saved in the `plannerStateList`, and the `currentStatePointer` is shifted to the newly inserted planner state.
+//
+//Step 3. The user executes `add n/CS2113T ...` to add a new slot. The `add` command also calls `Model#commitPlanner()`, causing another modified planner state to be saved into the `plannerStateList`.
+//
+//[NOTE]
+//If a command fails its execution, it will not call `Model#commitPlanner()`, so the planner state will not be saved into the `plannerStateList`.
+//
+//Step 4. The user now decides that adding the slot was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoPlanner()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous planner state, and restores the planner to that state.
+//
+//[NOTE]
+//If the `currentStatePointer` is at index 0, pointing to the initial planner state, then there are no previous planner states to restore. The `undo` command uses `Model#canUndoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the undo.
+//
+//The `redo` command does the opposite -- it calls `Model#redoPlanner()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the planner to that state.
+//
+//[NOTE]
+//If the `currentStatePointer` is at index `plannerStateList.size() - 1`, pointing to the latest planner state, then there are no undone planner states to restore. The `redo` command uses `Model#canRedoPlanner()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+//
+//Step 5. The user then decides to execute the command `list`. Commands that do not modify the planner, such as `list`, will usually not call `Model#commitPlanner()`, `Model#undoPlanner()` or `Model#redoPlanner()`. Thus, the `plannerStateList` remains unchanged.
+//
+//Step 6. The user executes `clear`, which calls `Model#commitPlanner()`. Since the `currentStatePointer` is not pointing at the end of the `plannerStateList`, all planner states after the `currentStatePointer` will be purged. We designed it this way because it no longer makes sense to redo the `add n/CS2113T ...` command. This is the behavior that most modern desktop applications follow.
+//
+//==== Design Considerations
+//
+//===== Aspect: How undo & redo executes
+//
+//* **Alternative 1 (current choice):** Saves the entire planner.
+//** Pros: Easy to implement.
+//** Cons: May have performance issues in terms of memory usage.
+//* **Alternative 2:** Individual command knows how to undo/redo by itself.
+//** Pros: Will use less memory (e.g. for `delete`, just save the slot being deleted).
+//** Cons: We must ensure that the implementation of each individual command are correct.
+//
+//===== Aspect: Data structure to support the undo/redo commands
+//
+//* **Alternative 1 (current choice):** Use a list to store the history of planner states.
+//** Pros: Easy for new Computer Science student undergraduates to understand, who are likely to be the new incoming developers of our project.
+//** Cons: Logic is duplicated twice. For example, when a new command is executed, we must remember to update both `HistoryManager` and `VersionedPlanner`.
+//* **Alternative 2:** Use `HistoryManager` for undo/redo
+//** Pros: We do not need to maintain a separate list, and just reuse what is already in the codebase.
+//** Cons: Requires dealing with commands that have already been undone: We must remember to skip these commands. Violates Single Responsibility Principle and Separation of Concerns as `HistoryManager` now needs to do two different things.
 // end::undoredo[]
 
 === Data Encryption / Decryption feature
@@ -605,6 +939,9 @@ A initialization vector (IV) is required for the Cipher Block Chain (CBC) mode o
 
 Encryption of the data is done automatically before the file is saved. In the implementation, the AdaptedPlanner object is first marshaled into a StringWriter before being encrypted and written into the file. This is to ensure that the data is JAXB formatted and the save algorithm is unaffected.
 Similarly, decryption of the data is done automatically before it is loaded. In the implementation, the file is read and decrypted and parsed into a StringReader object. The StringReader object is then un-marshaled and loaded. This is to ensure that the file is converted back into a JAXB object before being loaded and the load algorithm is unaffected.
+{zwsp}
+
+{zwsp}
 
 === Data Exporting / Exporting feature
 
@@ -612,6 +949,9 @@ The user can export the current planner into a .ics file to use in external cale
 We have chosen to use the iCalendar format due to its popularity and it’s use in applications such as Google Calendar, Microsoft Outlook and NUSmods.
 
 In our implementation, we have chosen not to export the tags into the .ics file. This is because iCalendar does not have in-built tag fields. This means that other other applications that import .ics will not be able to use the tags.
+{zwsp}
+
+{zwsp}
 
 ===== Aspect: Exporting tags into .ics file.
 
@@ -622,13 +962,20 @@ In our implementation, we have chosen not to export the tags into the .ics file.
 * **Alternative 2:** Use the notes field and a tag identifier to save the tags.
 ** Pros: All the information from the semester will be exported.
 ** Cons: Requires other applications to be coded to read these tag identifiers and also to store and use the tags in their functions.
+{zwsp}
 
+{zwsp}
 
 [[Implementation-Configuration]]
 === Configuration
 
-// TODO: Ding Heng & Julian please fill this section
+// TODO: Julian please fill this section
 //Certain properties of the application can be controlled (e.g user prefs file location, logging level) through the configuration file (default: `config.json`).
+There is no need for manual configuration of the `Semester` as it is initialized dynamically as mentioned in
+<<Planner-Initialization>>.
+{zwsp}
+
+{zwsp}
 
 == Documentation
 
@@ -636,15 +983,24 @@ We use asciidoc for writing documentation.
 
 [NOTE]
 We chose asciidoc over Markdown because asciidoc, although a bit more complex than Markdown, provides more flexibility in formatting.
+{zwsp}
+
+{zwsp}
 
 === Editing Documentation
 
 See <<UsingGradle#rendering-asciidoc-files, UsingGradle.adoc>> to learn how to render `.adoc` files locally to preview the end result of your edits.
 Alternatively, you can download the AsciiDoc plugin for IntelliJ, which allows you to preview the changes you have made to your `.adoc` files in real-time.
+{zwsp}
+
+{zwsp}
 
 === Publishing Documentation
 
 See <<UsingTravis#deploying-github-pages, UsingTravis.adoc>> to learn how to deploy GitHub Pages using Travis.
+{zwsp}
+
+{zwsp}
 
 === Converting Documentation to PDF format
 
@@ -659,6 +1015,9 @@ Here are the steps to convert the project documentation files to PDF format.
 
 .Saving documentation as PDF files in Chrome
 image::chrome_save_as_pdf.png[width="300"]
+{zwsp}
+
+{zwsp}
 
 [[Docs-SiteWideDocSettings]]
 === Site-wide Documentation Settings
@@ -689,6 +1048,9 @@ This will render the SE-EDU navigation bar at the top of the page, and add some 
 |_not set_
 
 |===
+{zwsp}
+
+{zwsp}
 
 [[Docs-PerFileDocSettings]]
 === Per-file Documentation Settings
@@ -718,6 +1080,9 @@ _{asterisk} Official SE-EDU projects only_
 |_not set_
 
 |===
+{zwsp}
+
+{zwsp}
 
 === Site Template
 
@@ -733,6 +1098,9 @@ Modifying the template files in link:{repoURL}/docs/templates[`docs/templates`] 
 You should only modify them if you need greater control over the site's layout than what stylesheets can provide.
 The SE-EDU team does not provide support for modified template files.
 ====
+{zwsp}
+
+{zwsp}
 
 [[Testing]]
 == Testing
@@ -761,6 +1129,9 @@ See <<UsingGradle#, UsingGradle.adoc>> for more info on how to run tests using G
 Thanks to the https://github.com/TestFX/TestFX[TestFX] library we use, our GUI tests can be run in the _headless_ mode. In the headless mode, GUI tests do not show up on the screen. That means the developer can do other things on the Computer while the tests are running.
 
 To run tests in headless mode, open a console and run the command `gradlew clean headless allTests` (Mac/Linux: `./gradlew clean headless allTests`)
+{zwsp}
+
+{zwsp}
 
 === Types of tests
 
@@ -772,30 +1143,47 @@ e.g. `PlanMySem.commons.UtilTest`
 e.g. `PlanMySem.storageFile.StorageManagerTest`
 .  Hybrids of unit and integration tests. These test are checking multiple code units as well as how the are connected together. +
 e.g. `PlanMySem.logicManager.LogicTest`, `PlanMySem.parse,ParserTest`
+{zwsp}
 
+{zwsp}
 
 === Troubleshooting Testing
 **Problem: `Logic` fails with a `NullPointerException`.**
 
 * Reason: One of its dependencies, `HelpWindow.html` in `src/main/resources/docs` is missing.
 * Solution: Execute Gradle task `processResources`.
+{zwsp}
+
+{zwsp}
 
 == Dev Ops
 
 === Build Automation
 
 See <<UsingGradle#, UsingGradle.adoc>> to learn how to use Gradle for build automation.
+{zwsp}
+
+{zwsp}
 
 === Continuous Integration
 
 We use https://travis-ci.org/[Travis CI] and https://www.appveyor.com/[AppVeyor] to perform _Continuous Integration_ on our projects. See <<UsingTravis#, UsingTravis.adoc>> and <<UsingAppVeyor#, UsingAppVeyor.adoc>> for more details.
+{zwsp}
+
+{zwsp}
 
 === Coverage Reporting
 
 We use https://coveralls.io/[Coveralls] to track the code coverage of our projects. See <<UsingCoveralls#, UsingCoveralls.adoc>> for more details.
+{zwsp}
+
+{zwsp}
 
 === Documentation Previews
 When a pull request has changes to asciidoc files, you can use https://www.netlify.com/[Netlify] to see a preview of how the HTML version of those asciidoc files will look like when the pull request is merged. See <<UsingNetlify#, UsingNetlify.adoc>> for more details.
+{zwsp}
+
+{zwsp}
 
 === Making a Release
 
@@ -805,6 +1193,9 @@ Here are the steps to create a new release.
 .  Generate a JAR file <<UsingGradle#creating-the-jar-file, using Gradle>>.
 .  Tag the repo with the version number. e.g. `v0.1`
 .  https://help.github.com/articles/creating-releases/[Create a new release using GitHub] and upload the JAR file you created.
+{zwsp}
+
+{zwsp}
 
 === Managing Dependencies
 
@@ -813,9 +1204,10 @@ A project often depends on third-party libraries. For example, Address Book depe
 [loweralpha]
 . Include those libraries in the repo (this bloats the repo size)
 . Require developers to download those libraries manually (this creates extra work for developers)
+{zwsp}
 
-[[GetStartedProgramming]]
-[appendix]
+{zwsp}
+
 //== Suggested Programming Tasks to Get Started
 //
 //Suggested path for new programmers:
@@ -1106,6 +1498,9 @@ A project often depends on third-party libraries. For example, Address Book depe
 * is reasonably comfortable using CLI apps
 
 *Value proposition*: manage personal planner faster than a typical mouse/GUI driven app and caters to users who prefer an offline solution due to the current technology climate where information privacy/data privacy/data protection has become an uncertainty
+{zwsp}
+
+{zwsp}
 
 [appendix]
 == User Stories
@@ -1146,11 +1541,17 @@ Priorities: High (must have) - `* * \*`, Medium (nice to have) - `* \*`, Low (un
 |`*` |user |compare my timetable with someone else's |find a common time slot for a meeting
 |`*` |user |generate summary reports |view how much time I spent attending training / tutorials
 |=======================================================================
+{zwsp}
+
+{zwsp}
 
 [appendix]
 == Use Cases
 
 (For all use cases below, the *System* is `PlanMySem` and the *Actor* is the `user`, unless specified otherwise)
+{zwsp}
+
+{zwsp}
 
 === Use case: Initialize Calendar
 * MSS:
@@ -1159,6 +1560,9 @@ Priorities: High (must have) - `* * \*`, Medium (nice to have) - `* \*`, Low (un
 
 +
 Use case ends.
+{zwsp}
+
+{zwsp}
 
 === Use Case: Add a slot
 * MSS:
@@ -1176,6 +1580,9 @@ User case ends.
 :::: 1a1. System outputs error message.
 +
 User case ends.
+{zwsp}
+
+{zwsp}
 
 === Use Case: List slots
 * MSS:
@@ -1192,6 +1599,9 @@ Use case ends.
 :::: 1b1. System outputs error message.
 +
 Use case ends.
+{zwsp}
+
+{zwsp}
 
 === Use Case: Delete a slot
 * MSS:
@@ -1204,6 +1614,9 @@ Use case ends.
 :::: 1a1. System outputs error message.
 +
 Use case ends.
+{zwsp}
+
+{zwsp}
 
 === Use Case: Edit a slot
 * MSS:
@@ -1231,6 +1644,9 @@ Use case ends.
 . System displays confirmation message.
 +
 Use case ends.
+{zwsp}
+
+{zwsp}
 
 === Use Case: View all Activities in a Day
 * MSS:
@@ -1254,6 +1670,9 @@ Use case ends.
 //Use case ends.
 
 _{More to be added}_
+{zwsp}
+
+{zwsp}
 
 [appendix]
 == Non Functional Requirements
@@ -1266,6 +1685,9 @@ _{More to be added}_
 . The system should be easy to use, intuitive and simple, such that any student regardless of past experience with calendar/scheduling software is able to use it.
 . The system should be flexible to allow all kinds of schedules that target users might have.
 . The data should be encrypted to prevent private data from being accessed.
+{zwsp}
+
+{zwsp}
 
 [appendix]
 == Glossary
@@ -1273,28 +1695,19 @@ _{More to be added}_
 [[mainstream-os]] Mainstream OS::
 Windows, Linux, Unix, OS-X
 
+[[levenshtein-distance]] Levenshtein Distance::
+The Levenshtein distance is a string metric for measuring difference between two sequences. +
+Informally, the Levenshtein distance between two words is the minimum number of single-character edits (i.e. insertions, deletions or substitutions)
+required to change one word into the other.
+
 ////
 Should only include this if we actually make any mention to private planner detail.
 [[private-planner-detail]] Private planner detail::
 Any model stored on to the planner is not meant to be shared with others, unless the model is willingly exported.
 ////
+{zwsp}
 
-[appendix]
-== Product Survey
-
-*Product Name*
-
-Author: ...
-
-Pros:
-
-* ...
-* ...
-
-Cons:
-
-* ...
-* ...
+{zwsp}
 
 [appendix]
 == Instructions for Manual Testing
@@ -1317,8 +1730,9 @@ These instructions only provide a starting point for testers to work on; testers
 .. Resize the window to an optimum size. Move the window to a different location. Close the window.
 .. Re-launch the app by double-clicking the jar file. +
    Expected: The most recent window size and location is retained.
+{zwsp}
 
-_{ more test cases ... }_
+{zwsp}
 
 === Deleting a slot
 
@@ -1331,13 +1745,17 @@ _{ more test cases ... }_
    Expected: No _Slot_ is deleted. Error details shown in the status message.
 .. Other incorrect delete commands to try: `delete`, `delete x` (where x is larger than the list size) _{give more}_ +
    Expected: Similar to previous.
+{zwsp}
 
-_{ more test cases ... }_
+{zwsp}
+
 
 === Saving data
 
 . Dealing with missing/corrupted data files
 
 .. _{explain how to simulate a missing/corrupted file and the expected behavior}_
+{zwsp}
 
-_{ more test cases ... }_
+{zwsp}
+

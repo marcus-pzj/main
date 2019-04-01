@@ -1,6 +1,7 @@
 package planmysem.common;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +40,8 @@ public class Messages {
     public static final String MESSAGE_INVALID_TAG = "Tags cannot be empty !";
 
     public static final String MESSAGE_ILLEGAL_VALUE = "Illegal value detected!";
+    public static final String MESSAGE_ILLEGAL_WEEK_VALUE = "No such week is found in the current semester!";
+    public static final String MESSAGE_DATE_OUT_OF_BOUNDS = "No such date is found in the current semester!";
 
     /**
      * Craft selected message via tags.
@@ -55,6 +58,7 @@ public class Messages {
             sb.append("\n");
             count++;
         }
+        sb.append("\nEnter 'list n/{name} OR t/{tag}' to list all slots related to the name/tag\n");
 
         return sb.toString();
     }
@@ -83,11 +87,32 @@ public class Messages {
     }
 
     /**
-     * Craft selected message without header.
+     * Craft selected message via weighted Set of Pairs.
      */
-    public static String craftSelectedMessage(Map<LocalDate,
-            Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots) {
-        return getSelectedMessage(selectedSlots);
+    public static String craftListMessage(List<WeightedName> tries) {
+        StringBuilder sb = new StringBuilder();
+
+        //sb.append("Here are the closest matching names/tags: \n");
+
+        int count = 1;
+        for (WeightedName wn : tries) {
+            sb.append("\n");
+            sb.append(count + ".\t");
+            sb.append("Name: ");
+            sb.append(wn.getName());
+            sb.append(",\n\t");
+            sb.append("Date: ");
+            sb.append(wn.getMap().getKey().toString());
+            sb.append(",\n\t");
+            sb.append("Start Time: ");
+            sb.append(wn.getSlot().getStartTime());
+            sb.append("\n\t");
+            sb.append("Tags: ");
+            sb.append(wn.getSlot().getTags());
+            sb.append("\n");
+            count++;
+        }
+        return sb.toString();
     }
 
     /**

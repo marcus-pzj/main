@@ -22,7 +22,7 @@ By: `Team T08-3`      Since: `Jan 2019`      Licence: `MIT`
 == Introduction
 Welcome to *PlanMySem*!
 
-*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that targets NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
+*PlanMySem* is a text-based (Command Line Interface) scheduling/calendar application that caters to NUS students and staff who prefer to use a desktop application for managing their schedule/calendar.
 *PlanMySem* automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
 Special weeks such as recess week and reading week are taken into account within our unique recursion system.
 Items can then be efficiently managed via the intuitive tagging system.
@@ -349,8 +349,10 @@ Format: `view month`
 Format: `view week [WEEK]`
 3. View the day view of a particular day in the academic semester. +
 Format: `view day [DATE_OR_DAY_OF_WEEK]`
-4. View all the details in the planner. +
-Format: `view all`
+
+[TIP]
+You may add in the parameter `details` after `[WEEK]` to view the details of all _slots_ with respect to `[WEEK]`. +
+E.g. `view week details` will allow you to view details of all _slots_ in the current week!
 
 [TIP]
 You may omit `[WEEK]`/`[DATE_OR_DAY_OF_WEEK]` to view the calendar with respect to the current date! +
@@ -364,6 +366,8 @@ View planner for the current date.
 View planner for the first of March.
 * `view day monday` +
 View planner for the upcoming Monday.
+* `view week details` +
+View planner for current week of the academic calendar with details of all _slots_.
 * `view week 7` +
 View planner for week 7 of the academic calendar.
 * `view week recess` +
@@ -374,9 +378,6 @@ View planner for the months of the current academic semester.
 [#img-view]
 .[.underline]#Output after entering `view month`#
 image::Ui.png[width="790"]
-
-* `view all` +
-View all the details in the planner.
 {zwsp}
 
 {zwsp}
@@ -410,7 +411,7 @@ Format: `redo`
 
 [[encrypt]]
 === Encrypting/decrypting data files
-Planner data is automatically encrypted before saving and decrypted before loading. You do not need to encrypt or decrypt he data manually.
+Planner data is automatically encrypted before saving and decrypted before loading. You do not need to encrypt or decrypt the data manually.
 {zwsp}
 
 {zwsp}
@@ -418,7 +419,16 @@ Planner data is automatically encrypted before saving and decrypted before loadi
 [[import]]
 === Importing .ics formatted files `[coming in v2.0]`
 You can import an .ics file into the planner.
-Format: `import FILENAME`
+Format: `import filename`
+[NOTE]
+====
+The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. The file to be imported has to be located in the PlanMySem main directory.+
+{zwsp}
+====
+[WARNING]
+For .ics files that are created from other calendar applications, events with recurrence will not be recursed in our
+application. Events that are outside of the current school semester will also not be imported.
+
 {zwsp}
 
 {zwsp}
@@ -435,6 +445,10 @@ image::Export_Command_Output_1.png[width="420"]
 ====
 The exported file is named "PlanMySem.ics" and is saved in the main directory.
 The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. +
+
+====
+[WARNING]
+Exporting will REMOVE all tags in the planner.
 
 [#img-exportFile]
 .[.underline]#Location of PlanMySem.ics file#

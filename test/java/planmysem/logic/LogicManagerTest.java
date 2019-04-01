@@ -23,6 +23,7 @@ import planmysem.storage.StorageFile;
 
 public class LogicManagerTest {
     private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy exception");
+    private static final String testFileName = "testSaveFile.txt";
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -37,9 +38,9 @@ public class LogicManagerTest {
     @Before
     public void setUp() throws Exception {
         Clock.set("2019-01-14T10:00:00Z");
+        storageFile = new StorageFile(temporaryFolder.getRoot().getPath() + "\\" + testFileName);
+        logic = new LogicManager(storageFile);
         model = new ModelManager();
-        storageFile = new StorageFile(temporaryFolder.newFile("testSaveFile.txt").getPath());
-        logic = new LogicManager(storageFile, model);
     }
 
     @Test

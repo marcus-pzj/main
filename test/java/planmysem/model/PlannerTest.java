@@ -121,7 +121,7 @@ public class PlannerTest {
             }
 
             // Initialises HashMap and Sets of all days in current semester
-            List<LocalDate> datesList = startDate.datesUntil(endDate).collect(Collectors.toList());
+            List<LocalDate> datesList = startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toList());
             for (LocalDate date: datesList) {
                 int weekOfYear = date.get(WeekFields.ISO.weekOfWeekBasedYear());
                 String weekType = weekNames.get(weekOfYear);

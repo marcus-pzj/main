@@ -64,12 +64,20 @@ public class ListCommand extends Command {
         if (selectedSlots.isEmpty()) {
             return new CommandResult(MESSAGE_SUCCESS_NONE);
         }
+
         model.setLastShownList(selectedSlots);
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
                 Messages.craftListMessage(selectedSlots)));
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public boolean getIsListByName() {
+        return isListByName;
+    }
 }
 
 

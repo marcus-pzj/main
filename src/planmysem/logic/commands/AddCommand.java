@@ -70,7 +70,6 @@ public class AddCommand extends Command {
     public CommandResult execute(Model model, CommandHistory commandHistory) throws CommandException {
         Set<LocalDate> dates = recurrence.generateDates(model.getPlanner().getSemester());
         Map<LocalDate, Day> days = new TreeMap<>();
-
         for (LocalDate date : dates) {
             try {
                 days.put(date, model.addSlot(date, slot));
@@ -78,7 +77,7 @@ public class AddCommand extends Command {
                 throw new CommandException(MESSAGE_FAIL_OUT_OF_BOUNDS);
             }
         }
-
+        model.commit();
         return new CommandResult(String.format(MESSAGE_SUCCESS, dates.size(),
                 craftSuccessMessage(days, slot)));
     }
