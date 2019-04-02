@@ -214,7 +214,7 @@ public class ViewCommand extends Command {
         }
 
         // Print academic week header.
-        int width = 92;
+        int width = 120;
         sb.append(centerAlignText(width, week) + "\n");
 
         // Print formatted week view.
@@ -376,14 +376,14 @@ public class ViewCommand extends Command {
         StringBuilder sb = new StringBuilder();
 
         // Print line divider.
-        int width = 92;
+        int width = 120;
         for (int i = 0; i < width; i++) {
             sb.append("-");
         }
         sb.append("\n");
 
         // Print days of week header.
-        width = 12;
+        width = 16;
         sb.append("|" + centerAlignText(width, "Monday") + "|");
         sb.append(centerAlignText(width, "Tuesday") + "|");
         sb.append(centerAlignText(width, "Wednesday") + "|");
@@ -398,7 +398,7 @@ public class ViewCommand extends Command {
         }
         sb.append("\n");
 
-        width = 92;
+        width = 120;
         for (int i = 0; i < width; i++) {
             sb.append("-");
         }
@@ -419,7 +419,7 @@ public class ViewCommand extends Command {
         }
 
         // Print all slots for each day.
-        width = 12;
+        width = 16;
         while (!slotsInDayList.get(0).isEmpty() || !slotsInDayList.get(1).isEmpty()
                 || !slotsInDayList.get(2).isEmpty() || !slotsInDayList.get(3).isEmpty()
                 || !slotsInDayList.get(4).isEmpty() || !slotsInDayList.get(5).isEmpty()
@@ -437,12 +437,17 @@ public class ViewCommand extends Command {
                     slotTitleLine.append(centerAlignText(width, "") + "|");
                 } else {
                     Slot slot = allSlotsInDay.get(0);
-                    slotTimingLine.append("*" + slot.getStartTime());
-                    slotTimingLine.append("-");
-                    slotTimingLine.append(Utils.getEndTime(slot.getStartTime(), slot.getDuration()) + "|");
+                    String slotTiming = "* " + slot.getStartTime() + " - "
+                            + Utils.getEndTime(slot.getStartTime(), slot.getDuration()) + " |";
+                    slotTimingLine.append(slotTiming);
 
-                    String shortTitle = slot.getName().substring(0, 10) + "..";
-                    slotTitleLine.append(shortTitle + "|");
+                    String shortTitle;
+                    if (slot.getName().length() < 15) {
+                        shortTitle = slot.getName();
+                    } else {
+                        shortTitle = slot.getName().substring(0, 14) + "..";
+                    }
+                    slotTitleLine.append(centerAlignText(width, shortTitle) + "|");
 
                     allSlotsInDay.remove(0);
                 }
@@ -453,7 +458,7 @@ public class ViewCommand extends Command {
         }
 
         // Print closing border.
-        width = 92;
+        width = 120;
         for (int i = 0; i < width; i++) {
             sb.append("-");
         }
