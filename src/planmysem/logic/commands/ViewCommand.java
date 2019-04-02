@@ -1,5 +1,6 @@
 package planmysem.logic.commands;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 import static planmysem.common.Messages.MESSAGE_DATE_OUT_OF_BOUNDS;
 import static planmysem.common.Utils.getNearestDayOfWeek;
 
@@ -109,59 +110,66 @@ public class ViewCommand extends Command {
         LocalDate semesterStartDate = currentSemester.getStartDate();
         LocalDate semesterEndDate = currentSemester.getEndDate();
         int year = semesterStartDate.getYear();
-        LocalDate firstDayOfMonth = semesterStartDate.withDayOfMonth(1);
-        int spaces = firstDayOfMonth.getDayOfWeek().getValue();
+        LocalDate firstDay = semesterStartDate.with(firstDayOfYear());
+        int spaces = firstDay.getDayOfWeek().getValue();
+        int firstMonthOfSem = semesterStartDate.getMonthValue();
         int lastMonthOfSem = semesterEndDate.getMonthValue();
         StringBuilder sb = new StringBuilder();
 
         String[] months = {"", "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"};
+        String[] monthOutput = new String[12];
 
         int[] days = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-        for (int m = 1; m <= lastMonthOfSem; m++) {
+        for (int m = 1; m <= 12; m++) {
+            StringBuilder monthBuilder = new StringBuilder();
             // Set number of days in February to 29 if it is a leap year.
             if ((((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) && m == 2) {
                 days[m] = 29;
             }
 
             // Print calendar header.
-            sb.append("          " + months[m] + " " + year + "\n");
-            sb.append("_____________________________________\n");
-            sb.append("   Sun  Mon Tue   Wed Thu   Fri  Sat\n");
+            monthBuilder.append("          " + months[m] + " " + year + "\n");
+            monthBuilder.append("_____________________________________\n");
+            monthBuilder.append("   Sun  Mon Tue   Wed Thu   Fri  Sat\n");
 
             // Print spaces required for the start of a month.
             spaces = (days[m - 1] + spaces) % 7;
             for (int i = 0; i < spaces; i++) {
-                sb.append("     ");
+                monthBuilder.append("     ");
             }
             // Print the days in the month.
             for (int i = 1; i <= days[m]; i++) {
-                sb.append(String.format("  %3d", i));
+                monthBuilder.append(String.format("  %3d", i));
                 if (((i + spaces) % 7 == 0)) {
                     Day tempDay = allDays.get(LocalDate.of(year, m, i));
                     String weekType = "";
                     if (tempDay != null) {
                         weekType = tempDay.getType();
                     }
-                    sb.append("   | " + weekType + "\n");
-                }
-                if (i == days[m]) {
+                    monthBuilder.append("   | " + weekType + "\n");
+                } else if (i == days[m]) {
                     LocalDate tempDate = LocalDate.of(year, m, i);
                     Day tempDay = allDays.get(tempDate);
                     String weekType = "";
                     int extraSpaces = 6 - (tempDate.getDayOfWeek().getValue() % 7);
                     for (int j = 0; j < extraSpaces; j++) {
-                        sb.append("     ");
+                        monthBuilder.append("     ");
                     }
                     if (tempDay != null) {
                         weekType = tempDay.getType();
                     }
-                    sb.append("   | " + weekType + "\n");
+                    monthBuilder.append("   | " + weekType + "\n");
                 }
             }
 
-            sb.append("\n");
+            monthBuilder.append("\n");
+            monthOutput[m - 1] = monthBuilder.toString();
+        }
+
+        for (int m = firstMonthOfSem - 1; m < lastMonthOfSem; m++) {
+            sb.append(monthOutput[m]);
         }
 
         return sb.toString();
@@ -179,9 +187,9 @@ public class ViewCommand extends Command {
         StringBuilder sb = new StringBuilder();
 
         if (week == null) {
-            week = allDays.get(LocalDate.now()).getType() + " of " + currentSemester.getName();
+            week = allDays.get(LocalDate.now(Clock.get())).getType() + " of " + currentSemester.getName();
 
-            weekStart = LocalDate.now().with(WeekFields.ISO.dayOfWeek(), 1);
+            weekStart = LocalDate.now(Clock.get()).with(WeekFields.ISO.dayOfWeek(), 1);
             weekEnd = weekStart.plusDays(7);
             datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
         } else {
@@ -207,7 +215,7 @@ public class ViewCommand extends Command {
                 }
             }
 
-            weekStart = LocalDate.now().with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
+            weekStart = LocalDate.now(Clock.get()).with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
             weekStart = weekStart.with(WeekFields.ISO.dayOfWeek(), 1);
             weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 1);
             datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
@@ -241,9 +249,9 @@ public class ViewCommand extends Command {
         StringBuilder sb = new StringBuilder();
 
         if ("Details".equals(week)) {
-            sb.append(allDays.get(LocalDate.now()).getType() + " of " + currentSemester.getName() + "\n");
+            sb.append(allDays.get(LocalDate.now(Clock.get())).getType() + " of " + currentSemester.getName() + "\n");
 
-            weekStart = LocalDate.now().with(WeekFields.ISO.dayOfWeek(), 1);
+            weekStart = LocalDate.now(Clock.get()).with(WeekFields.ISO.dayOfWeek(), 1);
             weekEnd = weekStart.plusDays(7);
             datesList = weekStart.datesUntil(weekEnd).collect(Collectors.toList());
         } else {
@@ -269,7 +277,7 @@ public class ViewCommand extends Command {
                 }
             }
 
-            weekStart = LocalDate.now().with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
+            weekStart = LocalDate.now(Clock.get()).with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0]);
             weekStart = weekStart.with(WeekFields.ISO.dayOfWeek(), 1);
             weekEnd = weekStart.with(WeekFields.ISO.weekOfWeekBasedYear(), weekOfYear[0] + 1);
             if (weekOfYear[1] != 0) {
@@ -298,7 +306,7 @@ public class ViewCommand extends Command {
         // Parse different formats of given day/date.
         LocalDate givenDate;
         if (dateOrDay == null) {
-            givenDate = LocalDate.now();
+            givenDate = LocalDate.now(Clock.get());
         } else {
             int day = -1;
             givenDate = Utils.parseDate(dateOrDay);

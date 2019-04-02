@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import planmysem.common.Clock;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 
@@ -61,6 +62,13 @@ public class Semester implements ReadOnlySemester {
      * Constructs a shallow copy of the Semester.
      */
     public Semester(Semester source) {
+        LocalDate startDateFromFile = source.startDate;
+        LocalDate endDateFromFile = source.endDate;
+        if (LocalDate.now(Clock.get()).isBefore(startDateFromFile)
+                || LocalDate.now(Clock.get()).isAfter(endDateFromFile)) {
+            source = generateSemester(LocalDate.now(Clock.get()));
+        }
+
         this.name = source.getName();
         this.academicYear = source.getAcademicYear();
         this.days.putAll(source.days);
@@ -72,6 +80,7 @@ public class Semester implements ReadOnlySemester {
         this.readingDays.addAll(source.readingDays);
         this.normalDays.addAll(source.normalDays);
         this.examDays.addAll(source.examDays);
+
     }
 
     /**

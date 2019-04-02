@@ -27,10 +27,6 @@ import planmysem.testutil.SlotBuilder;
 public class ViewCommandTest {
     private Model model;
     private Model expectedModel;
-    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair1;
-    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair2;
-    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair3;
-    private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair4;
     private CommandHistory commandHistory = new CommandHistory();
 
     private SlotBuilder slotBuilder = new SlotBuilder();
@@ -40,71 +36,24 @@ public class ViewCommandTest {
 
     @Before
     public void setup() throws Exception {
-        Clock.set("2019-01-14T10:00:00Z");
+        Clock.set("2020-02-01T10:00:00Z");
 
         // Create typical planner
         model = new ModelManager();
-        pair1 = new Pair<>(
-                LocalDate.of(2019, 02, 01),
-                new Pair<>(
-                        new Day(
-                                DayOfWeek.FRIDAY,
-                                "Week 3"
-                        ),
-                        slotBuilder.slotOne()
-                )
-        );
-        pair2 = new Pair<>(
-                LocalDate.of(2019, 02, 02),
-                new Pair<>(
-                        new Day(
-                                DayOfWeek.SATURDAY,
-                                "Week 3"
-                        ),
-                        slotBuilder.slotOne()
-                )
-        );
-        pair3 = new Pair<>(
-                LocalDate.of(2019, 02, 03),
-                new Pair<>(
-                        new Day(
-                                DayOfWeek.SUNDAY,
-                                "Week 3"
-                        ),
-                        slotBuilder.slotOne()
-                )
-        );
-        pair4 = new Pair<>(
-                LocalDate.of(2019, 02, 04),
-                new Pair<>(
-                        new Day(
-                                DayOfWeek.MONDAY,
-                                "Week 4"
-                        ),
-                        slotBuilder.slotOne()
-                )
-        );
-        model.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.slotOne());
-        model.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.slotOne());
-        model.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.slotOne());
-        model.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.slotOne());
-        model.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.slotOne());
-
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list = new TreeMap<>();
-        list.put(pair4.getKey(), pair4.getValue());
-        list.put(pair3.getKey(), pair3.getValue());
-        list.put(pair2.getKey(), pair2.getValue());
-        list.put(pair2.getKey(), pair2.getValue());
-        list.put(pair1.getKey(), pair1.getValue());
-        model.setLastShownList(list);
+        model.addSlot(LocalDate.of(2020, 02, 01), slotBuilder.slotOne());
+        model.addSlot(LocalDate.of(2020, 02, 01), slotBuilder.generateSlot(1));
+        model.addSlot(LocalDate.of(2020, 02, 02), slotBuilder.slotOne());
+        model.addSlot(LocalDate.of(2020, 02, 02), slotBuilder.slotOne());
+        model.addSlot(LocalDate.of(2020, 02, 03), slotBuilder.slotOne());
+        model.addSlot(LocalDate.of(2020, 02, 04), slotBuilder.slotOne());
 
         expectedModel = new ModelManager();
-        expectedModel.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.slotOne());
-        expectedModel.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.slotOne());
-        expectedModel.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.slotOne());
-        expectedModel.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.slotOne());
-        expectedModel.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.slotOne());
-        expectedModel.setLastShownList(model.getLastShownList());
+        expectedModel.addSlot(LocalDate.of(2020, 02, 01), slotBuilder.slotOne());
+        expectedModel.addSlot(LocalDate.of(2020, 02, 01), slotBuilder.generateSlot(1));
+        expectedModel.addSlot(LocalDate.of(2020, 02, 02), slotBuilder.slotOne());
+        expectedModel.addSlot(LocalDate.of(2020, 02, 02), slotBuilder.slotOne());
+        expectedModel.addSlot(LocalDate.of(2020, 02, 03), slotBuilder.slotOne());
+        expectedModel.addSlot(LocalDate.of(2020, 02, 04), slotBuilder.slotOne());
     }
 
     @Test

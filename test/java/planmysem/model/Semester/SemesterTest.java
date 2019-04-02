@@ -33,22 +33,33 @@ public class SemesterTest {
     public void initTest() {
         // sem 1
         Semester generatedSemester = Semester.generateSemester(LocalDate.of(2018, 8, 14));
+        Clock.set("2018-08-14T10:00:00Z");
         Semester expectedSemester = new Semester(generatedSemester);
         assertEquals(generatedSemester, expectedSemester);
 
         // vacation
-        generatedSemester = Semester.generateSemester(LocalDate.of(2018, 12, 10));
+        generatedSemester = Semester.generateSemester(LocalDate.of(2019, 01, 01));
+        Clock.set("2019-01-01T10:00:00Z");
         expectedSemester = new Semester(generatedSemester);
         assertEquals(generatedSemester, expectedSemester);
 
         // sem 2
         generatedSemester = Semester.generateSemester(LocalDate.of(2019, 1, 14));
+        Clock.set("2019-01-14T10:00:00Z");
         expectedSemester = new Semester(generatedSemester);
         assertEquals(generatedSemester, expectedSemester);
 
         // vacation
         generatedSemester = Semester.generateSemester(LocalDate.of(2019, 6, 13));
+        Clock.set("2019-06-13T10:00:00Z");
         expectedSemester = new Semester(generatedSemester);
+        assertEquals(generatedSemester, expectedSemester);
+
+        // new semester reinitialization
+        Semester oldSemester = Semester.generateSemester(LocalDate.of(2019, 2, 14));
+        generatedSemester = Semester.generateSemester(LocalDate.of(2019, 8, 20));
+        Clock.set("2019-08-20T10:00:00Z");
+        expectedSemester = new Semester(oldSemester);
         assertEquals(generatedSemester, expectedSemester);
     }
 
