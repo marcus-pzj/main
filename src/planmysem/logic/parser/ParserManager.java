@@ -73,12 +73,15 @@ public class ParserManager {
             return new ViewCommandParser().parse(arguments);
 
         case HistoryCommand.COMMAND_WORD:
+        case HistoryCommand.COMMAND_WORD_SHORT:
             return new HistoryCommand();
 
         case UndoCommand.COMMAND_WORD:
+        case UndoCommand.COMMAND_WORD_SHORT:
             return new UndoCommand();
 
         case RedoCommand.COMMAND_WORD:
+        case RedoCommand.COMMAND_WORD_SHORT:
             return new RedoCommand();
 
         case ClearCommand.COMMAND_WORD:

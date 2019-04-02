@@ -63,7 +63,7 @@ public class MainWindow {
      * Returns true of the result given is the result of an exit command
      */
     private boolean isExitCommand(CommandResult result) {
-        return result.feedbackToUser.equals(ExitCommand.MESSAGE_EXIT_ACKNOWEDGEMENT);
+        return result.feedbackToUser.equals(ExitCommand.MESSAGE_EXIT_ACKNOWLEDGEMENT);
     }
 
     /**

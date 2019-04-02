@@ -29,11 +29,6 @@ public class CommandResult {
         slots = null;
     }
 
-    public CommandResult(String feedbackToUser, Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
-        this.feedbackToUser = feedbackToUser;
-        this.slots = slots;
-    }
-
     /**
      * Returns list of Slots relevant to the command command result, if any.
      */

@@ -5,6 +5,7 @@ import static planmysem.common.Utils.getNearestDayOfWeek;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -173,22 +174,6 @@ public class Recurrence {
 
     @Override
     public int hashCode() {
-        int hashCode = 0;
-        if (recess) {
-            hashCode += 1; // 0001
-        }
-        if (reading) {
-            hashCode += 2; // 0010
-        }
-        if (normal) {
-            hashCode += 4; // 0100
-        }
-        if (exam) {
-            hashCode += 8; // 1000
-        }
-        if (past) {
-            hashCode += 16; // 1 0000
-        }
-        return hashCode + day.hashCode() + date.hashCode();
+        return Objects.hash(recess, reading, normal, exam, past, date);
     }
 }

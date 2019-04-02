@@ -1,7 +1,7 @@
 package planmysem.logic.Commands;
 
 import static planmysem.logic.Commands.CommandTestUtil.assertCommandSuccess;
-import static planmysem.logic.commands.ExitCommand.MESSAGE_EXIT_ACKNOWEDGEMENT;
+import static planmysem.logic.commands.ExitCommand.MESSAGE_EXIT_ACKNOWLEDGEMENT;
 
 import org.junit.Test;
 import planmysem.logic.CommandHistory;
@@ -17,7 +17,7 @@ public class ExitCommandTest {
 
     @Test
     public void execute_exit_success() {
-        CommandResult expectedCommandResult = new CommandResult(MESSAGE_EXIT_ACKNOWEDGEMENT);
+        CommandResult expectedCommandResult = new CommandResult(MESSAGE_EXIT_ACKNOWLEDGEMENT);
         assertCommandSuccess(new ExitCommand(), model, commandHistory, expectedCommandResult, expectedModel);
     }
 }

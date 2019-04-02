@@ -85,14 +85,6 @@ public class Planner implements ReadOnlyPlanner {
         this.semester.setDays(days);
     }
 
-    public HashMap<LocalDate, Day> getDays() {
-        return semester.getDays();
-    }
-
-    public Day getDay(LocalDate date) {
-        return getDays().get(date);
-    }
-
     public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<String> tags) {
         final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
 
@@ -105,6 +97,11 @@ public class Planner implements ReadOnlyPlanner {
         }
 
         return selectedSlots;
+    }
+
+    @Override
+    public HashMap<LocalDate, Day> getDays() {
+        return semester.getDays();
     }
 
     @Override

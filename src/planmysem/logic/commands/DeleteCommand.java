@@ -1,5 +1,7 @@
 package planmysem.logic.commands;
 
+import static planmysem.common.Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +35,8 @@ public class DeleteCommand extends Command {
 
     public static final String MESSAGE_SUCCESS_NO_CHANGE = "No Slots were deleted.\n\n%1$s";
     public static final String MESSAGE_SUCCESS = "%1$s Slots deleted.\n\n%2$s\n%3$s";
+    public static final String MESSAGE_SLOT_NOT_IN_PLANNER =
+            "Slot could not be found in Planner. Perhaps it was previously deleted.";
 
     private final Set<String> tags = new HashSet<>();
     private final int targetIndex;
@@ -75,6 +79,12 @@ public class DeleteCommand extends Command {
         } else {
             try {
                 final Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> target = model.getLastShownItem(targetIndex);
+
+                // check if slot still exist
+                if (!model.slotExists(target.getKey(), target.getValue().getValue())) {
+                    throw new CommandException(MESSAGE_SLOT_NOT_IN_PLANNER);
+                }
+
                 selectedSlots.put(target.getKey(), target.getValue());
 
                 model.removeSlot(target);
@@ -82,7 +92,7 @@ public class DeleteCommand extends Command {
                 messageSelected = Messages.craftSelectedMessage(targetIndex);
                 messageSlots = Messages.craftSelectedMessage("Deleted Slot:", selectedSlots);
             } catch (IndexOutOfBoundsException ie) {
-                throw new CommandException(Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
+                throw new CommandException(MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
             }
         }
         model.commit();

@@ -23,26 +23,16 @@ import planmysem.storage.StorageFile;
 public class LogicManager implements Logic {
     public static final String STORAGE_ERROR = "Could not save data to file: ";
 
-    private final Storage storageFile;
+    private final Storage storage;
     private final Model model;
     private final CommandHistory history;
     private final ParserManager parserManager;
 
-    public LogicManager(Storage storageFile) throws Exception {
-        this.storageFile = storageFile;
-        this.model = new ModelManager(storageFile.load());
+    public LogicManager(Storage storage) throws Exception {
+        this.storage = storage;
+        this.model = new ModelManager(storage.load());
         this.history = new CommandHistory();
         this.parserManager = new ParserManager();
-    }
-
-    @Override
-    public String getStorageFilePath() {
-        return storageFile.getPath();
-    }
-
-    @Override
-    public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownSlots() {
-        return model.getLastShownList();
     }
 
     @Override
@@ -55,12 +45,22 @@ public class LogicManager implements Logic {
             history.add(userCommandText);
         }
         try {
-            storageFile.save(model.getPlanner());
+            storage.save(model.getPlanner());
         } catch (StorageFile.StorageOperationException soe) {
             throw new CommandException(STORAGE_ERROR + soe, soe);
         }
 
         return result;
+    }
+
+    @Override
+    public String getStorageFilePath() {
+        return storage.getPath();
+    }
+
+    @Override
+    public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getLastShownSlots() {
+        return model.getLastShownList();
     }
 
     @Override

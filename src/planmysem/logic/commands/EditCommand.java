@@ -28,15 +28,15 @@ public class EditCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edit single or multiple slots in the Planner."
             + "\n\tParameters: "
             + "\n\t\tMandatory: t/TAG... or INDEX"
-            + "\n\t\tOptional Parameters: [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] "
+            + "\n\t\tOptional: [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] "
             + "[nl/NEW_LOCATION] [nd/NEW_DESCRIPTION]"
             + "\n\tExample 1: " + COMMAND_WORD
             + " t/CS2113T t/Tutorial nl/COM2 04-01"
             + "\n\tExample 2: " + COMMAND_WORD
             + " 2 nl/COM2 04-01";
 
-    public static final String MESSAGE_SUCCESS_NO_CHANGE = "No Slots were edited.\n\n%1$s";
     public static final String MESSAGE_SUCCESS = "%1$s Slots edited.\n\n%2$s\n%3$s";
+    public static final String MESSAGE_SUCCESS_NO_CHANGE = "No Slots were edited.\n\n%1$s";
 
     private final LocalDate date;
     private final LocalTime startTime;
@@ -126,6 +126,7 @@ public class EditCommand extends Command {
                 throw new CommandException(Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
             }
         }
+
         model.commit();
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
                 messageSelected, messageSlots));

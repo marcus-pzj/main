@@ -2,6 +2,7 @@ package planmysem.common;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static planmysem.common.Utils.getDuration;
 import static planmysem.common.Utils.getEndTime;
@@ -10,6 +11,7 @@ import static planmysem.common.Utils.getNearestDayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -45,7 +47,7 @@ public class UtilsTest {
         assertTrue(Utils.isAnyNull(new Object(), new Object(), null));
 
         // confirms nulls inside the list are not considered
-        List<Object> nullList = Arrays.asList((Object) null);
+        List<Object> nullList = Collections.singletonList(null);
         assertFalse(Utils.isAnyNull(nullList));
     }
 
@@ -68,8 +70,8 @@ public class UtilsTest {
         assertNotUnique("abc", "abc");
         assertNotUnique("abc", "", "abc", "ABC");
         assertNotUnique("", "abc", "a", "abc");
-        assertNotUnique(1, Integer.valueOf(1));
-        assertNotUnique(null, 1, Integer.valueOf(1));
+        assertNotUnique(1, 1);
+        assertNotUnique(null, 1, 1);
         assertNotUnique(null, null);
         assertNotUnique(null, "a", "b", null);
     }
@@ -125,6 +127,7 @@ public class UtilsTest {
         assertEquals(Utils.parseDay("Fr"), -1);
         assertEquals(Utils.parseDay("8"), -1);
         assertEquals(Utils.parseDay("0"), -1);
+        assertEquals(Utils.parseDay(""), -1);
     }
 
     @Test
@@ -138,9 +141,9 @@ public class UtilsTest {
 
     @Test
     public void parse_date_unsuccessful() {
-        assertEquals(Utils.parseDate("00-06-2019"), null);
-        assertEquals(Utils.parseDate("01-13-2019"), null);
-        assertEquals(Utils.parseDate("32-12-2019"), null);
+        assertNull(Utils.parseDate("00-06-2019"));
+        assertNull(Utils.parseDate("01-13-2019"));
+        assertNull(Utils.parseDate("v"));
     }
 
     @Test
@@ -152,14 +155,14 @@ public class UtilsTest {
         assertEquals(Utils.parseTime("8:00"), LocalTime.of(8, 0));
         assertEquals(Utils.parseTime("8:00 AM"), LocalTime.of(8, 0));
         assertEquals(Utils.parseTime("8:00 am"), LocalTime.of(8, 0));
-
+        assertNull(Utils.parseTime(null));
     }
 
     @Test
     public void parse_time_unsuccessful() {
-        assertEquals(Utils.parseTime("14:00 am"), null);
-        assertEquals(Utils.parseTime("16:00 pm"), null);
-        assertEquals(Utils.parseTime("24:00"), null);
+        assertNull(Utils.parseTime("14:00 am"));
+        assertNull(Utils.parseTime("16:00 pm"));
+        assertNull(Utils.parseTime("24:00"));
     }
 
     @Test
@@ -174,6 +177,7 @@ public class UtilsTest {
 
     @Test
     public void parse_integer_unsuccessful() {
+        assertEquals(Utils.parseInteger("120000000000000"), -1);
         assertEquals(Utils.parseInteger("12 0"), -1);
         assertEquals(Utils.parseInteger("0.1"), -1);
         assertEquals(Utils.parseInteger("test"), -1);
@@ -181,7 +185,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void parse_get_duration_successful() {
+    public void parse_getDuration_successful() {
         LocalTime startTime = LocalTime.now(Clock.get());
         LocalTime endTime = startTime.plusMinutes(60);
 
@@ -189,7 +193,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void parse_get_end_time_successful() {
+    public void parse_getEndTime_successful() {
         LocalTime startTime = LocalTime.now(Clock.get());
         LocalTime endTime = startTime.plusMinutes(60);
 
@@ -197,7 +201,7 @@ public class UtilsTest {
     }
 
     @Test
-    public void parse_get_nearest_day_of_week_successful() {
+    public void parse_getNearestDayOfWeek_successful() {
         LocalDate date = LocalDate.of(2019, 1, 1);
         LocalDate nearestMonday = LocalDate.of(2019, 1, 7);
 

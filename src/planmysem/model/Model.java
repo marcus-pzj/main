@@ -85,6 +85,11 @@ public interface Model {
     Day getDay(LocalDate date);
 
     /**
+     * check if Slot exists in some day.
+     */
+    boolean slotExists(LocalDate date, ReadOnlySlot slot);
+
+    /**
      * gets all slots in the Planner containing all specified tags.
      */
     Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<String> tags);

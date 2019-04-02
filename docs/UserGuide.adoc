@@ -383,7 +383,7 @@ image::Ui.png[width="790"]
 {zwsp}
 
 [[history]]
-=== Listing previous input commands : `history` `[coming in v2.0]`
+=== Listing previous input commands : `history`
 Lists all the commands that you have entered in reverse chronological order. +
 Format: `history`
 {zwsp}
@@ -391,7 +391,7 @@ Format: `history`
 {zwsp}
 
 [[undo]]
-=== Undoing previous command : `undo` `[coming in v2.0]`
+=== Undoing previous command : `undo`
 Restores the planner to the state before the previous command was executed. +
 Format: `undo`
 
@@ -402,7 +402,7 @@ The `clear` command cannot be undone.
 {zwsp}
 
 [[redo]]
-=== Redoing the previously undone command : `redo` `[coming in v2.0]`
+=== Redoing the previously undone command : `redo`
 Reverses the most recent `undo` command. +
 Format: `redo`
 {zwsp}
@@ -417,7 +417,7 @@ Planner data is automatically encrypted before saving and decrypted before loadi
 {zwsp}
 
 [[import]]
-=== Importing .ics formatted files `[coming in v2.0]`
+=== Importing .ics formatted files
 You can import an .ics file into the planner.
 Format: `import filename`
 [NOTE]

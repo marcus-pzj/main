@@ -1,7 +1,6 @@
 package planmysem.ui;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 import javafx.util.Pair;
@@ -24,40 +23,6 @@ public class Formatter {
      */
     private static final String LS = System.lineSeparator();
 
-
-    /**
-     * Format of indexed list item
-     */
-    private static final String MESSAGE_INDEXED_LIST_ITEM = "\t%1$d. %2$s";
-
-
-    /**
-     * Offset required to convert between 1-indexing and 0-indexing.
-     */
-    private static final int DISPLAYED_INDEX_OFFSET = 1;
-
-    /**
-     * Formats a list of strings as an indexed list.
-     */
-    private static String asIndexedList(List<String> listItems) {
-        final StringBuilder formatted = new StringBuilder();
-        int displayIndex = 0 + DISPLAYED_INDEX_OFFSET;
-        for (String listItem : listItems) {
-            formatted.append(getIndexedListItem(displayIndex, listItem)).append("\n");
-            displayIndex++;
-        }
-        return formatted.toString();
-    }
-
-    /**
-     * Formats a string as an indexed list item.
-     *
-     * @param visibleIndex index for this listing
-     */
-    private static String getIndexedListItem(int visibleIndex, String listItem) {
-        return String.format(MESSAGE_INDEXED_LIST_ITEM, visibleIndex, listItem);
-    }
-
     /**
      * Formats the given strings for displaying to the user.
      */
@@ -73,13 +38,6 @@ public class Formatter {
      * Formats the given list of slots for displaying to the user.
      */
     public String formatSlots(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
-        //        final List<String> formattedSlots = new ArrayList<>();
-        //
-        //        for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : slots.entrySet()) {
-        //            formattedSlots.add(pair.getKey().toString() + ": " + pair.getValue().toString());
-        //        }
-        //
-        //        return format(asIndexedList(formattedSlots));
         return Messages.craftListMessage(slots);
     }
 

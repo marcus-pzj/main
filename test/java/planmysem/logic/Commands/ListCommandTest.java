@@ -1,5 +1,19 @@
 package planmysem.logic.Commands;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,24 +26,13 @@ import planmysem.logic.commands.CommandResult;
 import planmysem.logic.commands.ListCommand;
 import planmysem.logic.parser.ListCommandParser;
 import planmysem.logic.parser.exceptions.ParseException;
-import planmysem.model.*;
+import planmysem.model.Model;
+import planmysem.model.ModelManager;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 import planmysem.testutil.SlotBuilder;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
 
 public class ListCommandTest {
     private Model model;

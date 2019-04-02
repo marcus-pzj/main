@@ -1,7 +1,7 @@
 package planmysem.logic.Commands;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static planmysem.logic.Commands.CommandTestUtil.assertCommandFailure;
 import static planmysem.logic.Commands.CommandTestUtil.assertCommandSuccess;
 import static planmysem.logic.commands.EditCommand.MESSAGE_SUCCESS;
@@ -10,7 +10,7 @@ import static planmysem.logic.commands.EditCommand.MESSAGE_SUCCESS_NO_CHANGE;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +33,8 @@ import planmysem.model.slot.ReadOnlySlot;
 import planmysem.testutil.SlotBuilder;
 
 public class EditCommandTest {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     private Model model;
     private Model expectedModel;
     private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair1;
@@ -40,11 +42,7 @@ public class EditCommandTest {
     private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair3;
     private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair4;
     private CommandHistory commandHistory = new CommandHistory();
-
     private SlotBuilder slotBuilder = new SlotBuilder();
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() throws Exception {
@@ -126,7 +124,7 @@ public class EditCommandTest {
         String description = "new description";
         LocalTime startTime = LocalTime.of(8, 0);
         int duration = 60;
-        Set<String> tags = new HashSet<>(Arrays.asList("tag1"));
+        Set<String> tags = new HashSet<>(Collections.singletonList("tag1"));
 
         EditCommand editCommand = new EditCommand(
                 name,
@@ -172,8 +170,8 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_InvalidTag_throwsCommandException() {
-        Set<String> selectTags = new HashSet<>(Arrays.asList("tag does not exist"));
+    public void execute_invalidTag_throwsCommandException() {
+        Set<String> selectTags = new HashSet<>(Collections.singletonList("tag does not exist"));
 
         // values to edit
         String name = "new name";
@@ -181,7 +179,7 @@ public class EditCommandTest {
         String description = "new description";
         LocalTime startTime = LocalTime.of(8, 0);
         int duration = 60;
-        Set<String> tags = new HashSet<>(Arrays.asList("tag1"));
+        Set<String> tags = new HashSet<>(Collections.singletonList("tag1"));
 
         EditCommand editCommand = new EditCommand(
                 name,
@@ -200,7 +198,7 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_InvalidIndex_throwsCommandException() {
+    public void execute_invalidIndex_throwsCommandException() {
         // values to edit
         String name = "new name";
         String location = "new location";
@@ -208,7 +206,7 @@ public class EditCommandTest {
         LocalDate date = LocalDate.of(2019, 2, 2);
         LocalTime startTime = LocalTime.of(8, 0);
         int duration = 60;
-        Set<String> tags = new HashSet<>(Arrays.asList("tag1"));
+        Set<String> tags = new HashSet<>(Collections.singletonList("tag1"));
 
         EditCommand editCommand = new EditCommand(
                 5,
@@ -239,11 +237,59 @@ public class EditCommandTest {
         LocalDate date = LocalDate.of(2019, 2, 2);
         LocalTime startTime = LocalTime.of(8, 0);
         int duration = 60;
-        Set<String> tags = new HashSet<>(Arrays.asList("tag1"));
+        Set<String> tags = new HashSet<>(Collections.singletonList("tag1"));
 
         EditCommand editCommand = new EditCommand(
                 1,
-                "new name",
+                name,
+                date,
+                startTime,
+                duration,
+                location,
+                description,
+                tags
+        );
+
+        String messageSelected = Messages.craftSelectedMessage(1);
+        String messageSlots = editCommand.craftSuccessMessage(selectedSlots);
+
+        String expectedMessage = String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                messageSelected, messageSlots);
+
+        expectedModel.editSlot(
+                pair1.getKey(),
+                pair1.getValue().getValue(),
+                date,
+                startTime,
+                duration,
+                name,
+                location,
+                description,
+                tags
+        );
+        expectedModel.commit();
+
+        assertCommandSuccess(editCommand, model, commandHistory, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_validIndexEmptyValues_success() {
+        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slot = model.getLastShownItem(1);
+        selectedSlots.put(slot.getKey(), slot.getValue());
+
+        // values to edit
+        String name = "";
+        String location = "";
+        String description = "";
+        LocalDate date = LocalDate.of(2019, 2, 2);
+        LocalTime startTime = LocalTime.of(8, 0);
+        int duration = 60;
+        Set<String> tags = new HashSet<>(Collections.singletonList("tag1"));
+
+        EditCommand editCommand = new EditCommand(
+                1,
+                name,
                 date,
                 startTime,
                 duration,
@@ -284,11 +330,11 @@ public class EditCommandTest {
                 60,
                 "location",
                 "description",
-                new HashSet<>(Arrays.asList("tag1"))
+                new HashSet<>(Collections.singletonList("tag1"))
         );
 
         // same object -> returns true
-        assertTrue(editFirstCommand.equals(editFirstCommand));
+        assertEquals(editFirstCommand, editFirstCommand);
 
         // same values -> returns true
         EditCommand editFirstCommandCopy = new EditCommand(
@@ -299,15 +345,15 @@ public class EditCommandTest {
                 60,
                 "location",
                 "description",
-                new HashSet<>(Arrays.asList("tag1"))
+                new HashSet<>(Collections.singletonList("tag1"))
         );
-        assertTrue(editFirstCommand.equals(editFirstCommandCopy));
+        assertEquals(editFirstCommand, editFirstCommandCopy);
 
         // different types -> returns false
-        assertFalse(editFirstCommand.equals(1));
+        assertNotEquals(editFirstCommand, 1);
 
         // null -> returns false
-        assertFalse(editFirstCommand.equals(null));
+        assertNotEquals(editFirstCommand, null);
 
         // different command -> returns false
         EditCommand deleteSecondCommand = new EditCommand(
@@ -318,8 +364,8 @@ public class EditCommandTest {
                 60,
                 "location",
                 "description",
-                new HashSet<>(Arrays.asList("tag1"))
+                new HashSet<>(Collections.singletonList("tag1"))
         );
-        assertFalse(editFirstCommand.equals(deleteSecondCommand));
+        assertNotEquals(editFirstCommand, deleteSecondCommand);
     }
 }

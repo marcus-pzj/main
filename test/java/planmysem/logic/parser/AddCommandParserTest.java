@@ -15,6 +15,7 @@ import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import planmysem.common.Clock;
 import planmysem.logic.commands.AddCommand;
 import planmysem.model.recurrence.Recurrence;
@@ -25,7 +26,7 @@ public class AddCommandParserTest {
 
     @Before
     public void setup() {
-        Clock.set("2019-01-13T10:00:00Z");
+        Clock.set("2019-01-14T10:00:00Z");
     }
 
     @Test
@@ -55,8 +56,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         null
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         LocalDate.of(2019, 1, 14)
                 )));
@@ -73,8 +73,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial"))
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
@@ -88,14 +87,14 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
 
         assertParseSuccess(parser,
-                "n/CS2113T Tutorial l/COM2 04-01 d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial",
+                "n/CS2113T Tutorial l/COM2 04-01 d/mon st/08:00 et/09:00 "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial",
                 new AddCommand(new Slot(
                         "CS2113T Tutorial",
                         "COM2 04-01",
@@ -103,8 +102,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial"))
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
@@ -118,8 +116,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
@@ -133,8 +130,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial"))
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
@@ -148,15 +144,14 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         null,
                         1
                 )));
     }
 
     @Test
-    public void parse_AllFieldsMissing_success() {
+    public void parse_allFieldsMissing_success() {
         assertParseSuccess(parser,
                 "n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 new AddCommand(new Slot(
@@ -181,14 +176,14 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         new HashSet<>(Arrays.asList("exam")),
                         1
                 )));
 
         assertParseSuccess(parser,
-                "n/CS2113T Tutorial r/reading r/exam l/COM2 04-01 d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial",
+                "n/CS2113T Tutorial r/reading r/exam l/COM2 04-01 "
+                        + "d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial",
                 new AddCommand(new Slot(
                         "CS2113T Tutorial",
                         "COM2 04-01",
@@ -196,8 +191,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial"))
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         new HashSet<>(Arrays.asList("reading", "exam")),
                         1
                 )));
@@ -211,8 +205,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         new HashSet<>(Arrays.asList("normal", "exam")),
                         1
                 )));
@@ -226,8 +219,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial"))
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         new HashSet<>(Arrays.asList("reading", "recess")),
                         1
                 )));
@@ -241,8 +233,7 @@ public class AddCommandParserTest {
                         LocalTime.of(8, 0),
                         LocalTime.of(9, 0),
                         new HashSet<>()
-                )
-                        , new Recurrence(
+                ), new Recurrence(
                         new HashSet<>(Arrays.asList("reading", "recess", "normal", "exam")),
                         1
                 )));
@@ -282,13 +273,15 @@ public class AddCommandParserTest {
     public void parse_invalidDate_failure() {
         // invalid day
         assertParseFailure(parser,
-                "add n/CS2113T Tutorial d/0 st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
+                "add n/CS2113T Tutorial d/0 st/08:00 et/09:00 "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_DATE));
 
         // invalid date
         assertParseFailure(parser,
-                "add n/CS2113T Tutorial d/19999 st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
+                "add n/CS2113T Tutorial d/19999 st/08:00 et/09:00 "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_DATE));
     }
@@ -297,17 +290,20 @@ public class AddCommandParserTest {
     public void parse_invalidTime_failure() {
         // invalid start time
         assertParseFailure(parser,
-                "add n/CS2113T Tutorial d/mon st/25:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
+                "add n/CS2113T Tutorial d/mon st/25:00 et/09:00 "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
 
         // invalid end time
         assertParseFailure(parser,
-                "add n/CS2113T Tutorial d/mon st/08:00 et/25:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
+                "add n/CS2113T Tutorial d/mon st/08:00 et/25:00 "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
         assertParseFailure(parser,
-                "add n/CS2113T Tutorial d/mon st/08:00 et/13:00AM des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
+                "add n/CS2113T Tutorial d/mon st/08:00 et/13:00AM "
+                        + "des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
     }

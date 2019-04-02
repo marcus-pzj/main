@@ -63,7 +63,7 @@ public class Utils {
             return -1;
         }
         String day = unknown.trim().toLowerCase();
-        int result = -1;
+        int result;
         switch (day) {
         case "monday":
         case "mon":
@@ -129,13 +129,6 @@ public class Utils {
         }
 
         return null;
-    }
-
-    /**
-     * Parse LocalDate to String.
-     */
-    public static String parseDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern("d-MM-yyyy"));
     }
 
     /**

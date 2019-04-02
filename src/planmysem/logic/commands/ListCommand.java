@@ -28,8 +28,7 @@ public class ListCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots whose name "
             + "directly matches the specified keyword (not case-sensitive)."
-            //+ "\n\tOptional Parameters: [past] [next] [all]"
-            //+ "\n\tDefault: list all"
+            + "\n\tMandatory Parameters: n/NAME or t/TAG..."
             + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
 
     private final String keyword;

@@ -98,6 +98,17 @@ public class Slot implements ReadOnlySlot {
     }
 
     /**
+     * Replaces this slot's tags with the tags in {@code replacement}.
+     */
+    public void setTags(Set<String> tags) {
+        if (tags == null) {
+            return;
+        }
+        this.tags.clear();
+        this.tags.addAll(tags);
+    }
+
+    /**
      * Set duration.
      */
     public void setDuration(int value) {
@@ -132,17 +143,6 @@ public class Slot implements ReadOnlySlot {
     @Override
     public Set<String> getTags() {
         return tags;
-    }
-
-    /**
-     * Replaces this slot's tags with the tags in {@code replacement}.
-     */
-    public void setTags(Set<String> tags) {
-        if (tags == null) {
-            return;
-        }
-        this.tags.clear();
-        this.tags.addAll(tags);
     }
 
     @Override

@@ -39,17 +39,6 @@ public class Semester implements ReadOnlySemester {
     private final Set<LocalDate> examDays = new HashSet<>();
 
     /**
-     * Constructs empty semester.
-     */
-    public Semester() {
-        this.name = null;
-        this.academicYear = null;
-        this.startDate = null;
-        this.endDate = null;
-        this.noOfWeeks = 0;
-    }
-
-    /**
      * Constructs a semester with the given Days.
      */
     public Semester(String name, String academicYear, HashMap<LocalDate, Day> days, LocalDate startDate,
@@ -107,7 +96,7 @@ public class Semester implements ReadOnlySemester {
         Set<LocalDate> normalDays = new HashSet<>();
         Set<LocalDate> examDays = new HashSet<>();
 
-        acadCalMap = generateAcadCalMap(currentDate);
+        acadCalMap = generateAcademicCalMap(currentDate);
         acadCal = acadCalMap;
         semesterDetails = getSemesterDetails(currentDate, acadCalMap);
         acadSem = semesterDetails[1];
@@ -148,7 +137,7 @@ public class Semester implements ReadOnlySemester {
      * @param date used to determine academic year
      * @return details of academic calendar
      */
-    private static HashMap<Integer, String> generateAcadCalMap(LocalDate date) {
+    private static HashMap<Integer, String> generateAcademicCalMap(LocalDate date) {
         HashMap<Integer, String> acadCalMap = new HashMap<>();
         LocalDate semOneStartDate = date;
         LocalDate semTwoEndDate = date;

@@ -31,10 +31,10 @@ public class FindCommand extends Command {
     public static final String COMMAND_WORD_SHORT = "f";
     private static final String MESSAGE_SUCCESS = "%1$s Slots listed.\n%2$s";
     private static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ":\n" + "Finds all slots whose name "
-            + "contains the specified keywords (case-sensitive).\n\t"
-            + "Parameters: KEYWORD [MORE_KEYWORDS]...\n\t"
-            + "Example: " + COMMAND_WORD + "n/CS";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all slots whose name "
+            + "contains the specified keywords (not case-sensitive)."
+            + "\n\tMandatory Parameters: n/NAME or t/TAG..."
+            + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
 
     private final String keyword;
     private final boolean isFindByName;

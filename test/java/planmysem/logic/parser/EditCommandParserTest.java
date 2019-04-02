@@ -1,15 +1,20 @@
 package planmysem.logic.parser;
 
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
+import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
+import static planmysem.common.Messages.MESSAGE_NOTHING_TO_EDIT;
 import static planmysem.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static planmysem.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import planmysem.common.Clock;
 import planmysem.logic.commands.EditCommand;
 
@@ -32,7 +37,7 @@ public class EditCommandParserTest {
                         -1,
                         "COM2 04-01",
                         null,
-                        new HashSet<>(Arrays.asList("CS2113T")),
+                        new HashSet<>(Collections.singletonList("CS2113T")),
                         new HashSet<>()
                 )
         );
@@ -42,7 +47,7 @@ public class EditCommandParserTest {
                 "t/CS2113T t/Tutorial nst/08:00 net/09:00 t/Hard",
                 new EditCommand(
                         null,
-                        LocalTime.of(8,0),
+                        LocalTime.of(8, 0),
                         60,
                         null,
                         null,
@@ -61,7 +66,7 @@ public class EditCommandParserTest {
                         "COM2 04-01",
                         "So tough",
                         new HashSet<>(Arrays.asList("CS2113T", "Tutorial", "Hard")),
-                        new HashSet<>(Arrays.asList("new tag"))
+                        new HashSet<>(Collections.singletonList("new tag"))
                 )
         );
     }
@@ -128,8 +133,9 @@ public class EditCommandParserTest {
     }
 
     @Test
-    public void parse_InvalidStartTime_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
+    public void parse_invalidStartTime_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                EditCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME);
 
         assertParseFailure(parser,
                 "1 nst/25:00",
@@ -138,11 +144,34 @@ public class EditCommandParserTest {
     }
 
     @Test
-    public void parse_InvalidEndTime_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
+    public void parse_invalidEndTime_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                EditCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME);
 
         assertParseFailure(parser,
                 "1 net/25:00",
+                expectedMessage
+        );
+    }
+
+
+    @Test
+    public void parse_nothingToEdit_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                EditCommand.MESSAGE_USAGE, MESSAGE_NOTHING_TO_EDIT);
+
+        assertParseFailure(parser,
+                "1 nnt/",
+                expectedMessage
+        );
+
+        assertParseFailure(parser,
+                "1 nl/",
+                expectedMessage
+        );
+
+        assertParseFailure(parser,
+                "t/test ndes/",
                 expectedMessage
         );
     }

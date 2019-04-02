@@ -13,6 +13,10 @@ import planmysem.model.Model;
 public class UndoCommand extends Command {
 
     public static final String COMMAND_WORD = "undo";
+    public static final String COMMAND_WORD_SHORT = "u";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Restores the planner to the state before the previous"
+            + " undoable command was executed."
+            + "\n\tExample: " + COMMAND_WORD;
     public static final String MESSAGE_SUCCESS = "Undo success!";
     public static final String MESSAGE_FAILURE = "No more commands to undo!";
 

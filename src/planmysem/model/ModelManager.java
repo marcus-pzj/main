@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javafx.util.Pair;
@@ -47,6 +48,7 @@ public class ModelManager implements Model {
         }
     }
 
+    @Override
     public void setLastShownList(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> list) {
         lastShownList.clear();
 
@@ -61,7 +63,6 @@ public class ModelManager implements Model {
     public void clearLastShownList() {
         lastShownList.clear();
     }
-
 
     @Override
     public void commit() {
@@ -130,6 +131,11 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean slotExists(LocalDate date, ReadOnlySlot slot) {
+        return getDay(date).contains(slot);
+    }
+
+    @Override
     public boolean canUndo() {
         return versionedPlanner.canUndo();
     }
@@ -166,4 +172,10 @@ public class ModelManager implements Model {
         return versionedPlanner.equals(other.versionedPlanner)
                 && lastShownList.equals(other.lastShownList);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(versionedPlanner, lastShownList);
+    }
+
 }

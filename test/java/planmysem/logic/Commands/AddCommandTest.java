@@ -1,8 +1,6 @@
 package planmysem.logic.Commands;
 
-import static java.util.Objects.requireNonNull;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static planmysem.logic.commands.AddCommand.MESSAGE_SUCCESS;
 import static planmysem.logic.commands.AddCommand.craftSuccessMessage;
@@ -37,14 +35,14 @@ import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 import planmysem.testutil.SlotBuilder;
 
+
 public class AddCommandTest {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
 
     private CommandHistory commandHistory = new CommandHistory();
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setup() {
@@ -80,7 +78,7 @@ public class AddCommandTest {
     }
 
     @Test
-    public void execute_InvalidDate_throwsCommandException() throws Exception {
+    public void execute_invalidDate_throwsCommandException() throws Exception {
         ModelStubNeverSlotAdded modelStub = new ModelStubNeverSlotAdded();
         Slot validSlot = new SlotBuilder().slotOne();
         Recurrence validRecurrence = new SlotBuilder().recurrenceOne();
@@ -93,29 +91,29 @@ public class AddCommandTest {
     }
 
     @Test
-    public void equals() throws Exception {
+    public void equals() {
         Slot slot1 = new SlotBuilder().generateSlot(1);
         Recurrence recurrence = new SlotBuilder().recurrenceOne();
 
         AddCommand addCommand1 = new AddCommand(slot1, recurrence);
 
         // same object -> returns true
-        assertTrue(addCommand1.equals(addCommand1));
+        assertEquals(addCommand1, addCommand1);
 
         // same values -> returns true
         AddCommand addCommand1Copy = new AddCommand(slot1, recurrence);
-        assertTrue(addCommand1.equals(addCommand1Copy));
+        assertEquals(addCommand1, addCommand1Copy);
 
         // different types -> returns false
-        assertFalse(addCommand1.equals(1));
+        assertNotEquals(addCommand1, 1);
 
         // null -> returns false
-        assertFalse(addCommand1.equals(null));
+        assertNotEquals(addCommand1, null);
 
         // different command -> returns false
         Slot slot2 = new SlotBuilder().generateSlot(2);
         AddCommand addCommand2 = new AddCommand(slot2, recurrence);
-        assertFalse(addCommand1.equals(addCommand2));
+        assertNotEquals(addCommand1, addCommand2);
     }
 
 
@@ -129,15 +127,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public void clearLastShownList() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void commit() {
-        }
-
-        @Override
         public void setLastShownList(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> list) {
             throw new AssertionError("This method should not be called.");
         }
@@ -148,7 +137,21 @@ public class AddCommandTest {
         }
 
         @Override
+        public void clearLastShownList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void commit() {
+        }
+
+        @Override
         public Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getLastShownItem(int index) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean slotExists(LocalDate date, ReadOnlySlot slot) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -226,22 +229,10 @@ public class AddCommandTest {
     }
 
     /**
-     * A Model stub that contains a single slot.
-     */
-    private class ModelStubWithSlot extends ModelStub {
-        private final Slot slot;
-
-        ModelStubWithSlot(Slot slot) {
-            requireNonNull(slot);
-            this.slot = slot;
-        }
-    }
-
-    /**
      * A Model stub that always accept the slot being added.
      */
     private class ModelStubAcceptingSlotAdded extends ModelStub {
-        Map<LocalDate, Day> days = new TreeMap<>();
+        private Map<LocalDate, Day> days = new TreeMap<>();
 
         @Override
         public Day addSlot(LocalDate date, Slot slot) {
@@ -274,6 +265,4 @@ public class AddCommandTest {
             return new Planner();
         }
     }
-
-
 }

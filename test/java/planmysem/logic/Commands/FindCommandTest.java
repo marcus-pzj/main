@@ -1,5 +1,24 @@
 package planmysem.logic.Commands;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
+
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,18 +42,6 @@ import planmysem.model.semester.WeightedName;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 import planmysem.testutil.SlotBuilder;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
 
 public class FindCommandTest {
     private Model model;
@@ -212,7 +219,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindExactNameSuccessful() throws Exception {
+    public void execute_slotAcceptedByModel_FindExactNameSuccessful() {
         CommandResult commandResult = new FindCommand(slotBuilder.generateSlot(1).getName(), null).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
@@ -251,7 +258,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindExactTagSuccessful() throws Exception {
+    public void execute_slotAcceptedByModel_FindExactTagSuccessful() {
         Set<String> tags = slotBuilder.generateSlot(1).getTags();
         String tagToTest = tags.iterator().next();
 
