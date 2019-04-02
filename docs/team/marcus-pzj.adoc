@@ -18,7 +18,7 @@ Special weeks such as recess week and reading week are taken into account within
 Items can then be efficiently managed via the intuitive tagging system. +
 
 Note the following symbols and formatting used in this document:
-[NOTE]
+[IMPORTANT]
 This symbol indicates important information.
 
 [grid=none]
@@ -61,7 +61,7 @@ locate that specific [blue]`Slot` and view all of its information in a list.
 *** What it does: The `find` command *generates a list* containing all [blue]`Slots` whose name *closely matches* the specified keyword and displays them as a list.
 *** Justification: Unlike the `list` command, the `find` command will also consider searches that are similar to the desired name/tag. This is to account for a typo or an incomplete keyword, which can happen often while the user is typing.
 Additionally, the user may not remember the exact name he has added to the planner, and hence, the `find` command provides a higher chance for the user to locate their desired [blue]`Slot`.
-[NOTE]
+[IMPORTANT]
 The `find` command ends up generating a longer output list, which potentially contains many [blue]`Slots`, which may not be optimal for the user to skim through. Thus, I provide users with the option to use the `list` command to specifically pinpoint their desired [blue]`Slot` to list.
 *** Highlights: It was challenging to provide an optimal string matching algorithm that accurately weighs the closeness of strings.
 An in-depth analysis of design alternatives was necessary to determine the kind of string matching algorithm to implement in order to improve search accuracy.
@@ -101,7 +101,7 @@ Below is an example of my addition to the User Guide for the `find` feature.
 Find all [blue]`Slots` whose name closely matches the specified keyword and displays them as a list. +
 Format: `find n/KEYWORD`
 
-[NOTE]
+[IMPORTANT]
 The `find` command will attempt to return the closest matching [blue]`Slot` in the event that a match is not found.
 Do not be surprised to _eg. enter `find n/ABC` and get a [blue]`Slot` named `XYZ`_ in return.
 
