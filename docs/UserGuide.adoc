@@ -32,6 +32,7 @@ Items can then be efficiently managed via the intuitive tagging system.
 
 {zwsp}
 
+[[about]]
 == About this User Guide
 This user guide provides a quick start guide for you to easily setup and install *PlanMySem*, documentation of all the various features *PlanMySem* offers, frequently asked questions and a summary of the available commands. To navigate between the different sections, you could use the table of contents above.
 

@@ -5,54 +5,112 @@
 
 == PROJECT: PlanMySem
 
----
-
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+My team and I have morphed the original https://github.com/nusCS2113-AY1819S2/addressbook-level3[AddressBook (Level 3)]
+into *PlanMySem* for our Software Engineering project. *PlanMySem* is a text-based (Command Line Interface)
+scheduling/calendar application that caters to NUS students and staff who prefer to use a desktop application for
+managing their schedule/calendar efficiently. *PlanMySem* offers the following features and benefits:
+
+* Automatic creation of a planner that is synchronized to the NUS academic calendar for the current semester so you will
+not have to waste time manually doing so.
+* Flexible commands to facilitate easy creation, editing and deleting of items so you would enjoy a smooth experience
+while using the application.
+* A unique recursion system which takes into account special weeks such as recess week or reading week so as to allow
+you to add recurring items efficiently.
+* An intuitive tagging system for you to manage items productively.
+* Optimized for you if you prefer to work with a Command Line Interface (CLI) and/or are learning to work more
+efficiently with CLI tools.
+* Utilizes minimal resources on your machine while still allowing you to view your schedules swiftly.
+
+== About this Portfolio
+
+My role was to implement the automatic synchronization of *PlanMySem* with the academic calendar as well as the `view`
+feature. The following sections illustrate my implementations in more detail, as well as the relevant sections I have
+contributed to the user and developer guides in relation to my implementations.
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+This section shows a summary of my coding, documentation, and other helpful contributions to the team project.
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Major enhancement*: I implemented the automatic synchronization of *PlanMySem* with the academic calendar.
+** What it does: Upon running *PlanMySem*, the planner is automatically initialized and synchronized with details
+pertaining to the current academic semester. The current academic semester is dynamically generated based on the current
+date. This enhancement allows *PlanMySem* to function as intended; as a planner for the academics.
+** Justification: This enhancement is required as the other commands in *PlanMySem* rely on the proper initialization
+of the current academic semester for their command functionalities. The current academic semester is dynamically
+generated from the current date so as to ensure *PlanMySem* continues to work in the future.
+** Highlights: This enhancement is critical to existing commands and commands to be added in future. Hence, it required
+an in-depth analysis of design alternatives pertaining to the aspect of academic calendar generation. The chosen
+implementation must be reliable indefinitely.
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+* *Major enhancement*: I added the `view` command and implemented the various types of planner views.
+** What it does: The `view` command allows the user to view the planner in different viewing formats.
+** Justification: This enhancement is vital as it is a requirement to view what is in the planner before managing the
+individual items in the planner. The various view formats displays varying degrees of details to cater to the user's
+preference.
+** Highlights: The implementation of this feature was challenging as it required a lot of formatting to be able to
+display a reasonably acceptable view. The various types of views each required a different style of formatting which
+adds on to the difficulty.
+** Credits: The monthly calendar view's implementation was inspired by Robert Sedgewick and Kevin Wayne's implementation
+code which can be found https://introcs.cs.princeton.edu/java/21function/Calendar.java.html[here].
+
+* *Minor enhancement*: Enhance parsing for `view` command to allow for more flexibility with the command parameters.
+
+* *Code contributed*: Please click this link to view my code contributions for this project
+: [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#search=dingheng4448&sort=displayName&since=2019-02-10&until=2019-04-01&timeframe=day&reverse=false&groupSelect=groupByRepos&breakdown=false&tabAuthor=dingheng4448&tabRepo=CS2113-AY1819S2-T08-3_main_master[Contributed code]]
 
 * *Other contributions*:
-
-** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
 ** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
+*** Wrote JUnit tests for existing features to increase coverage
+(Pull requests https://github.com/CS2113-AY1819S2-T08-3/main/pull/76[#76],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/116[#116],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/129[#129],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/139[#139],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/145[#145],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/147[#147],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/150[#150])
 ** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
+*** Review and edit existing contents of the User Guide:
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/81[#81],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/99[#99],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/106[#106],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/108[#108],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/124[#124],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/129[#129],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/138[#138]
 
-_{you can add/remove categories in the list above}_
+*** Review and edit existing contents of the Developer Guide:
+(Commits
+https://github.com/CS2113-AY1819S2-T08-3/main/commit/de375295c2b10b2ef08d38f885a1ebfbde972a66#diff-d23c8091515dc18149f4f2e759e1e288[#1],
+https://github.com/CS2113-AY1819S2-T08-3/main/commit/55fa543bef202fd44f91b64882de4ac2c161e0ed#diff-d23c8091515dc18149f4f2e759e1e288[#2],
+https://github.com/CS2113-AY1819S2-T08-3/main/commit/e7b9300902116c781f983c36edf87848dc33f678#diff-d23c8091515dc18149f4f2e759e1e288[#3],
+https://github.com/CS2113-AY1819S2-T08-3/main/commit/791f22409245076f70303658de9fb60a72f95a4f#diff-d23c8091515dc18149f4f2e759e1e288[#4])
+(Pull requests
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/81[#81],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/116[#116],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/117[#117],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/124[#124],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/134[#134],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/135[#135],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/137[#137],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/138[#138])
+
+** Community:
+*** PRs reviewed (with non-trivial review comments):
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/12[#12],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/98[#98],
+https://github.com/CS2113-AY1819S2-T08-3/main/pull/109[#109]
 
 == Contributions to the User Guide
-
 
 |===
 |_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
 |===
 
-include::../UserGuide.adoc[tag=importICS]
+include::../UserGuide.adoc[tag=about]
 
-include::../UserGuide.adoc[tag=dataencryption]
+include::../UserGuide.adoc[tag=view]
 
 == Contributions to the Developer Guide
 
@@ -60,13 +118,8 @@ include::../UserGuide.adoc[tag=dataencryption]
 |_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
 |===
 
-include::../DeveloperGuide.adoc[tag=importICS]
+include::../DeveloperGuide.adoc[tag=about]
 
-include::../DeveloperGuide.adoc[tag=dataencryption]
+include::../DeveloperGuide.adoc[tag=Planner-Initialization]
 
-
-== PROJECT: PowerPointLabs
-
----
-
-_{Optionally, you may include other projects in your portfolio.}_
+include::../DeveloperGuide.adoc[tag=view]
