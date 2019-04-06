@@ -2,12 +2,12 @@ package planmysem.logic.commands;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
@@ -24,19 +24,18 @@ public class EditCommand extends Command {
 
     public static final String COMMAND_WORD = "edit";
     public static final String COMMAND_WORD_SHORT = "e";
-
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edit single or multiple slots in the Planner."
             + "\n\tParameters: "
             + "\n\t\tMandatory: t/TAG... or INDEX"
-            + "\n\t\tOptional Parameters: [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] "
+            + "\n\t\tOptional: [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] "
             + "[nl/NEW_LOCATION] [nd/NEW_DESCRIPTION]"
             + "\n\tExample 1: " + COMMAND_WORD
             + " t/CS2113T t/Tutorial nl/COM2 04-01"
             + "\n\tExample 2: " + COMMAND_WORD
             + " 2 nl/COM2 04-01";
 
-    public static final String MESSAGE_SUCCESS_NO_CHANGE = "No Slots were edited.\n\n%1$s";
     public static final String MESSAGE_SUCCESS = "%1$s Slots edited.\n\n%2$s\n%3$s";
+    public static final String MESSAGE_SUCCESS_NO_CHANGE = "No Slots were edited.\n\n%1$s";
 
     private final LocalDate date;
     private final LocalTime startTime;
@@ -88,12 +87,12 @@ public class EditCommand extends Command {
 
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) throws CommandException {
-        final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        final List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> selectedSlots = new ArrayList<>();
         String messageSelected;
         String messageSlots;
 
         if (targetIndex == -1) {
-            selectedSlots.putAll(model.getSlots(tags));
+            selectedSlots.addAll(model.getSlots(tags));
 
             if (selectedSlots.size() == 0) {
                 throw new CommandException(String.format(MESSAGE_SUCCESS_NO_CHANGE,
@@ -103,7 +102,7 @@ public class EditCommand extends Command {
             // Need to craft success message earlier to get original instead of edited Slots
             messageSlots = craftSuccessMessage(selectedSlots);
 
-            for (Map.Entry<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : selectedSlots.entrySet()) {
+            for (Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> entry : selectedSlots) {
                 model.editSlot(entry.getKey(), entry.getValue().getValue(), date,
                         startTime, duration, name, location, description, newTags);
             }
@@ -112,7 +111,7 @@ public class EditCommand extends Command {
         } else {
             try {
                 final Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> target = model.getLastShownItem(targetIndex);
-                selectedSlots.put(target.getKey(), target.getValue());
+                selectedSlots.add(target);
 
                 // Need to craft success message earlier to get original instead of edited Slots
                 messageSlots = craftSuccessMessage(selectedSlots);
@@ -126,6 +125,7 @@ public class EditCommand extends Command {
                 throw new CommandException(Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX);
             }
         }
+
         model.commit();
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
                 messageSelected, messageSlots));
@@ -134,7 +134,7 @@ public class EditCommand extends Command {
     /**
      * Craft success message.
      */
-    public String craftSuccessMessage(Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots) {
+    public String craftSuccessMessage(List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> selectedSlots) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Details Edited: ");

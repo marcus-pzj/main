@@ -31,14 +31,13 @@ public class FindCommand extends Command {
     public static final String COMMAND_WORD_SHORT = "f";
     private static final String MESSAGE_SUCCESS = "%1$s Slots listed.\n%2$s";
     private static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ":\n" + "Finds all slots whose name "
-            + "contains the specified keywords (case-sensitive).\n\t"
-            + "Parameters: KEYWORD [MORE_KEYWORDS]...\n\t"
-            + "Example: " + COMMAND_WORD + "n/CS";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all slots whose name "
+            + "contains the specified keywords (not case-sensitive)."
+            + "\n\tMandatory Parameters: n/NAME or t/TAG..."
+            + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
 
     private final String keyword;
     private final boolean isFindByName;
-    private final int lengthOfKeyword;
 
     private Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
         @Override
@@ -53,6 +52,8 @@ public class FindCommand extends Command {
             } else {
                 return n1.compareTo(n2);
             }
+            // TODO: marcus, i think you should put date into your weighted name so
+            //  that if they are the same names as well then you need to sort by date
         }
     });
 
@@ -62,7 +63,6 @@ public class FindCommand extends Command {
     public FindCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
         this.isFindByName = (name != null);
-        this.lengthOfKeyword = keyword.length();
     }
 
     @Override
@@ -73,6 +73,9 @@ public class FindCommand extends Command {
                     generateDiscoveredNames(keyword, slot.getName(), entry, slot);
                 } else {
                     Set<String> tagSet = slot.getTags();
+                    // TODO: marcus, i think that this is double adding tags
+                    //  the logic here is not sound, you are comparing the slot multiple times
+                    //  if it has multiple tags
                     for (String tag : tagSet) {
                         generateDiscoveredNames(keyword, tag, entry, slot);
                     }
@@ -84,8 +87,7 @@ public class FindCommand extends Command {
             return new CommandResult(MESSAGE_SUCCESS_NONE);
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
 
@@ -98,7 +100,7 @@ public class FindCommand extends Command {
         model.setLastShownList(lastShownList);
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)));
+                Messages.craftListMessageWeighted(selectedSlots)));
     }
 
     /**
@@ -107,7 +109,7 @@ public class FindCommand extends Command {
     */
     private void generateDiscoveredNames(String keyword, String compareString,
                                          Map.Entry<LocalDate, Day> entry, Slot slot) {
-        if (compareString == null) {
+        if (compareString.length() + 3 < keyword.length()) {
             return;
         }
 

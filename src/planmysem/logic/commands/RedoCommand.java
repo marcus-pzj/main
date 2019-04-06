@@ -13,6 +13,10 @@ import planmysem.model.Model;
 public class RedoCommand extends Command {
 
     public static final String COMMAND_WORD = "redo";
+    public static final String COMMAND_WORD_SHORT = "r";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Reverses the most recent undo command."
+            + "\n\tExample: " + COMMAND_WORD;
+
     public static final String MESSAGE_SUCCESS = "Redo success!";
     public static final String MESSAGE_FAILURE = "No more commands to redo!";
 

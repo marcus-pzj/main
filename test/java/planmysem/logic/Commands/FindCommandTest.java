@@ -1,5 +1,24 @@
 package planmysem.logic.Commands;
 
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
+import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
+
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Rule;
@@ -9,9 +28,11 @@ import planmysem.common.Clock;
 import planmysem.common.Messages;
 import planmysem.common.Utils;
 import planmysem.logic.CommandHistory;
+import planmysem.logic.commands.Command;
 import planmysem.logic.commands.CommandResult;
 import planmysem.logic.commands.FindCommand;
 import planmysem.logic.parser.FindCommandParser;
+import planmysem.logic.parser.ParserManager;
 import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
 import planmysem.model.ModelManager;
@@ -21,18 +42,6 @@ import planmysem.model.semester.WeightedName;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 import planmysem.testutil.SlotBuilder;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static planmysem.common.Messages.MESSAGE_INVALID_MULTIPLE_PARAMS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS;
-import static planmysem.logic.commands.ListCommand.MESSAGE_SUCCESS_NONE;
 
 public class FindCommandTest {
     private Model model;
@@ -51,6 +60,8 @@ public class FindCommandTest {
             "ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore " +
             "eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui " +
             "officia deserunt mollit anim id est laborum";
+
+    private static final CommandHistory EMPTY_COMMAND_HISTORY = new CommandHistory();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -124,6 +135,13 @@ public class FindCommandTest {
      *  Parser Tests
      */
 
+    @Test
+    public void execute_Valid_FindCommand_ParserManager() throws Exception {
+        ParserManager parserManager = new ParserManager();
+        Command actualFindCommand = parserManager.parseCommand("find n/CS2113T");
+        CommandResult expectedFindCommandOutput = new FindCommandParser().parse("n/CS2113T").execute(model, EMPTY_COMMAND_HISTORY );
+        assertEquals(expectedFindCommandOutput, actualFindCommand.execute(model, EMPTY_COMMAND_HISTORY));
+    }
     @Test
     public void execute_Invalid_IncorrectPrefix_throwsParserException() throws Exception {
         FindCommandParser findCommandParser = new FindCommandParser();
@@ -201,11 +219,10 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindExactNameSuccessful() throws Exception {
+    public void execute_slotAcceptedByModel_FindExactNameSuccessful() {
         CommandResult commandResult = new FindCommand(slotBuilder.generateSlot(1).getName(), null).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int lengthOfKeyword = slotBuilder.generateSlot(1).getName().length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -224,29 +241,30 @@ public class FindCommandTest {
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
+                if (slot.getName().length() + 3 < slotBuilder.generateSlot(1).getName().length()) {
+                    return;
+                }
                 int dist = Utils.getLevenshteinDistance(slotBuilder.generateSlot(1).getName(), slot.getName());
                 WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                 weightedNames.add(distNameTrie);
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10 ) {
             selectedSlots.add(weightedNames.poll());
         }
         assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+                Messages.craftListMessageWeighted(selectedSlots)), commandResult.getFeedbackToUser());
     }
 
     @Test
-    public void execute_slotAcceptedByModel_FindExactTagSuccessful() throws Exception {
+    public void execute_slotAcceptedByModel_FindExactTagSuccessful() {
         Set<String> tags = slotBuilder.generateSlot(1).getTags();
         String tagToTest = tags.iterator().next();
 
         CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int lengthOfKeyword = slotBuilder.generateSlot(1).getName().length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -267,6 +285,9 @@ public class FindCommandTest {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
+                    if (tag.length() + 3 < tagToTest.length()) {
+                        return;
+                    }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
                     WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                     weightedNames.add(distNameTrie);
@@ -274,12 +295,11 @@ public class FindCommandTest {
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
             assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                    Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+                    Messages.craftListMessageWeighted(selectedSlots)), commandResult.getFeedbackToUser());
     }
 
     @Test
@@ -289,7 +309,6 @@ public class FindCommandTest {
         CommandResult commandResult = new FindCommand(nameToTest, null).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int lengthOfKeyword = nameToTest.length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -308,18 +327,20 @@ public class FindCommandTest {
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
+                if (slot.getName().length() + 3 < nameToTest.length()) {
+                    return;
+                }
                 int dist = Utils.getLevenshteinDistance(nameToTest, slot.getName());
                 WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                 weightedNames.add(distNameTrie);
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
         assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+                Messages.craftListMessageWeighted(selectedSlots)), commandResult.getFeedbackToUser());
     }
 
     @Test
@@ -331,7 +352,6 @@ public class FindCommandTest {
         CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
 
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int lengthOfKeyword = tagToTest.length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -352,6 +372,9 @@ public class FindCommandTest {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
+                    if (tag.length() + 3 < tagToTest.length()) {
+                        return;
+                    }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
                     WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                     weightedNames.add(distNameTrie);
@@ -359,12 +382,11 @@ public class FindCommandTest {
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
         assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
-                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
+                Messages.craftListMessageWeighted(selectedSlots)), commandResult.getFeedbackToUser());
     }
 
     @Test
@@ -373,7 +395,6 @@ public class FindCommandTest {
 
         CommandResult commandResult = new FindCommand(null, tagToTest).execute(model, commandHistory);
         List<WeightedName> selectedSlots = new ArrayList<>();
-        int lengthOfKeyword = tagToTest.length();
         Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
             @Override
             public int compare(WeightedName p1, WeightedName p2) {
@@ -394,6 +415,9 @@ public class FindCommandTest {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
+                    if (tag.length() + 3 < tagToTest.length()) {
+                        return;
+                    }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
                     WeightedName distNameTrie = new WeightedName(entry, slot, dist);
                     weightedNames.add(distNameTrie);
@@ -401,8 +425,7 @@ public class FindCommandTest {
             }
         }
 
-        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10
-                && (Math.abs(weightedNames.peek().getDist() - lengthOfKeyword) < 3 )) {
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
             selectedSlots.add(weightedNames.poll());
         }
         assertEquals(MESSAGE_SUCCESS_NONE, commandResult.getFeedbackToUser());

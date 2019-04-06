@@ -1,7 +1,7 @@
 package planmysem.logic.commands;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -22,22 +22,17 @@ public class CommandResult {
     /**
      * The list of Slots that was produced by the command
      */
-    private final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots;
+    private final List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> slots;
 
     public CommandResult(String feedbackToUser) {
         this.feedbackToUser = feedbackToUser;
         slots = null;
     }
 
-    public CommandResult(String feedbackToUser, Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> slots) {
-        this.feedbackToUser = feedbackToUser;
-        this.slots = slots;
-    }
-
     /**
      * Returns list of Slots relevant to the command command result, if any.
      */
-    public Optional<Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getRelevantSlots() {
+    public Optional<List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>>> getRelevantSlots() {
         return Optional.ofNullable(slots);
     }
 

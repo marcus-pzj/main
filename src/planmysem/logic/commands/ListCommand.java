@@ -2,9 +2,10 @@
 package planmysem.logic.commands;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.common.Messages;
@@ -28,8 +29,7 @@ public class ListCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots whose name "
             + "directly matches the specified keyword (not case-sensitive)."
-            //+ "\n\tOptional Parameters: [past] [next] [all]"
-            //+ "\n\tDefault: list all"
+            + "\n\tMandatory Parameters: n/NAME or t/TAG..."
             + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
 
     private final String keyword;
@@ -42,19 +42,19 @@ public class ListCommand extends Command {
 
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) {
-        Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+        final List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> selectedSlots = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 if (isListByName) {
                     if (slot.getName().equalsIgnoreCase(keyword)) {
-                        selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                        selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
                     }
                 } else {
                     Set<String> tagSet = slot.getTags();
                     for (String tag : tagSet) {
                         if (tag.equalsIgnoreCase(keyword)) {
-                            selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                            selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
                         }
                     }
                 }

@@ -14,9 +14,10 @@ import planmysem.model.semester.IcsSemester;
 public class ExportCommand extends Command {
 
     public static final String COMMAND_WORD = "export";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Delete single or multiple slots in the Planner."
-            + "\n\tExample: " + COMMAND_WORD;
-    public static final String MESSAGE_EXPORT_ACKNOWEDGEMENT = "Calendar exported";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Export the planner as a .ics file."
+            + "\n\tParameters: filename"
+            + "\n\tExample: " + COMMAND_WORD + " my_planner.ics";
+    public static final String MESSAGE_EXPORT_ACKNOWLEDGEMENT = "Calendar exported";
 
     @Override
     public CommandResult execute(Model model, CommandHistory commandHistory) {
@@ -29,7 +30,7 @@ public class ExportCommand extends Command {
             e.printStackTrace();
         }
 
-        return new CommandResult(MESSAGE_EXPORT_ACKNOWEDGEMENT);
+        return new CommandResult(MESSAGE_EXPORT_ACKNOWLEDGEMENT);
     }
 
 }

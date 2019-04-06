@@ -1,10 +1,19 @@
 package planmysem.logic;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static planmysem.common.Messages.MESSAGE_INVALID_SLOT_DISPLAYED_INDEX;
 
-import java.io.IOException;
+import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,11 +27,15 @@ import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
 import planmysem.model.ModelManager;
+import planmysem.model.semester.Day;
+import planmysem.model.semester.ReadOnlyDay;
+import planmysem.model.slot.ReadOnlySlot;
+import planmysem.model.slot.Slot;
 import planmysem.storage.StorageFile;
+import planmysem.testutil.SlotBuilder;
 
 
 public class LogicManagerTest {
-    private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy exception");
     private static final String testFileName = "testSaveFile.txt";
 
     @Rule
@@ -43,6 +56,73 @@ public class LogicManagerTest {
         model = new ModelManager();
     }
 
+
+    @Test
+    public void execute_throwsStorageOperationException() throws CommandException, ParseException {
+        // delete save file
+        File file = new File(temporaryFolder.getRoot().getPath() + "\\" + testFileName);
+        file.setReadOnly();
+
+        Slot slot = new SlotBuilder().slotOne();
+        String cmd = SlotBuilder.generateAddCommand(slot, 2, "");
+
+        thrown.expect(CommandException.class);
+        logic.execute(cmd);
+    }
+
+    @Test
+    public void getStorageFilePath() {
+        assertEquals(logic.getStorageFilePath(), storageFile.getPath());
+    }
+
+    @Test
+    public void getLastShownSlots() throws CommandException, ParseException {
+        Slot slot = new SlotBuilder().slotOne();
+        String cmd = SlotBuilder.generateAddCommand(slot, 2, "");
+        logic.execute(cmd);
+        logic.execute("list n/CS2113T Tutorial");
+
+        List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> lastShownSlots
+                = new ArrayList<>();
+        Day day = new Day(DayOfWeek.TUESDAY, "Week 1");
+        day.addSlot(slot);
+        lastShownSlots.add(new Pair<>(LocalDate.of(2019, 1, 15),
+                new Pair<>(day, new SlotBuilder().slotOne())));
+
+        assertEquals(logic.getLastShownSlots(), lastShownSlots);
+    }
+
+    @Test
+    public void getHistory() throws Exception {
+        ObservableList<String> expectedHistory =
+                FXCollections.observableArrayList();
+
+        Slot slot = new SlotBuilder().slotOne();
+        String cmd = SlotBuilder.generateAddCommand(slot, 2, "");
+        logic.execute(cmd);
+        expectedHistory.add(cmd);
+
+        logic.execute("list n/CS2113T Tutorial");
+        expectedHistory.add("list n/CS2113T Tutorial");
+
+        logic.execute("view week");
+        expectedHistory.add("view week");
+
+        logic.execute("d 1");
+        expectedHistory.add("d 1");
+
+        assertEquals(logic.getHistory(), expectedHistory);
+        assertEquals(logic.getHistory().hashCode(), expectedHistory.hashCode());
+
+        // equal same object
+        assertEquals(logic.getHistory(), logic.getHistory());
+        assertEquals(logic.getHistory().hashCode(), logic.getHistory().hashCode());
+
+        // equal null
+        assertNotEquals(logic.getHistory(), null);
+    }
+
+
     @Test
     public void execute_commandExecutionError_throwsCommandException() {
         String deleteCommand = "delete 3";
@@ -56,33 +136,6 @@ public class LogicManagerTest {
         assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS_NONE, model);
         assertHistoryCorrect(listCommand);
     }
-//
-//    @Test
-//    public void execute_storageThrowsIoException_throwsCommandException() throws Exception {
-//        // Setup LogicManager with JsonAddressBookIoExceptionThrowingStub
-//        JsonAddressBookStorage addressBookStorage =
-//                new JsonAddressBookIoExceptionThrowingStub(temporaryFolder.newFile().toPath());
-//        JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.newFile().toPath());
-//        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
-//        logic = new LogicManager(model, storage);
-//
-//        // Execute add command
-//        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
-//                + ADDRESS_DESC_AMY;
-//        Person expectedPerson = new PersonBuilder(AMY).withTags().build();
-//        ModelManager expectedModel = new ModelManager();
-//        expectedModel.addPerson(expectedPerson);
-//        expectedModel.commitAddressBook();
-//        String expectedMessage = LogicManager.FILE_OPS_ERROR_MESSAGE + DUMMY_IO_EXCEPTION;
-//        assertCommandBehavior(CommandException.class, addCommand, expectedMessage, expectedModel);
-//        assertHistoryCorrect(addCommand);
-//    }
-//
-//    @Test
-//    public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
-//        thrown.expect(UnsupportedOperationException.class);
-//        logic.getFilteredPersonList().remove(0);
-//    }
 
     /**
      * Executes the command, confirms that no exceptions are thrown and that the result message is correct.
@@ -129,7 +182,7 @@ public class LogicManagerTest {
 
         try {
             CommandResult result = logic.execute(inputCommand);
-            assertEquals(expectedException, null);
+            assertNull(expectedException);
             assertEquals(expectedMessage, result.getFeedbackToUser());
         } catch (CommandException | ParseException e) {
             assertEquals(expectedException, e.getClass());

@@ -2,6 +2,7 @@ package planmysem.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * {@code Planner} that keeps track of its own history.
@@ -87,6 +88,11 @@ public class VersionedPlanner extends Planner {
         return super.equals(otherVersionedPlanner)
                 && plannerListState.equals(otherVersionedPlanner.plannerListState)
                 && currentStatePointer == otherVersionedPlanner.currentStatePointer;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plannerListState, currentStatePointer);
     }
 
     /**

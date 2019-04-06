@@ -45,10 +45,8 @@ public class Encryptor {
             return DatatypeConverter.printBase64Binary(encryptedIvAndText);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     /**
@@ -80,13 +78,9 @@ public class Encryptor {
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivParameterSpec);
 
             byte[] decryptedData = cipher.doFinal(encryptedBytes);
-
             return new String(decryptedData);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            return null;
         }
-
-        return null;
     }
 }

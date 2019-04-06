@@ -120,8 +120,8 @@ public class StorageFile implements Storage {
              * 'normal' situation (i.e. not truly exceptional) we should not use an exception to handle it.
              */
 
-            // create empty file if not found or is empty
-        } catch (FileNotFoundException | NullPointerException ex) {
+            // create empty planner if not found or is empty.
+        } catch (FileNotFoundException | NullPointerException e) {
             final Planner empty = new Planner();
             save(empty);
             return empty;

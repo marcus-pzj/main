@@ -2,7 +2,8 @@ package planmysem.logic.parser;
 
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
-import static planmysem.common.Messages.MESSAGE_INVALID_DATE;
+import static planmysem.common.Messages.MESSAGE_INVALID_DATE_OR_DAY;
+import static planmysem.common.Messages.MESSAGE_INVALID_ENDTIME;
 import static planmysem.common.Messages.MESSAGE_INVALID_TAG;
 import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
 
@@ -51,7 +52,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         }
         if (day == -1 && date == null) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
-                    AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_DATE));
+                    AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_DATE_OR_DAY));
         }
 
         // Start time is mandatory
@@ -73,6 +74,10 @@ public class AddCommandParser implements Parser<AddCommand> {
                         AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
             }
             duration = Utils.getDuration(startTime, endTime);
+            if (duration < 0) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                        AddCommand.MESSAGE_USAGE, MESSAGE_INVALID_ENDTIME));
+            }
         }
 
         // Description is not mandatory and can be null

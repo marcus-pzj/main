@@ -7,66 +7,132 @@
 
 ---
 
-== Overview
+== About the project
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+My team and I were tasked with enhancing a basic command line interface addressbook for our
+Software Engineering project. We chose to morph it into a student planner for NUS students. This planner is automatically synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
+
+Special weeks such as recess week and reading week are taken into account within our unique recursion system.
+This allows NUS students to easily keep track of school related matters such as classes, deadlines and examinations.
+Items can also be efficiently managed via the intuitive tagging system.
+{zwsp}
+
+{zwsp}
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+* *Major enhancement 1*: I added the ability to *import .ics files*
+** What it does: allows the user to import .ics files obtained from this or other applications.
+[NOTE]
+.ics stands for a iCalendar file format. .ics files are one of the most commonly used calendar formats in applications such as Google Calendar and Outlook.
+** Justification: This feature improves the product significantly because the user can import existing appointments on other calendar applications into PlanMySem, allowing him to combine external appointments with his school schedule.
+** Highlights: This enhancement works with existing as well as future commands. In particular, this enhancement works hand-in-hand with 2 features that I will go into detail later: exporting and data and encryption.
+An in-depth analysis of the add command was necessary to understand how slots are added into our planner as I had to add multiple slots into the planner at once.
+* *Code contributed*: [https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/src/planmysem/logic/commands/ImportCommand.java]
+{zwsp}
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Major enhancement 2*: I added the ability to *export .ics files*
+** What it does: allows the user to export .ics files from the planner  ** What it does: allows the user to export .ics files from the planner
+** Justification: This feature improves the product because the user can export current slots in the planner and merge them into other calendar applications. The user can also export the .ics file to be imported across devices.
+** Highlights: This enhancement works with existing as well as future commands. In particular, this enhancement works hand-in-hand with the import feature described above. This allows the user to export a file that can be imported into PlanMySem on another device.
+This enhancement also allows the user to obtain a readable file as the data will be encrypted (discussed later). +
+An in-depth analysis of how the planner stores slots was necessary in order to extract their details to be exported.
+* *Code contributed*: [https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/src/planmysem/logic/commands/ExportCommand.java]
+{zwsp}
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+* *Major enhancement 3*: I added data encryption of the storage file.
+** What it does: the planner automatically encrypts the data before saving it into a .txt file. This data is then decrypted before being loaded by the application.
+** Justification: This feature improves the product because the user's schedule data will not be able to easily obtained by others.
+** Highlights: This enhancement works with existing as well as future commands. In particular, this enhancement works hand-in-hand with the import and export functions. As we have decided to encrypt the raw data file, the user will not be able to obtain the raw data of his planner. +
+As a result, the export function allows the user to obtain a read-able text file when he wishes to. +
+This enhancement also allows the user to obtain a readable file as the data will be encrypted (discussed later). +
+An in-depth analysis of how the planner data is stored was necessary to identify where encryption and decryption should be done on the data. Also, a general understanding of ciphers and data encryption was necessary in implementation of this enhancement.
+
+* *Code contributed*: [https://github.com/CS2113-AY1819S2-T08-3/main/tree/master/src/planmysem/storage]
 
 * *Other contributions*:
 
-** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
-** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
 ** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
-** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
-** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
-
-_{you can add/remove categories in the list above}_
+*** Wrote Use Cases on the Developer Guide: [https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc]
 
 == Contributions to the User Guide
 
 
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._ +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#encrypt +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#import +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#export +
+
+Below is an example of my contributions for the import and export features. +
+
+{zwsp}
+[[import]]
+Importing .ics formatted files 'import filename' +
+You can import an .ics file into the planner.
+Format: `import filename` +
+[NOTE] +
+The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. The file to be imported has to be located in the PlanMySem main directory. +
+
+{zwsp}
+[WARNING] +
+For .ics files that are created from other calendar applications, events with recurrence will not be recursed in our
+application. Events that are outside of the current school semester will also not be imported.
+
+{zwsp}
+
+[[export]]
+Exporting .ics formatted files: `export` +
+You can export the planner as a .ics file. +
+
+[NOTE] +
+The exported file is named "PlanMySem.ics" and is saved in the main directory.
+The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. +
+
+[WARNING] +
+Exporting will REMOVE all tags in the planner.
+
+
 |===
-
-include::../UserGuide.adoc[tag=importICS]
-
-include::../UserGuide.adoc[tag=dataencryption]
 
 == Contributions to the Developer Guide
 
 |===
-|_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
+|_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._ +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#data-encryption-decryption-feature +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#data-exporting-exporting-feature +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#use-cases +
+
+Below is an example of my contributions in design considerations.
+
+Data Exporting / Exporting feature
+
+The user can export the current planner into a .ics file to use in external calendar applications. The .ics file will contain the names of the slots in the SUMMARY field and the descriptions in the DESCRIPTION field. This command automatically exports into the main directory and names the file “PlanMySem.ics”. Future updates can include user input to allow saving the file in another directory and naming the file.
+
+We have chosen to use the iCalendar format due to its popularity and it’s use in applications such as Google Calendar, Microsoft Outlook and NUSmods.
+
+In our implementation, we have chosen not to export the tags into the .ics file. This is because iCalendar does not have in-built tag fields. This means that other other applications that import .ics will not be able to use the tags.
+{zwsp}
+
+{zwsp}
+
+**Aspect: Exporting tags into .ics file.**
+
+**Alternative 1 (current choice):** Ignore tags when exporting.
+
+** Pros: Easier to implement as iCalendar does not have in-built tag fields.**
+
+Cons: Not all the information about the slots will be retained.
+
+**Reason for choice: We do not have much control over other applications, and importing and exporting .ics within *PlanMySem* can be done using the storageFile .txt file.**
+
+**Alternative 2:** Use the notes field and a tag identifier to save the tags.
+
+** Pros: All the information from the semester will be exported.**
+
+Cons: Requires other applications to be coded to read these tag identifiers and also to store and use the tags in their functions.
 |===
 
-include::../DeveloperGuide.adoc[tag=importICS]
-
-include::../DeveloperGuide.adoc[tag=dataencryption]
-
-
-== PROJECT: PowerPointLabs
+== PROJECT: PlanMySem
 
 ---
-
-_{Optionally, you may include other projects in your portfolio.}_

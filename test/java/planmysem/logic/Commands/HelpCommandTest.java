@@ -1,9 +1,10 @@
-package planmysem.logic.parser;
+package planmysem.logic.Commands;
 
 import static planmysem.logic.Commands.CommandTestUtil.assertCommandSuccess;
 import static planmysem.logic.commands.HelpCommand.MESSAGE_ALL_USAGES;
 
 import org.junit.Test;
+
 import planmysem.logic.CommandHistory;
 import planmysem.logic.commands.CommandResult;
 import planmysem.logic.commands.HelpCommand;

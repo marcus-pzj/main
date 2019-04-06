@@ -2,6 +2,7 @@ package planmysem.model.semester;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import planmysem.model.slot.ReadOnlySlot;
@@ -32,7 +33,7 @@ public class Day implements ReadOnlyDay {
         this.type = weekType;
     }
 
-    public Day(DayOfWeek dayOfWeek, String weekType, ArrayList<Slot> slots) {
+    public Day(DayOfWeek dayOfWeek, String weekType, List<Slot> slots) {
         this.dayOfWeek = dayOfWeek;
         this.type = weekType;
 
@@ -97,12 +98,5 @@ public class Day implements ReadOnlyDay {
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(dayOfWeek, type, slots);
-    }
-
-    /**
-     * Signals that an operation targeting a specified slot in the list would fail because
-     * there is no such matching slot in the list.
-     */
-    public static class SlotNotFoundException extends Exception {
     }
 }

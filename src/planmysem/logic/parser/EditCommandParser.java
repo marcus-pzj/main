@@ -1,6 +1,9 @@
 package planmysem.logic.parser;
 
 import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL;
+import static planmysem.common.Messages.MESSAGE_INVALID_TIME;
+import static planmysem.common.Messages.MESSAGE_NOTHING_TO_EDIT;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,7 +41,8 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (nst != null) {
             startTime = Utils.parseTime(nst);
             if (startTime == null) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                        EditCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
             }
         }
 
@@ -50,8 +54,8 @@ public class EditCommandParser implements Parser<EditCommand> {
             if (duration == -1) {
                 LocalTime endTime = Utils.parseTime(net);
                 if (endTime == null) {
-                    throw new ParseException(String.format(
-                            MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
+                    throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                            EditCommand.MESSAGE_USAGE, MESSAGE_INVALID_TIME));
                 } else {
                     duration = Utils.getDuration(startTime, endTime);
                 }
@@ -63,6 +67,16 @@ public class EditCommandParser implements Parser<EditCommand> {
         String location = getFirstInSet(arguments.get(PREFIX_NEW_LOCATION));
         String description = getFirstInSet(arguments.get(PREFIX_NEW_DESCRIPTION));
         Set<String> newTags = arguments.get(PREFIX_NEW_TAG);
+
+        // check if no edits
+        if ((name == null || name.isEmpty())
+                && startTime == null && duration == -1
+                && (location == null || location.isEmpty())
+                && (description == null || description.isEmpty())
+                && newTags == null) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT_ADDITIONAL,
+                    EditCommand.MESSAGE_USAGE, MESSAGE_NOTHING_TO_EDIT));
+        }
 
         if (index == -1) {
             return new EditCommand(name, startTime, duration, location, description, tags, newTags);

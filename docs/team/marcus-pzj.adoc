@@ -9,64 +9,162 @@
 
 == Overview
 
-AddressBook - Level 4 is a desktop address book application used for teaching Software Engineering principles. The user interacts with it using a CLI, and it has a GUI created with JavaFX. It is written in Java, and has about 10 kLoC.
+For our Software Engineering project, my team and I were tasked with enhancing a basic command line interface address book  application. +
+
+We chose to morph it into a text-based (Command Line Interface) scheduling/calendar application called *PlanMySem*, which caters to NUS students and staff who prefer to use a desktop application for managing their schedule/calendar. +
+
+*PlanMySem* automatically creates a planner that is synchronised according to the NUS academic calendar for the current semester and enables easy creation, editing and deleting of items.
+Special weeks such as recess week and reading week are taken into account within our unique recursion system.
+Items can then be efficiently managed via the intuitive tagging system. +
+
+Note the following symbols and formatting used in this document:
+[IMPORTANT]
+This symbol indicates important information.
+
+[grid=none]
+[frame=none]
+|===
+|`list` | A grey highlight (called a mark-up) indicates that this is a command that can be inputted into the command line and executed by the application.
+|[blue]`VersionedPlanner`| Blue text with grey highlight indicates a component, class or object in the architecture of the application.
+|===
+
+My role was to design and write the codes for the `list`, `find`, `history`, `undo` and `redo` features.
+The following sections illustrate these enhancements in more detail, as well as
+the relevant sections I have added to the user and developer guides in relation to these enhancements.
+
+{zwsp}
+
+{zwsp}
 
 == Summary of contributions
 
-* *Major enhancement*: added *the ability to undo/redo previous commands*
-** What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
-** Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-** Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
-** Credits: _{mention here if you reused any code/ideas from elsewhere or if a third-party library is heavily used in the feature so that a reader can make a more accurate judgement of how much effort went into the feature}_
+This section shows a summary of my coding, documentation, and other helpful contributions to the team project. +
 
-* *Minor enhancement*: added a history command that allows the user to navigate to previous commands using up/down keys.
+* *Major enhancements*:
+** Feature 1: I added the ability to *undo/redo previous commands* and *view the history* of commands entered.
+*** What it does: The `undo` command allows the user to undo a previous `add`/`edit`/`delete` command. The user may reverse this command with the `redo` command.
+*** Justification: In the event that users have made a mistake or changed their minds about executing
+                  a command, the `undo` command enables them to revert to a version immediately before
+                  the mistaken command was executed. If they change their minds again and decide to
+                  execute the command after all, then the `redo` command enables them to do so easily.
+*** Highlights: As our group chose to morph the product from https://github.com/nusCS2113-AY1819S2/addressbook-level3[AddressBook 3], we did not have a History framework in place. I took up the responsibility
+to adapt the History Framework provided in https://github.com/nusCS2113-AY1819S2/addressbook-level4[AddressBook 4] in order to cater to our implementation of *PlanMySem*.
+*** Credits: https://github.com/nusCS2113-AY1819S2/addressbook-level4[AddressBook 4] for providing the History framework.
 
-* *Code contributed*: [https://github.com[Functional code]] [https://github.com[Test code]] _{give links to collated code files}_
+** Feature 2: I added the ability to *search and list [blue]`Slots`* using a keyword user input.
+*** What it does: The `list` command *generates a list* containing all [blue]`Slots` whose name/tag *directly matches* the specified keyword (not case-sensitive).
+*** Justification: After the user has added [blue]`Slots` to their planner, they may want to be able to view information regarding
+a [blue]`Slot` that they have added. If the user wants to find out the dates, start times, end times, venues and descriptions pertaining to a specific [blue]`Slot`, they can use the `list` command to
+locate that specific [blue]`Slot` and view all of its information in a list.
+
+** Feature 3: I added the ability to *search and find [blue]`Slots`* using a keyword user input.
+*** What it does: The `find` command *generates a list* containing all [blue]`Slots` whose name *closely matches* the specified keyword and displays them as a list.
+*** Justification: Unlike the `list` command, the `find` command will also consider searches that are similar to the desired name/tag. This is to account for a typo or an incomplete keyword, which can happen often while the user is typing.
+Additionally, the user may not remember the exact name he has added to the planner, and hence, the `find` command provides a higher chance for the user to locate their desired [blue]`Slot`.
+[IMPORTANT]
+The `find` command ends up generating a longer output list, which potentially contains many [blue]`Slots`, which may not be optimal for the user to skim through. Thus, I provide users with the option to use the `list` command to specifically pinpoint their desired [blue]`Slot` to list.
+*** Highlights: It was challenging to provide an optimal string matching algorithm that accurately weighs the closeness of strings.
+An in-depth analysis of design alternatives was necessary to determine the kind of string matching algorithm to implement in order to improve search accuracy.
+*** Credits: The string matching logic was largely dependent on <<levenshtein-distance,Levenshtein Distance>>. My implementation was adapted from https://rosettacode.org/wiki/Levenshtein_distance#Java[Rosetta Code].
+
+* *Code contributed*: [https://nuscs2113-ay1819s2.github.io/dashboard-beta/#search=marcus-pzj&sort=displayName&since=2019-02-10&until=2019-04-01&timeframe=day&reverse=false&groupSelect=groupByRepos&breakdown=false&tabAuthor=marcus-pzj&tabRepo=CS2113-AY1819S2-T08-3_main_master[RepoSense]] [https://github.com/CS2113-AY1819S2-T08-3/main/pulls?q=is%3Apr+author%3Amarcus-pzj+is%3Aclosed[Pull Requests]]
 
 * *Other contributions*:
 
 ** Project management:
-*** Managed releases `v1.3` - `v1.5rc` (3 releases) on GitHub
-** Enhancements to existing features:
-*** Updated the GUI color scheme (Pull requests https://github.com[#33], https://github.com[#34])
-*** Wrote additional tests for existing features to increase coverage from 88% to 92% (Pull requests https://github.com[#36], https://github.com[#38])
+*** I managed releases from version 1.1 to 1.3, which are all of the https://github.com/CS2113-AY1819S2-T08-3/main/releases[releases] on GitHub.
+** Enhancement to existing features:
+*** I wrote additional tests for existing features to increase coverage.
 ** Documentation:
-*** Did cosmetic tweaks to existing contents of the User Guide: https://github.com[#14]
+*** I performed cosmetic tweaks to existing contents of the User Guide: https://github.com/CS2113-AY1819S2-T08-3/main/pull/98[#98], https://github.com/CS2113-AY1819S2-T08-3/main/pull/101[#101].
 ** Community:
-*** PRs reviewed (with non-trivial review comments): https://github.com[#12], https://github.com[#32], https://github.com[#19], https://github.com[#42]
-*** Contributed to forum discussions (examples:  https://github.com[1], https://github.com[2], https://github.com[3], https://github.com[4])
-*** Reported bugs and suggestions for other teams in the class (examples:  https://github.com[1], https://github.com[2], https://github.com[3])
-*** Some parts of the history feature I added was adopted by several other class mates (https://github.com[1], https://github.com[2])
+*** I reviewed Pull Requests and provided non-trivial review comments for some requests: https://github.com/CS2113-AY1819S2-T08-3/main/pull/25[#25], https://github.com/CS2113-AY1819S2-T08-3/main/pull/53[#53], https://github.com/CS2113-AY1819S2-T08-3/main/pull/75[#75], https://github.com/CS2113-AY1819S2-T08-3/main/pull/115[#115].
 ** Tools:
-*** Integrated a third party library (Natty) to the project (https://github.com[#42])
-*** Integrated a new Github plugin (CircleCI) to the team repo
-
-_{you can add/remove categories in the list above}_
+*** I completed the initial set up of the https://github.com/CS2113-AY1819S2-T08-3[developer team and organisation repository] on GitHub.
 
 == Contributions to the User Guide
 
-
 |===
-|_Given below are sections I contributed to the User Guide. They showcase my ability to write documentation targeting end-users._
+|_Given below are sections I contributed to the User Guide. I have added the descriptions of all features that I have implemented.
+I have also provided clear instructions for users to use my implemented features._
 |===
 
-include::../UserGuide.adoc[tag=importICS]
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#list[`list`] +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#find[`find`] +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#history[`history`] +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#undo[`undo`] +
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/UserGuide.adoc#redo[`redo`]
 
-include::../UserGuide.adoc[tag=dataencryption]
+Below is an example of my addition to the User Guide for the `find` feature.
+
+=== Locating Slots: `find` / `f`
+Find all [blue]`Slots` whose name closely matches the specified keyword and displays them as a list. +
+Format: `find n/KEYWORD`
+
+[IMPORTANT]
+The `find` command will attempt to return the closest matching [blue]`Slot` in the event that a match is not found.
+Do not be surprised to _eg. enter `find n/ABC` and get a [blue]`Slot` named `XYZ`_ in return.
+
+Example:
+
+* `find n/CS` +
+Find all [blue]`Slots` whose name contains `CS` (eg. CS2101, CS2113T, SOCSMeet)
+
+[#img-find]
+.[.underline]#Output after entering `find n/CS`#
+image::Find_Command_Output_1.png[width="790"]
+{zwsp}
+
+{zwsp}
 
 == Contributions to the Developer Guide
 
 |===
-|_Given below are sections I contributed to the Developer Guide. They showcase my ability to write technical documentation and the technical depth of my contributions to the project._
+|_Given below are sections I contributed to the Developer Guide. I have explained the logic behind the features that were tasked to me.
+I have also elaborated on my design considerations in order to justify my implementation style. +
+
+In addition, I was tasked with collating and polishing the User Stories which were generated during the ideation phase of the project._
 |===
 
-include::../DeveloperGuide.adoc[tag=importICS]
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#list-feature[`list`]
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#find-feature[`find`]
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#undo-redo-feature[`undo` & `redo`]
+- https://github.com/CS2113-AY1819S2-T08-3/main/blob/master/docs/DeveloperGuide.adoc#user-stories[User Stories]
 
-include::../DeveloperGuide.adoc[tag=dataencryption]
+Below is an example of my addition to the Developer Guide for the `find` feature.
 
+=== Find feature
 
-== PROJECT: PowerPointLabs
+==== Current Implementation
+The find function supports searching using a single keyword. +
+All existing `Slots` are weighted based on their name/tag's <<levenshtein-distance,Levenshtein Distance>> from the keyword.
 
----
+A low <<levenshtein-distance,Levenshtein Distance>> is attributed to a high level of similarity between the name/tag and the keyword.
+(A value of 0 constitutes an exact match.)
 
-_{Optionally, you may include other projects in your portfolio.}_
+The weighted [blue]`Slots` are inserted into a [blue]`PriorityQueue` and the closest matching [blue]`Slots`
+will be polled into the output list. +
+{zwsp}
+
+{zwsp}
+
+==== Design Considerations
+
+===== Aspect: What constitutes a positive search result in `find` command
+
+|===
+|**No.**|**Alternatives** |**Pros** |**Cons**
+|**1** |Positive search result by strictly matching the entered keyword |Easy to implement. |Search must be exact, typos or an incomplete keyword will yield incorrect results. Nothing different from `List` feature.
+|**2** |Positive search result as long as name/tag contains the keyword.|Searches will detect names/tags similar to the keyword. |Output list will be longer. May become excessively long if short keyword is provided.
+|**3 (current implementation)** |Store the search results in a `PriorityQueue` ordered by their <<levenshtein-distance,Levenshtein distances>> from the search keyword.|Will also consider searches that are similar to the desired name/tag and will account for a typo or an incomplete keyword|Adds complexities in finding and searching.
+|===
+{zwsp}
+
+{zwsp}
+
+== Glossary
+
+[[levenshtein-distance]] Levenshtein Distance::
+The Levenshtein distance is a string metric for measuring difference between two sequences. +
+Informally, the Levenshtein distance between two words is the minimum number of single-character edits (i.e. insertions, deletions or substitutions)
+required to change one word into the other.

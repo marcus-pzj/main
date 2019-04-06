@@ -28,9 +28,8 @@ import planmysem.model.slot.Slot;
 public class ImportCommand extends Command {
     public static final String COMMAND_WORD = "import";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Imports a .ics file into the Planner."
-            + "\n\tParameters: "
-            + "\n\t\tFILENAME";
-
+            + "\n\tParameters: filename"
+            + "\n\tExample: " + COMMAND_WORD + " my_outlook_calendar.ics";
     public static final String MESSAGE_SUCCESS = "File imported.\n";
     public static final String MESSAGE_FILE_NOT_FOUND = "File not found.\n";
     public static final String MESSAGE_ERROR_IN_READING_FILE = "Error in reading file.\n";

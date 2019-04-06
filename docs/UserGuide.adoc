@@ -7,13 +7,13 @@
 :imagesDir: images
 :stylesDir: stylesheets
 :xrefstyle: full
-:experimental:
 ifdef::env-github[]
 :tip-caption: :bulb:
 :note-caption: :information_source:
 :important-caption: :heavy_exclamation_mark:
 :caution-caption: :fire:
 :warning-caption: :warning:
+:experimental:
 endif::[]
 :repoURL: https://github.com/CS2113-AY1819S2-T08-3/main
 
@@ -32,6 +32,7 @@ Items can then be efficiently managed via the intuitive tagging system.
 
 {zwsp}
 
+[[about]]
 == About this User Guide
 This user guide provides a quick start guide for you to easily setup and install *PlanMySem*, documentation of all the various features *PlanMySem* offers, frequently asked questions and a summary of the available commands. To navigate between the different sections, you could use the table of contents above.
 
@@ -172,43 +173,6 @@ E.g. `nt/NEW_TAG` signifies new tags in which you want to replace existing tags 
 [CAUTION]
 While table 1 shows you all the identifiers and parameters that *PlanMySem* uses, there are some commands that do not make use of identifiers nor parameters.
 The view command is one such exception that make use of keywords that must be typed in a specific order.
-
-//
-//[horizontal]
-//====
-//*Parameter*:: *Description*
-//`n/`:: *Name of a _slot_.*
-//`d/`:: *Date / Day of week.* +
-//    Format: +
-//    * Dates: `01-01`, `2019-01-02`
-//    * Day of Week: `Monday`, `mon`, `1`
-//`st/`:: *Start Time.* +
-//    Format: +
-//    * 24-Hour in the form of “hh:mm”. E.g. `23:00`
-//    * 12-Hour in the form of `hh:mm+AM|PM`. E.g. `12:30 AM`
-//`et/`:: *End Time / duration.* +
-//    Format: +
-//    * 24-Hour in the form of “hh:mm”. E.g. `23:00`
-//    * 12-Hour in the form of `hh:mm+AM|PM`. E.g. `12:30 AM`
-//    * Duration of the event in minutes. E.g. `60` represents 60 minutes
-//`r/`:: *Specify recurrence of a _slot_.* +
-//    Format: +
-//    * Select normal weeks: `normal`
-//    * Select recess week: `recess`
-//    * Select reading week: `reading`
-//    * Select examination weeks: `exam`
-//    * Select past dates: `past`
-//`l/`:: *Location.*
-//`des/`:: *Description.*
-//`t/`:: *Tag.*
-//`nn/`:: *New name of a _slot_.*
-//`nd/`:: *New Date.*
-//`nst/`:: *New Start Time.*
-//`net/`:: *New End Time.*
-//`nl/`:: *New Location.*
-//`ndes/`:: *New Description.*
-//====
-//Table 1. Parameters and their descriptions
 {zwsp}
 
 {zwsp}
@@ -233,18 +197,19 @@ Format: `add n/NAME d/DATE_OR_DAY_OF_WEEK st/START_TIME et/END_TIME_OR_DURATION 
 
 Examples:
 
-* `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial` +
-Add a _slot_, named "CS2113T Tutorial" on the coming monday, from 0800hrs to 0900hrs with the tags "CS2113T" and "Tutorial".
+* `add n/CS2113T Lecture d/mon st/8:00 am et/9:00 am des/Topic: Software Engineering t/CS2113T t/Lecture r/normal r/past` +
+Add a single _slot_, named "CS2113T Lecture" with description "Software Engineering" on all mondays, from 0800hrs to 0900hrs with the tags "CS2113T" and "Tutorial".
+Here, the recursion parameters enable a single command to place 13 slots on all "normal" weeks that lectures take place on.
 
 [#img-add]
-.[.underline]#Output after entering `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial`#
+.[.underline]#Output after entering `add n/CS2113T Lecture d/mon st/8:00 am et/9:00 am des/Topic: Software Engineering t/CS2113T t/Lecture r/normal r/past`#
 image::Add_Command_Output_1.png[width="790"]
 
-* `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/recess r/reading` +
-Do the same but additionally, recurse the _slot_ on recess and reading week.
+* `add n/CS2113T Lecture d/mon st/8:00 am et/9:00 am des/Topic: Software Engineering t/CS2113T t/Lecture r/recess r/reading r/past` +
+Do the same but instead of "normal" weeks, do the opposite of the norm and recurse the _slot_ on both recess and reading week.
 
-* `add n/CS2113T Tutorial d/mon st/08:00 et/09:00 des/Topic: Sequence Diagram t/CS2113T t/Tutorial r/normal` +
-Do the same but recurse the _slot_ on "normal", instructional, weeks.
+* `add n/CS2113T Lecture d/mon st/8:00 am et/9:00 am des/Topic: Software Engineering t/CS2113T t/Lecture` +
+Do the same but without any recursion, instead place the _slot_ the coming monday.
 
 [TIP]
 You may add single _slots_ by omitting the `r/` identifiers and its parameters.
@@ -257,9 +222,9 @@ You may add single _slots_ by omitting the `r/` identifiers and its parameters.
 Edit _slot(s)_.
 
 1. Edit _slot(s)_ which contains certain _tag_(s). +
-Format: `edit t/TAG... [nn/NEW_NAME] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [nd/NEW_DESCRIPTION] [nt/NEW_TAG]...`
+Format: `edit t/TAG... [nn/NEW_NAME] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [ndes/NEW_DESCRIPTION] [nt/NEW_TAG]...`
 2. Edit specific _slot_ via the `list` command. +
-Format: `edit INDEX [nn/NEW_NAME] [nd/NEW_DATE] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [nd/NEW_DESCRIPTION] [nt/NEW_TAG]...`
+Format: `edit INDEX [nn/NEW_NAME] [nd/NEW_DATE] [nst/NEW_START_TIME] [net/NEW_END_TIME|DURATION] [nl/NEW_LOCATION] [ndes/NEW_DESCRIPTION] [nt/NEW_TAG]...`
 
 [NOTE]
 You will not be able to edit a _slot_'s date when editing via _tags_. +
@@ -267,15 +232,15 @@ To edit a _slot_'s date, you may use the `list` or `find` command and edit speci
 
 Examples:
 
-* `edit t/CS2113T t/Tutorial nl/COM2 04-01` +
-Edit _slots_ that contain tags "CS2113T" and "Tutorial", set these _slot's_ location to "COM2 04-01".
+* `edit t/CS2113T t/Lecture nl/COM2 04-01` +
+Edit _slots_ that contain tags "Lecture" and "Tutorial", set these _slot's_ location to "COM2 04-01".
 
 [#img-edit]
-.[.underline]#Output after entering `edit t/CS2113T t/Tutorial nl/COM2 04-01`#
+.[.underline]#Output after entering `edit t/CS2113T t/Lecture nl/COM2 04-01`#
 image::Edit_Command_Output_1.png[width="790"]
 
-* `edit 1 des/Topic: Sequence Diagram` +
-Edit the first item from the previous result of the `list` or `find` command.
+* `edit 1 nl/ICube` +
+Edit the first item from the previous result of the `list` or `find` command, replace it's location with "ICube".
 {zwsp}
 
 {zwsp}
@@ -292,12 +257,15 @@ You may delete a specific _slot_ by using the `list` or `find` command and selec
 
 Examples:
 
-* `delete t/CS2113T t/Tutorial` +
-Delete _slots_ that contain tags "CS2113T" and "Tutorial".
+* `delete t/CS2113T t/Lecture` +
+Delete _slots_ that contain both tags "CS2113T" and "Lecture".
 
 [#img-delete]
-.[.underline]#Output after entering `delete t/CS2113T t/Tutorial`#
-image::Delete_Command_Output.png[width="790"]
+.[.underline]#Output after entering `delete t/CS2113T t/Lecture`#
+image::Delete_Command_Output_1.png[width="790"]
+
+* `delete t/Lecture` +
+Delete _slots_ that contain the tag "Lecture".
 
 * `delete 2` +
 Delete the second _slot_ shown via the `list` command.
@@ -307,16 +275,19 @@ Delete the second _slot_ shown via the `list` command.
 
 [[list]]
 === Listing Slots: `list` / `l`
-Lists all _slots_ whose name directly matches the specified keyword (not case-sensitive). +
+Lists all _slots_ whose name/tag directly matches the specified keyword (not case-sensitive). +
 Format: `list n/NAME`
 
 Examples:
 
-* `list n/CS2113T` +
-List all _slots_ that is named `CS2113T` in the planner.
+* `list n/CS2113T Lecture` +
+List all _slots_ that is named `CS2113T Lecture`.
+
+* `list t/Lecture` +
+List all _slots_ that contains the tag `Lecture`.
 
 [#img-list]
-.[.underline]#Output after entering `list n/CS2113T`#
+.[.underline]#Output after entering `list t/Lecture`#
 image::List_Command_Output_1.png[width="790"]
 {zwsp}
 
@@ -324,14 +295,22 @@ image::List_Command_Output_1.png[width="790"]
 
 [[find]]
 === Locating Slots: `find` / `f`
-Find all _slots_ whose part of their name contains the specified keyword and displays them as a list. +
+Find all _slots_ whose name closely matches the specified keyword and displays them as a list. +
 Format: `find n/KEYWORD`
+
+[NOTE]
+The `find` command will attempt to return the closest matching `Slot` in the event that a match is not found.
+Do not be surprised to _eg. enter `find n/ABC` and get a `Slot` named `XYZ`_ in return.
 
 Example:
 
 * `find n/CS` +
-Find all _slots_ whose name contains `CS` (eg. CS2101, CS2113T, SOCSMeet)
+Find all _slots_ whose name closely matches `CS` (eg. CS2101, CS2113T, SOCSMeet)
 
+* `find t/2113T` +
+Find all _slots_ that contain tags that closely matches `2113T`.
+
+// TODO: need to change picture
 [#img-find]
 .[.underline]#Output after entering `find n/CS`#
 image::Find_Command_Output_1.png[width="790"]
@@ -357,6 +336,11 @@ E.g. `view week details` will allow you to view details of all _slots_ in the cu
 [TIP]
 You may omit `[WEEK]`/`[DATE_OR_DAY_OF_WEEK]` to view the calendar with respect to the current date! +
 E.g. `view week` will allow you to view the current week and `view day` will allow you to view the current day!
+The expected output after successfully running `view week` is shown in the figure below.
+
+[#img-view]
+.[.underline]#Output after entering `view week`#
+image::Ui.png[width="790"]
 
 Examples:
 
@@ -374,16 +358,12 @@ View planner for week 7 of the academic calendar.
 View planner for recess week of the academic calendar.
 * `view month` +
 View planner for the months of the current academic semester.
-
-[#img-view]
-.[.underline]#Output after entering `view month`#
-image::Ui.png[width="790"]
 {zwsp}
 
 {zwsp}
 
 [[history]]
-=== Listing previous input commands : `history` `[coming in v2.0]`
+=== Listing previous input commands : `history`
 Lists all the commands that you have entered in reverse chronological order. +
 Format: `history`
 {zwsp}
@@ -391,7 +371,7 @@ Format: `history`
 {zwsp}
 
 [[undo]]
-=== Undoing previous command : `undo` `[coming in v2.0]`
+=== Undoing previous command : `undo`
 Restores the planner to the state before the previous command was executed. +
 Format: `undo`
 
@@ -402,7 +382,7 @@ The `clear` command cannot be undone.
 {zwsp}
 
 [[redo]]
-=== Redoing the previously undone command : `redo` `[coming in v2.0]`
+=== Redoing the previously undone command : `redo`
 Reverses the most recent `undo` command. +
 Format: `redo`
 {zwsp}
@@ -417,7 +397,7 @@ Planner data is automatically encrypted before saving and decrypted before loadi
 {zwsp}
 
 [[import]]
-=== Importing .ics formatted files `[coming in v2.0]`
+=== Importing .ics formatted files `import`
 You can import an .ics file into the planner.
 Format: `import filename`
 [NOTE]
@@ -445,15 +425,13 @@ image::Export_Command_Output_1.png[width="420"]
 ====
 The exported file is named "PlanMySem.ics" and is saved in the main directory.
 The .ics file can be imported into other calendar apps that support .ics files such as Google Calendar. +
-
-====
-[WARNING]
-Exporting will REMOVE all tags in the planner.
-
 [#img-exportFile]
 .[.underline]#Location of PlanMySem.ics file#
 image::Export_Command_Directory_1.png[width="790"]
 ====
+
+[WARNING]
+Exporting will REMOVE all tags in the planner.
 
 [TIP]
 A file with the ICS file extension is an iCalendar file.
@@ -588,7 +566,7 @@ Commands to view _slots_:
 {zwsp}
 
 === Import/Exporting the Planner
-Commands to view _slots_:
+Commands:
 [width="100%",cols="20%,<30%,<20%,<30",options="header"]
 |=======================================================================
 |Task |Purpose |Command |Example
@@ -596,7 +574,7 @@ Commands to view _slots_:
 |_<<export, Export your planner>>_ |Export all your slots into a .ics file|
 `export` | `export`
 |_<<import, Import into your planner>>_ |Import into your planner from a .ics file |
-`import` | `import`
+`import` | `import PlanMySem.ics`
 |=======================================================================
 {zwsp}
 

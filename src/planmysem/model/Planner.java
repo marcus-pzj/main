@@ -4,10 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javafx.util.Pair;
 import planmysem.common.Clock;
@@ -85,26 +86,23 @@ public class Planner implements ReadOnlyPlanner {
         this.semester.setDays(days);
     }
 
-    public HashMap<LocalDate, Day> getDays() {
-        return semester.getDays();
-    }
-
-    public Day getDay(LocalDate date) {
-        return getDays().get(date);
-    }
-
-    public Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> getSlots(Set<String> tags) {
-        final Map<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> selectedSlots = new TreeMap<>();
+    public List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> getSlots(Set<String> tags) {
+        final List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> selectedSlots = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Day> entry : getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
                 if (slot.getTags().containsAll(tags)) {
-                    selectedSlots.put(entry.getKey(), new Pair<>(entry.getValue(), slot));
+                    selectedSlots.add(new Pair(entry.getKey(), new Pair<>(entry.getValue(), slot)));
                 }
             }
         }
 
         return selectedSlots;
+    }
+
+    @Override
+    public HashMap<LocalDate, Day> getDays() {
+        return semester.getDays();
     }
 
     @Override

@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Contains static methods to be shared.
+ */
 public class TestUtil {
     /**
      * Asserts whether the text in the two given files are the same. Ignores any
