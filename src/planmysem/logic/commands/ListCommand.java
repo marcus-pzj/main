@@ -17,7 +17,7 @@ import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
 
-import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
 
 /**
  * Displays a list of all slots in the planner whose name matches the argument keyword.
@@ -50,7 +50,8 @@ public class ListCommand extends Command {
         this.keyword = null;
         this.isListByName = false;
         if (!option.equalsIgnoreCase("all")) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+            throw new ParseException(String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                    ListCommand.MESSAGE_USAGE));
         }
         this.isListAll = true;
     }
@@ -63,8 +64,7 @@ public class ListCommand extends Command {
             for (Slot slot : entry.getValue().getSlots()) {
                 if (isListAll) {
                     selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
-                }
-                else if (isListByName) {
+                } else if (isListByName) {
                     if (slot.getName().equalsIgnoreCase(keyword)) {
                         selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
                     }
