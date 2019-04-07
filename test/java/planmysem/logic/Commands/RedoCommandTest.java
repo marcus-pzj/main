@@ -9,9 +9,9 @@ import org.junit.rules.ExpectedException;
 import planmysem.common.Clock;
 import planmysem.logic.CommandHistory;
 import planmysem.logic.commands.Command;
-import planmysem.logic.commands.UndoCommand;
+import planmysem.logic.commands.RedoCommand;
 
-import static planmysem.logic.commands.UndoCommand.MESSAGE_FAILURE;
+import static planmysem.logic.commands.RedoCommand.MESSAGE_FAILURE;
 
 import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.model.Model;
@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class UndoCommandTest {
+public class RedoCommandTest {
     private Model model;
     private Model expectedModel;
     private Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>> pair1;
@@ -106,11 +106,11 @@ public class UndoCommandTest {
     }
 
     @Test
-    public void execute_Undo_Invalid() throws Exception{
+    public void execute_Redo_Invalid() throws Exception{
         Model modelBlank = new ModelManager();
-        Command undo = new UndoCommand();
+        Command redo = new RedoCommand();
         thrown.expect(CommandException.class);
         thrown.expectMessage((MESSAGE_FAILURE));
-        undo.execute(modelBlank, commandHistory);
+        redo.execute(modelBlank, commandHistory);
     }
 }

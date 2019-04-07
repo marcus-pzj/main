@@ -10,11 +10,14 @@ import java.util.Set;
 import javafx.util.Pair;
 import planmysem.common.Messages;
 import planmysem.logic.CommandHistory;
+import planmysem.logic.parser.exceptions.ParseException;
 import planmysem.model.Model;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.slot.ReadOnlySlot;
 import planmysem.model.slot.Slot;
+
+import static planmysem.common.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 /**
  * Displays a list of all slots in the planner whose name matches the argument keyword.
@@ -27,17 +30,29 @@ public class ListCommand extends Command {
     public static final String MESSAGE_SUCCESS = "%1$s Slots listed.\n%2$s";
     public static final String MESSAGE_SUCCESS_NONE = "0 Slots listed.\n";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots whose name "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all slots/ slots whose name "
             + "directly matches the specified keyword (not case-sensitive)."
-            + "\n\tMandatory Parameters: n/NAME or t/TAG..."
-            + "\n\tExample: " + COMMAND_WORD + " n/CS1010";
+            + "\n\tMandatory Parameters: n/NAME or t/TAG... or o/OPTION"
+            + "\n\tExample: " + COMMAND_WORD + " n/CS1010"
+            + "\n\tExample: " + COMMAND_WORD + " o/all";
 
     private final String keyword;
     private final boolean isListByName;
+    private final boolean isListAll;
 
     public ListCommand(String name, String tag) {
         this.keyword = (name == null) ? tag.trim() : name.trim();
         this.isListByName = (name != null);
+        this.isListAll = false;
+    }
+
+    public ListCommand(String option) throws ParseException {
+        this.keyword = null;
+        this.isListByName = false;
+        if (!option.equalsIgnoreCase("all")) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+        }
+        this.isListAll = true;
     }
 
     @Override
@@ -46,7 +61,10 @@ public class ListCommand extends Command {
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
-                if (isListByName) {
+                if (isListAll) {
+                    selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
+                }
+                else if (isListByName) {
                     if (slot.getName().equalsIgnoreCase(keyword)) {
                         selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
                     }

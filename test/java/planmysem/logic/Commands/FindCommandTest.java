@@ -1,3 +1,4 @@
+//@@author marcus-pzj
 package planmysem.logic.Commands;
 
 import static junit.framework.TestCase.assertTrue;
@@ -18,6 +19,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javafx.util.Pair;
 import org.junit.Before;
@@ -230,22 +232,26 @@ public class FindCommandTest {
                 String n2 = p2.getName();
                 int d1 = p1.getDist();
                 int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
 
                 if (d1 != d2) {
                     return d1 - d2;
-                } else {
+                } else if (n1 != n2) {
                     return n1.compareTo(n2);
+                } else {
+                    return date1.compareTo(date2);
                 }
             }
         });
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
-                if (slot.getName().length() + 3 < slotBuilder.generateSlot(1).getName().length()) {
+                if (!Pattern.matches(".*" + slotBuilder.generateSlot(1).getName() + ".*", slot.getName())) {
                     return;
                 }
                 int dist = Utils.getLevenshteinDistance(slotBuilder.generateSlot(1).getName(), slot.getName());
-                WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
                 weightedNames.add(distNameTrie);
             }
         }
@@ -272,11 +278,15 @@ public class FindCommandTest {
                 String n2 = p2.getName();
                 int d1 = p1.getDist();
                 int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
 
                 if (d1 != d2) {
-                    return d1 - d2;
+                    return d1 - d2; //order by distance
+                } else if (!n1.equalsIgnoreCase(n2)) {
+                    return n1.compareTo(n2); //order by name
                 } else {
-                    return n1.compareTo(n2);
+                    return date1.compareTo(date2); //order by date
                 }
             }
         });
@@ -285,11 +295,11 @@ public class FindCommandTest {
             for (Slot slot : entry.getValue().getSlots()) {
                 Set<String> tagSet = slot.getTags();
                 for (String tag : tagSet) {
-                    if (tag.length() + 3 < tagToTest.length()) {
+                    if (!Pattern.matches(".*" + tagToTest + ".*", tag)) {
                         return;
                     }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
-                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
                     weightedNames.add(distNameTrie);
                 }
             }
@@ -316,22 +326,26 @@ public class FindCommandTest {
                 String n2 = p2.getName();
                 int d1 = p1.getDist();
                 int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
 
                 if (d1 != d2) {
-                    return d1 - d2;
+                    return d1 - d2; //order by distance
+                } else if (!n1.equalsIgnoreCase(n2)) {
+                    return n1.compareTo(n2); //order by name
                 } else {
-                    return n1.compareTo(n2);
+                    return date1.compareTo(date2); //order by date
                 }
             }
         });
 
         for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
             for (Slot slot : entry.getValue().getSlots()) {
-                if (slot.getName().length() + 3 < nameToTest.length()) {
+                if (!Pattern.matches(".*" + slotBuilder.generateSlot(1).getName() + ".*", slot.getName())) {
                     return;
                 }
                 int dist = Utils.getLevenshteinDistance(nameToTest, slot.getName());
-                WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
                 weightedNames.add(distNameTrie);
             }
         }
@@ -359,11 +373,15 @@ public class FindCommandTest {
                 String n2 = p2.getName();
                 int d1 = p1.getDist();
                 int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
 
                 if (d1 != d2) {
-                    return d1 - d2;
+                    return d1 - d2; //order by distance
+                } else if (!n1.equalsIgnoreCase(n2)) {
+                    return n1.compareTo(n2); //order by name
                 } else {
-                    return n1.compareTo(n2);
+                    return date1.compareTo(date2); //order by date
                 }
             }
         });
@@ -376,7 +394,7 @@ public class FindCommandTest {
                         return;
                     }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
-                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
                     weightedNames.add(distNameTrie);
                 }
             }
@@ -402,11 +420,15 @@ public class FindCommandTest {
                 String n2 = p2.getName();
                 int d1 = p1.getDist();
                 int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
 
                 if (d1 != d2) {
-                    return d1 - d2;
+                    return d1 - d2; //order by distance
+                } else if (!n1.equalsIgnoreCase(n2)) {
+                    return n1.compareTo(n2); //order by name
                 } else {
-                    return n1.compareTo(n2);
+                    return date1.compareTo(date2); //order by date
                 }
             }
         });
@@ -419,7 +441,7 @@ public class FindCommandTest {
                         return;
                     }
                     int dist = Utils.getLevenshteinDistance(tagToTest, tag);
-                    WeightedName distNameTrie = new WeightedName(entry, slot, dist);
+                    WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
                     weightedNames.add(distNameTrie);
                 }
             }
@@ -429,5 +451,54 @@ public class FindCommandTest {
             selectedSlots.add(weightedNames.poll());
         }
         assertEquals(MESSAGE_SUCCESS_NONE, commandResult.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_find_Multiple_Slots() throws Exception{
+        model.addSlot(LocalDate.of(2019, 03, 03), slotBuilder.generateSlot(3));
+        model.addSlot(LocalDate.of(2019, 03, 04), slotBuilder.generateSlot(3));
+
+        String nameToTest = slotBuilder.generateSlot(3).getName();
+
+        CommandResult commandResult = new FindCommand(nameToTest, null).execute(model, commandHistory);
+
+        List<WeightedName> selectedSlots = new ArrayList<>();
+        Queue<WeightedName> weightedNames = new PriorityQueue<>(new Comparator<>() {
+            @Override
+            public int compare(WeightedName p1, WeightedName p2) {
+                String n1 = p1.getName();
+                String n2 = p2.getName();
+                int d1 = p1.getDist();
+                int d2 = p2.getDist();
+                LocalDate date1 = p1.getDate();
+                LocalDate date2 = p2.getDate();
+
+                if (d1 != d2) {
+                    return d1 - d2; //order by distance
+                } else if (!n1.equalsIgnoreCase(n2)) {
+                    return n1.compareTo(n2); //order by name
+                } else {
+                    return date1.compareTo(date2); //order by date
+                }
+            }
+        });
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                if (!Pattern.matches(".*" + slotBuilder.generateSlot(1).getName() + ".*", slot.getName())) {
+                    return;
+                }
+                int dist = Utils.getLevenshteinDistance(nameToTest, slot.getName());
+                WeightedName distNameTrie = new WeightedName(entry, slot, entry.getKey(), dist);
+                weightedNames.add(distNameTrie);
+            }
+        }
+
+        while (!weightedNames.isEmpty() && weightedNames.peek().getDist() < 10) {
+            selectedSlots.add(weightedNames.poll());
+        }
+        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                Messages.craftListMessageWeighted(selectedSlots)), commandResult.getFeedbackToUser());
+
     }
 }

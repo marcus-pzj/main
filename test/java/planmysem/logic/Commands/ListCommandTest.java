@@ -1,3 +1,4 @@
+//@@author marcus-pzj
 package planmysem.logic.Commands;
 
 import static junit.framework.TestCase.assertTrue;
@@ -275,6 +276,23 @@ public class ListCommandTest {
             }
         }
         assertEquals(MESSAGE_SUCCESS_NONE, commandResult.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_listAll() throws Exception{
+
+        CommandResult commandResult = new ListCommand("all").execute(model, commandHistory);
+
+        final List<Pair<LocalDate, Pair<ReadOnlyDay, ReadOnlySlot>>> selectedSlots = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, Day> entry : model.getDays().entrySet()) {
+            for (Slot slot : entry.getValue().getSlots()) {
+                selectedSlots.add(new Pair<>(entry.getKey(), new Pair<>(entry.getValue(), slot)));
+            }
+        }
+
+        assertEquals(String.format(MESSAGE_SUCCESS, selectedSlots.size(),
+                Messages.craftListMessage(selectedSlots)), commandResult.getFeedbackToUser());
     }
 }
 

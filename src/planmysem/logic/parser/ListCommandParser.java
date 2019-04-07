@@ -25,6 +25,11 @@ public class ListCommandParser implements Parser<ListCommand> {
         HashMap<String, Set<String>> arguments = getParametersWithArguments(args);
         String name = getFirstInSet(arguments.get(PREFIX_NAME));
         String tag = getFirstInSet(arguments.get(PREFIX_TAG));
+        String option = getFirstInSet((arguments.get(PREFIX_OPTION)));
+
+        if (option != null) {
+            return new ListCommand(option);
+        }
         if (name == null && tag == null) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
         } else if (name != null && tag != null) {

@@ -15,12 +15,14 @@ public class WeightedName {
     private String name;
     private Map.Entry<LocalDate, Day> map;
     private Slot slot;
+    private LocalDate date;
 
-    public WeightedName(Map.Entry<LocalDate, Day> map, Slot slot, int dist) {
+    public WeightedName(Map.Entry<LocalDate, Day> map, Slot slot, LocalDate date, int dist) {
         this.map = map;
         this.dist = dist;
         this.slot = slot;
         this.name = slot.getName();
+        this.date = date;
     }
 
     public int getDist() {
@@ -37,5 +39,9 @@ public class WeightedName {
 
     public Slot getSlot() {
         return this.slot;
+    }
+
+    public LocalDate getDate() {
+        return this.date;
     }
 }
