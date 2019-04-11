@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import planmysem.logic.CommandHistory;
+import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.model.Model;
 import planmysem.model.semester.IcsSemester;
 
@@ -15,22 +16,35 @@ public class ExportCommand extends Command {
 
     public static final String COMMAND_WORD = "export";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Export the planner as a .ics file."
-            + "\n\tParameters: filename"
+            + "\n\tParameters: "
+            + "\n\t\tOptional: [fn/FILENAME]"
             + "\n\tExample: " + COMMAND_WORD + " my_planner.ics";
-    public static final String MESSAGE_EXPORT_ACKNOWLEDGEMENT = "Calendar exported";
+    public static final String MESSAGE_SUCCESS = "Calendar exported.";
+    public static final String MESSAGE_FAILED = "Export failed. File cannot be created";
+    private final String fileName;
+
+    public ExportCommand(String fileName) {
+        this.fileName = fileName;
+    }
 
     @Override
-    public CommandResult execute(Model model, CommandHistory commandHistory) {
+    public CommandResult execute(Model model, CommandHistory commandHistory) throws CommandException {
         IcsSemester semester = new IcsSemester(model.getPlanner().getSemester());
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("PlanMySem.ics"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".ics"));
             writer.write(semester.toString());
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new CommandException(MESSAGE_FAILED);
         }
 
-        return new CommandResult(MESSAGE_EXPORT_ACKNOWLEDGEMENT);
+        return new CommandResult(MESSAGE_SUCCESS);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof ExportCommand // instanceof handles nulls
+                && fileName.equals(((ExportCommand) other).fileName));
+    }
 }

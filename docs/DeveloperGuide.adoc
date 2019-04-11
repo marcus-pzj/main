@@ -936,9 +936,9 @@ Similarly, decryption of the data is done automatically before it is loaded. In 
 === Data Exporting / Exporting feature
 
 The user can export the current planner into a .ics file to use in external calendar applications. The .ics file will contain the names of the slots in the SUMMARY field and the descriptions in the DESCRIPTION field. This command automatically exports into the main directory and names the file “PlanMySem.ics”. Future updates can include user input to allow saving the file in another directory and naming the file.
-We have chosen to use the iCalendar format due to its popularity and it’s use in applications such as Google Calendar, Microsoft Outlook and NUSmods.
+We have chosen to use the iCalendar format due to its popularity and its use in applications such as Google Calendar, Microsoft Outlook and NUSmods.
 
-In our implementation, we have chosen not to export the tags into the .ics file. This is because iCalendar does not have in-built tag fields. This means that other other applications that import .ics will not be able to use the tags.
+In our implementation, we have chosen not to export the tags into the .ics file. This is because iCalendar does not have in-built tag fields. This means that other applications that import .ics will not be able to use the tags.
 {zwsp}
 
 {zwsp}

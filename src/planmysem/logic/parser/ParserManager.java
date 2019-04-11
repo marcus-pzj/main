@@ -91,10 +91,10 @@ public class ParserManager {
             return new ExitCommand();
 
         case ExportCommand.COMMAND_WORD:
-            return new ExportCommand();
+            return new ExportCommandParser().parse(arguments);
 
         case ImportCommand.COMMAND_WORD:
-            return new ImportCommand(arguments);
+            return new ImportCommandParser().parse(arguments);
 
         case HelpCommand.COMMAND_WORD: // Fallthrough
 

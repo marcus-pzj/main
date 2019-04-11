@@ -35,7 +35,7 @@ public class ClearCommandTest {
     }
 
     @Test
-    public void execute_nonEmptyAddressBook_success() throws Exception {
+    public void execute_nonEmptyPlanner_success() throws Exception {
         Model model = new ModelManager(new Planner());
         Model expectedModel = new ModelManager(new Planner());
 

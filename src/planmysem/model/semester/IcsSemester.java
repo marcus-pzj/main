@@ -3,6 +3,7 @@ package planmysem.model.semester;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 import planmysem.model.slot.Slot;
 
@@ -22,17 +23,23 @@ public class IcsSemester {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
         this.icsCalendar = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\n";
         for (LocalDate date : source.getDays().keySet()) {
-            for (Slot slots : source.getDays().get(date).getSlots()) {
+            for (Slot slot : source.getDays().get(date).getSlots()) {
                 this.icsCalendar = this.icsCalendar.concat("BEGIN:VEVENT\r\n");
-                LocalDateTime startDateTime = date.atTime(slots.getStartTime());
+                LocalDateTime startDateTime = date.atTime(slot.getStartTime());
                 this.icsCalendar = this.icsCalendar.concat("DTSTART:" + dateFormat.format(startDateTime) + "\r\n");
-                LocalDateTime endDateTime = startDateTime.plusMinutes(slots.getDuration());
+                LocalDateTime endDateTime = startDateTime.plusMinutes(slot.getDuration());
                 this.icsCalendar = this.icsCalendar.concat("DTEND:" + dateFormat.format(endDateTime) + "\r\n");
-                this.icsCalendar = this.icsCalendar.concat("SUMMARY:" + slots.getName() + "\r\n");
-                if (slots.getLocation() != null) {
-                    this.icsCalendar = this.icsCalendar.concat("LOCATION:" + slots.getLocation() + "\r\n");
+                this.icsCalendar = this.icsCalendar.concat("SUMMARY:" + slot.getName() + "\r\n");
+                if (slot.getLocation() != null) {
+                    this.icsCalendar = this.icsCalendar.concat("LOCATION:" + slot.getLocation() + "\r\n");
                 }
-                this.icsCalendar = this.icsCalendar.concat("DESCRIPTION:" + slots.getDescription() + "\r\n");
+                this.icsCalendar = this.icsCalendar.concat("DESCRIPTION:" + slot.getDescription() + "\r\n");
+                this.icsCalendar = this.icsCalendar.concat("X-TAGS:");
+                Set<String> tagSet = slot.getTags();
+                for (String tag : tagSet) {
+                    this.icsCalendar = this.icsCalendar.concat(tag + ",");
+                }
+                this.icsCalendar = this.icsCalendar.concat("\r\n");
                 this.icsCalendar = this.icsCalendar.concat("END:VEVENT\r\n");
             }
         }

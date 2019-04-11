@@ -8,14 +8,16 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import planmysem.common.Clock;
 import planmysem.logic.CommandHistory;
+import planmysem.logic.commands.AddCommand;
 import planmysem.logic.commands.Command;
 import planmysem.logic.commands.UndoCommand;
 
-import static planmysem.logic.commands.UndoCommand.MESSAGE_FAILURE;
+import static planmysem.logic.Commands.CommandTestUtil.assertCommandFailure;
+import static planmysem.logic.Commands.CommandTestUtil.assertCommandSuccess;
 
-import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.model.Model;
 import planmysem.model.ModelManager;
+import planmysem.model.recurrence.Recurrence;
 import planmysem.model.semester.Day;
 import planmysem.model.semester.ReadOnlyDay;
 import planmysem.model.slot.ReadOnlySlot;
@@ -23,8 +25,7 @@ import planmysem.testutil.SlotBuilder;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class UndoCommandTest {
     private Model model;
@@ -97,20 +98,25 @@ public class UndoCommandTest {
         list.put(pair1.getKey(), pair1.getValue());
         model.setLastShownList(list);
 
-        expectedModel = new ModelManager();
-        expectedModel.addSlot(LocalDate.of(2019, 02, 01), slotBuilder.generateSlot(1));
-        expectedModel.addSlot(LocalDate.of(2019, 02, 02), slotBuilder.generateSlot(2));
-        expectedModel.addSlot(LocalDate.of(2019, 02, 03), slotBuilder.generateSlot(3));
-        expectedModel.addSlot(LocalDate.of(2019, 02, 04), slotBuilder.generateSlot(3));
-        expectedModel.setLastShownList(model.getLastShownList());
+        expectedModel = model;
+
+        Set<String> recurrenceStrings = new HashSet<>();
+        recurrenceStrings.add("normal");
+        recurrenceStrings.add("reading");
+        Recurrence recurrence = new Recurrence(recurrenceStrings, 1);
+
+        Command addSlotModel = new AddCommand(slotBuilder.generateSlot(1), recurrence);
+        addSlotModel.execute(model,commandHistory);
+        addSlotModel.execute(expectedModel,commandHistory);
     }
 
     @Test
-    public void execute_Undo_Invalid() throws Exception{
-        Model modelBlank = new ModelManager();
-        Command undo = new UndoCommand();
-        thrown.expect(CommandException.class);
-        thrown.expectMessage((MESSAGE_FAILURE));
-        undo.execute(modelBlank, commandHistory);
+    public void execute() {
+        // single undoable state in model
+        expectedModel.undo();
+        assertCommandSuccess(new UndoCommand(), model, commandHistory, UndoCommand.MESSAGE_SUCCESS, expectedModel);
+
+        // no undoable states in model
+        assertCommandFailure(new UndoCommand(), model, commandHistory, UndoCommand.MESSAGE_FAILURE);
     }
 }

@@ -8,6 +8,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import planmysem.common.exceptions.IllegalValueException;
+
 /**
  * Encrypts and decrypts a string using AES
  */
@@ -55,7 +57,7 @@ public class Encryptor {
      * @param toDecrypt string to be decrypted
      * @return decrypted string
      */
-    public static String decrypt(String toDecrypt) {
+    public static String decrypt(String toDecrypt) throws IllegalValueException {
         try {
             //Load key from KeyStore.
             SecretKey key = KeyStorage.load();
@@ -80,7 +82,7 @@ public class Encryptor {
             byte[] decryptedData = cipher.doFinal(encryptedBytes);
             return new String(decryptedData);
         } catch (Exception e) {
-            return null;
+            throw new IllegalValueException("Error decrypting file. Reinitializing semester.");
         }
     }
 }

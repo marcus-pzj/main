@@ -1,7 +1,6 @@
 package planmysem.logic.commands;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -11,11 +10,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import planmysem.logic.CommandHistory;
+import planmysem.logic.commands.exceptions.CommandException;
 import planmysem.model.Model;
 import planmysem.model.recurrence.Recurrence;
 import planmysem.model.semester.Day;
@@ -28,7 +30,8 @@ import planmysem.model.slot.Slot;
 public class ImportCommand extends Command {
     public static final String COMMAND_WORD = "import";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Imports a .ics file into the Planner."
-            + "\n\tParameters: filename"
+            + "\n\tParameters: "
+            + "\n\t\tMandatory: fn/FILENAME"
             + "\n\tExample: " + COMMAND_WORD + " my_outlook_calendar.ics";
     public static final String MESSAGE_SUCCESS = "File imported.\n";
     public static final String MESSAGE_FILE_NOT_FOUND = "File not found.\n";
@@ -38,22 +41,19 @@ public class ImportCommand extends Command {
     private int failedImports = 0;
 
     public ImportCommand(String fileName) {
-        this.fileName = fileName.replaceAll("\\s", "");
+        if (!fileName.endsWith(".ics")) {
+            this.fileName = fileName.concat(".ics");
+        } else {
+            this.fileName = fileName;
+        }
     }
 
     @Override
-    public CommandResult execute(Model model, CommandHistory commandHistory) {
-        FileReader fileReader;
+    public CommandResult execute(Model model, CommandHistory commandHistory) throws CommandException {
         try {
+            FileReader fileReader;
             fileReader = new FileReader(this.fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return new CommandResult(MESSAGE_FILE_NOT_FOUND);
-        }
-        BufferedReader br = new BufferedReader(fileReader);
-
-
-        try {
+            BufferedReader br = new BufferedReader(fileReader);
             String sCurrentLine = br.readLine();
             while (!("END:VCALENDAR".equals(sCurrentLine))) {
                 sCurrentLine = br.readLine();
@@ -63,6 +63,7 @@ public class ImportCommand extends Command {
                     String location = null;
                     String description = null;
                     LocalTime startTime = null;
+                    Set<String> tags = new HashSet<>();
                     int duration = 0;
                     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
 
@@ -93,13 +94,18 @@ public class ImportCommand extends Command {
                             description = sSplit[1];
                             break;
 
+                        case "X-TAGS":
+                            String[] tagArray = sSplit[1].split(",");
+                            tags.addAll(Arrays.asList(tagArray));
+                            break;
+
                         default:
                             break;
 
                         }
                     }
 
-                    Slot slot = new Slot(name, location, description, startTime, duration, null);
+                    Slot slot = new Slot(name, location, description, startTime, duration, tags);
                     Recurrence recurrence = new Recurrence(null, date);
                     Set<LocalDate> dates = recurrence.generateDates(model.getPlanner().getSemester());
                     Map<LocalDate, Day> days = new TreeMap<>();
@@ -113,15 +119,23 @@ public class ImportCommand extends Command {
                     }
                 }
             }
-        } catch (IOException e) {
-            return new CommandResult(MESSAGE_ERROR_IN_READING_FILE);
+        } catch (IOException | NullPointerException e) {
+            throw new CommandException(MESSAGE_ERROR_IN_READING_FILE);
         }
         if (this.failedImports == 0) {
             return new CommandResult(MESSAGE_SUCCESS);
         } else {
-            return new CommandResult(MESSAGE_SUCCESS + this.failedImports + " events failed to import.\n");
+            return new CommandResult(MESSAGE_SUCCESS + this.failedImports + " event(s) failed to import.\n");
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof ImportCommand // instanceof handles nulls
+                && fileName.equals(((ImportCommand) other).fileName));
+    }
+
 }
 
 
